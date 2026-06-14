@@ -15,6 +15,7 @@
     "@PersonalityTest/env": "*",
     "better-auth": "1.6.11",
     "dotenv": "^17.2.2",
+    "resend": "^6.12.4",
     "zod": "^4.1.13"
   },
   "devDependencies": {

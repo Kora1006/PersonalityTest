@@ -4,11 +4,11 @@ import mdx from "fumadocs-mdx/vite";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  plugins: [mdx(), tailwindcss(), reactRouter()],
-  resolve: {
-    tsconfigPaths: true,
-  },
-  ssr: {
-    external: ["@takumi-rs/image-response"],
-  },
+	plugins: [mdx(), tailwindcss(), reactRouter()],
+	resolve: {
+		tsconfigPaths: true,
+	},
+	ssr: {
+		external: ["@takumi-rs/image-response"],
+	},
 });

@@ -8,25 +8,27 @@ import { getPageImagePath } from "./app/lib/og";
 const getUrl = createGetUrl("/docs");
 
 export default {
-  ssr: true,
-  future: {
-    v8_middleware: true,
-  },
-  async prerender({ getStaticPaths }) {
-    const paths: string[] = [];
-    const excluded: string[] = ["/api/search"];
+	ssr: true,
+	future: {
+		v8_middleware: true,
+	},
+	async prerender({ getStaticPaths }) {
+		const paths: string[] = [];
+		const excluded: string[] = ["/api/search"];
 
-    for (const path of getStaticPaths()) {
-      if (!excluded.includes(path)) paths.push(path);
-    }
+		for (const path of getStaticPaths()) {
+			if (!excluded.includes(path)) {
+				paths.push(path);
+			}
+		}
 
-    for await (const entry of glob("**/*.mdx", { cwd: "content/docs" })) {
-      const slugs = getSlugs(entry);
+		for await (const entry of glob("**/*.mdx", { cwd: "content/docs" })) {
+			const slugs = getSlugs(entry);
 
-      paths.push(getUrl(slugs));
-      paths.push(getPageImagePath(slugs));
-    }
+			paths.push(getUrl(slugs));
+			paths.push(getPageImagePath(slugs));
+		}
 
-    return paths;
-  },
+		return paths;
+	},
 } satisfies Config;

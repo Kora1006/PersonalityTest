@@ -1,14 +1,11 @@
-import { protectedProcedure, publicProcedure, router } from "../index";
+import { publicProcedure, router } from "../index";
+
+import { assessmentsRouter } from "./assessments";
+import { paymentRouter } from "./payment";
 
 export const appRouter = router({
-  healthCheck: publicProcedure.query(() => {
-    return "OK";
-  }),
-  privateData: protectedProcedure.query(({ ctx }) => {
-    return {
-      message: "This is private",
-      user: ctx.session.user,
-    };
-  }),
+	assessments: assessmentsRouter,
+	healthCheck: publicProcedure.query(() => "OK"),
+	payment: paymentRouter,
 });
 export type AppRouter = typeof appRouter;
