@@ -1,0 +1,38 @@
+{
+  "name": "PersonalityTest",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "type": "module",
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "check-types": "turbo check-types",
+    "dev:web": "turbo -F web dev",
+    "dev:server": "turbo -F server dev",
+    "db:push": "turbo -F @PersonalityTest/db db:push",
+    "db:studio": "turbo -F @PersonalityTest/db db:studio",
+    "db:generate": "turbo -F @PersonalityTest/db db:generate",
+    "db:migrate": "turbo -F @PersonalityTest/db db:migrate",
+    "check": "ultracite check",
+    "fix": "ultracite fix",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "@PersonalityTest/env": "*",
+    "dotenv": "^17.2.2",
+    "zod": "^4.1.13"
+  },
+  "devDependencies": {
+    "@PersonalityTest/config": "*",
+    "@biomejs/biome": "2.4.16",
+    "@types/node": "^22.13.14",
+    "husky": "latest",
+    "turbo": "^2.9.16",
+    "typescript": "^6",
+    "ultracite": "7.8.3"
+  },
+  "packageManager": "npm@11.12.1"
+}
