@@ -1,0 +1,215 @@
+.comparison-page {
+  background: #0f172a;
+  min-height: 100vh;
+  padding: 0 40rpx;
+
+  &.loading,
+  &.error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .loading-text,
+  .error-text {
+    font-size: 28rpx;
+    color: #64748b;
+  }
+}
+
+.comparison-header {
+  padding: 60rpx 0 40rpx;
+  text-align: center;
+
+  .comparison-title {
+    display: block;
+    font-size: 48rpx;
+    font-weight: 800;
+    color: #f8fafc;
+    margin-bottom: 12rpx;
+  }
+
+  .comparison-sub {
+    display: block;
+    font-size: 26rpx;
+    color: #64748b;
+  }
+}
+
+.type-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32rpx;
+  margin-bottom: 40rpx;
+
+  .type-card {
+    flex: 1;
+    background: rgba(30, 41, 59, 0.6);
+    border-radius: 24rpx;
+    padding: 32rpx 20rpx;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10rpx;
+
+    .type-tag {
+      font-size: 72rpx;
+      font-weight: 900;
+    }
+
+    .type-name {
+      font-size: 26rpx;
+      color: #e2e8f0;
+      font-weight: 600;
+    }
+
+    .type-role {
+      font-size: 22rpx;
+      color: #64748b;
+    }
+  }
+
+  .my-card {
+    border: 1rpx solid rgba(59, 130, 246, 0.3);
+  }
+
+  .friend-card {
+    border: 1rpx solid rgba(249, 115, 22, 0.3);
+  }
+
+  .vs-text {
+    font-size: 36rpx;
+    font-weight: 900;
+    color: #475569;
+  }
+}
+
+.radar-section {
+  display: flex;
+  justify-content: center;
+  padding: 20rpx 0 40rpx;
+}
+
+.insight-card {
+  background: rgba(59, 130, 246, 0.08);
+  border: 1rpx solid rgba(59, 130, 246, 0.2);
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-bottom: 40rpx;
+
+  .insight-label {
+    display: block;
+    font-size: 22rpx;
+    font-weight: 700;
+    color: #3b82f6;
+    letter-spacing: 2rpx;
+    margin-bottom: 16rpx;
+  }
+
+  .insight-text {
+    display: block;
+    font-size: 28rpx;
+    color: #e2e8f0;
+    line-height: 1.7;
+  }
+}
+
+.score-compare-section {
+  padding: 20rpx 0 40rpx;
+
+  .section-title {
+    display: block;
+    font-size: 34rpx;
+    font-weight: 700;
+    color: #f8fafc;
+    margin-bottom: 32rpx;
+  }
+
+  .score-compare-row {
+    display: flex;
+    align-items: center;
+    gap: 16rpx;
+    margin-bottom: 28rpx;
+
+    .compare-label {
+      font-size: 28rpx;
+      font-weight: 800;
+      width: 40rpx;
+      flex-shrink: 0;
+      text-align: center;
+    }
+
+    .compare-bars {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8rpx;
+
+      .bar-wrap {
+        width: 100%;
+        height: 12rpx;
+        background: rgba(30, 41, 59, 0.8);
+        border-radius: 999rpx;
+        overflow: hidden;
+
+        .bar-fill {
+          height: 100%;
+          border-radius: 999rpx;
+          transition: width 0.5s ease;
+        }
+
+        .my-bar {
+          background: #3b82f6;
+        }
+
+        .friend-bar {
+          background: #f97316;
+        }
+      }
+    }
+
+    .compare-pct {
+      font-size: 22rpx;
+      color: #64748b;
+      width: 140rpx;
+      flex-shrink: 0;
+      text-align: center;
+    }
+  }
+}
+
+.action-section {
+  padding-bottom: 40rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+
+  .action-btn {
+    border-radius: 24rpx;
+    padding: 36rpx 0;
+    text-align: center;
+
+    .action-btn-text {
+      font-size: 30rpx;
+      font-weight: 600;
+      color: #f8fafc;
+    }
+
+    .action-btn-text-muted {
+      font-size: 30rpx;
+      font-weight: 500;
+      color: #94a3b8;
+    }
+  }
+
+  .share-btn {
+    background: rgba(16, 185, 129, 0.15);
+    border: 1rpx solid rgba(16, 185, 129, 0.3);
+  }
+
+  .retake-btn {
+    background: rgba(30, 41, 59, 0.6);
+    border: 1rpx solid rgba(71, 85, 105, 0.3);
+  }
+}

@@ -1,0 +1,38 @@
+.policy-page {
+  background: #0f172a;
+  min-height: 100vh;
+}
+
+.policy-content {
+  padding: 40rpx;
+
+  .policy-title {
+    display: block;
+    font-size: 52rpx;
+    font-weight: 800;
+    color: #f8fafc;
+    margin-bottom: 12rpx;
+  }
+
+  .policy-date {
+    display: block;
+    font-size: 24rpx;
+    color: #64748b;
+    margin-bottom: 60rpx;
+  }
+
+  .policy-section-title {
+    display: block;
+    font-size: 32rpx;
+    font-weight: 700;
+    color: #e2e8f0;
+    margin: 48rpx 0 20rpx;
+  }
+
+  .policy-text {
+    display: block;
+    font-size: 26rpx;
+    color: #94a3b8;
+    line-height: 1.8;
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "name": "miniprogram",
+  "version": "1.0.0",
+  "private": true,
+  "description": "DISC 职业性格测评 — 微信小程序",
+  "scripts": {
+    "build:weapp": "taro build --type weapp",
+    "dev:weapp": "taro build --type weapp --watch",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@PersonalityTest/api": "*",
+    "@tarojs/components": "4.x",
+    "@tarojs/react": "4.x",
+    "@tarojs/runtime": "4.x",
+    "@tarojs/taro": "4.x",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "zod": "^4.1.13"
+  },
+  "devDependencies": {
+    "@PersonalityTest/config": "*",
+    "@babel/core": "^7.24.0",
+    "@tarojs/cli": "4.x",
+    "@tarojs/mini-runner": "4.x",
+    "@tarojs/plugin-framework-react": "4.x",
+    "@tarojs/webpack5-runner": "4.x",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "babel-preset-taro": "4.x",
+    "typescript": "^6"
+  }
+}

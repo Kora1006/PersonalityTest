@@ -1,0 +1,234 @@
+.auth-page {
+  background: #0f172a;
+  min-height: 100vh;
+  padding: 0 40rpx;
+}
+
+// Logged-in profile
+.profile-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80rpx 0 60rpx;
+
+  .avatar {
+    width: 128rpx;
+    height: 128rpx;
+    border-radius: 50%;
+    background: #3b82f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 28rpx;
+
+    .avatar-text {
+      font-size: 56rpx;
+      font-weight: 800;
+      color: #fff;
+    }
+  }
+
+  .profile-name {
+    display: block;
+    font-size: 44rpx;
+    font-weight: 800;
+    color: #f8fafc;
+    margin-bottom: 12rpx;
+  }
+
+  .profile-email {
+    display: block;
+    font-size: 26rpx;
+    color: #64748b;
+  }
+}
+
+.menu-section {
+  background: rgba(30, 41, 59, 0.6);
+  border: 1rpx solid rgba(71, 85, 105, 0.3);
+  border-radius: 24rpx;
+  margin-bottom: 40rpx;
+  overflow: hidden;
+
+  .menu-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 36rpx 32rpx;
+    border-bottom: 1rpx solid rgba(71, 85, 105, 0.2);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .menu-label {
+      font-size: 30rpx;
+      color: #e2e8f0;
+    }
+
+    .menu-arrow {
+      font-size: 28rpx;
+      color: #64748b;
+    }
+  }
+}
+
+.logout-btn {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1rpx solid rgba(239, 68, 68, 0.2);
+  border-radius: 20rpx;
+  padding: 36rpx 0;
+  text-align: center;
+
+  .logout-text {
+    font-size: 30rpx;
+    color: #ef4444;
+    font-weight: 600;
+  }
+}
+
+// Auth form
+.auth-header {
+  padding: 80rpx 0 48rpx;
+
+  .auth-title {
+    display: block;
+    font-size: 56rpx;
+    font-weight: 800;
+    color: #f8fafc;
+    margin-bottom: 16rpx;
+  }
+
+  .auth-subtitle {
+    display: block;
+    font-size: 26rpx;
+    color: #64748b;
+    line-height: 1.6;
+  }
+}
+
+.tab-bar {
+  display: flex;
+  background: rgba(30, 41, 59, 0.6);
+  border-radius: 20rpx;
+  padding: 8rpx;
+  margin-bottom: 48rpx;
+
+  .tab-item {
+    flex: 1;
+    padding: 20rpx 0;
+    text-align: center;
+    border-radius: 16rpx;
+    transition: all 0.2s;
+
+    &.tab-active {
+      background: #3b82f6;
+
+      .tab-text {
+        color: #fff;
+      }
+    }
+
+    .tab-text {
+      font-size: 30rpx;
+      font-weight: 600;
+      color: #64748b;
+    }
+  }
+}
+
+.form-section {
+  margin-bottom: 40rpx;
+
+  .form-field {
+    margin-bottom: 32rpx;
+
+    .field-label {
+      display: block;
+      font-size: 26rpx;
+      font-weight: 600;
+      color: #94a3b8;
+      margin-bottom: 12rpx;
+    }
+
+    .field-input {
+      width: 100%;
+      background: rgba(30, 41, 59, 0.8);
+      border: 1rpx solid rgba(71, 85, 105, 0.4);
+      border-radius: 20rpx;
+      padding: 28rpx 32rpx;
+      font-size: 30rpx;
+      color: #f8fafc;
+      box-sizing: border-box;
+    }
+
+    .field-placeholder {
+      color: #475569;
+    }
+  }
+}
+
+.submit-btn {
+  background: #3b82f6;
+  border-radius: 20rpx;
+  padding: 36rpx 0;
+  text-align: center;
+  box-shadow: 0 16rpx 40rpx rgba(59, 130, 246, 0.3);
+
+  &.submit-disabled {
+    opacity: 0.6;
+  }
+
+  .submit-text {
+    font-size: 32rpx;
+    font-weight: 600;
+    color: #fff;
+  }
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  margin: 40rpx 0;
+
+  .divider-line {
+    flex: 1;
+    height: 1rpx;
+    background: rgba(71, 85, 105, 0.4);
+  }
+
+  .divider-text {
+    font-size: 24rpx;
+    color: #64748b;
+  }
+}
+
+.wechat-btn {
+  background: #07c160;
+  border-radius: 20rpx;
+  padding: 36rpx 0;
+  text-align: center;
+  margin-bottom: 40rpx;
+
+  .wechat-text {
+    font-size: 32rpx;
+    font-weight: 600;
+    color: #fff;
+  }
+}
+
+.terms-note {
+  padding: 0 20rpx 60rpx;
+  text-align: center;
+
+  .terms-text {
+    font-size: 22rpx;
+    color: #475569;
+    line-height: 1.6;
+  }
+
+  .terms-link {
+    color: #3b82f6;
+  }
+}

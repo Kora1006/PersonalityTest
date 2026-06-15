@@ -154,3 +154,140 @@ wechatRouter.get("/poll/:state", (c) => {
 
 	return c.json({ status: record.status });
 });
+
+// Access token cache (valid ~2h, refresh at 1.5h)
+let cachedAccessToken: { token: string; expiresAt: number } | null = null;
+
+async function getMpAccessToken(): Promise<string | null> {
+	if (cachedAccessToken && Date.now() < cachedAccessToken.expiresAt) {
+		return cachedAccessToken.token;
+	}
+	if (!(env.WECHAT_APP_ID && env.WECHAT_APP_SECRET)) {
+		return null;
+	}
+	const res = await fetch(
+		`https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${env.WECHAT_APP_ID}&secret=${env.WECHAT_APP_SECRET}`
+	);
+	const data = (await res.json()) as {
+		access_token?: string;
+		expires_in?: number;
+	};
+	if (!data.access_token) {
+		return null;
+	}
+	cachedAccessToken = {
+		token: data.access_token,
+		expiresAt: Date.now() + (data.expires_in ?? 7200) * 1000 - 5 * 60 * 1000,
+	};
+	return data.access_token;
+}
+
+// GET /api/auth/wechat/mini-qrcode?scene=xxx&page=xxx
+wechatRouter.get("/mini-qrcode", async (c) => {
+	const { scene, page } = c.req.query();
+	if (!scene) {
+		return c.json({ error: "Missing scene" }, 400);
+	}
+
+	const accessToken = await getMpAccessToken();
+	if (!accessToken) {
+		return c.json({ error: "WeChat not configured" }, 503);
+	}
+
+	const res = await fetch(
+		`https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=${accessToken}`,
+		{
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				scene,
+				page: page ?? "pages/index/index",
+				width: 280,
+				is_hyaline: true,
+			}),
+		}
+	);
+
+	const contentType = res.headers.get("content-type") ?? "";
+	if (contentType.includes("application/json")) {
+		const errData = (await res.json()) as { errcode?: number; errmsg?: string };
+		return c.json({ error: errData.errmsg ?? "qrcode failed" }, 500);
+	}
+
+	const buffer = await res.arrayBuffer();
+	const base64 = Buffer.from(buffer).toString("base64");
+	return c.json({ base64, mimeType: "image/png" });
+});
+
+// Miniprogram login: exchange wx.login() code for session
+wechatRouter.post("/miniprogram-login", async (c) => {
+	if (!(env.WECHAT_APP_ID && env.WECHAT_APP_SECRET)) {
+		return c.json({ error: "WeChat not configured" }, 503);
+	}
+
+	const body = (await c.req.json()) as { code?: string };
+	if (!body.code) {
+		return c.json({ error: "Missing code" }, 400);
+	}
+
+	// Exchange code for openid via jscode2session
+	const sessionRes = await fetch(
+		`https://api.weixin.qq.com/sns/jscode2session?appid=${env.WECHAT_APP_ID}&secret=${env.WECHAT_APP_SECRET}&js_code=${body.code}&grant_type=authorization_code`
+	);
+	const sessionData = (await sessionRes.json()) as {
+		openid?: string;
+		unionid?: string;
+		session_key?: string;
+		errcode?: number;
+		errmsg?: string;
+	};
+
+	if (!sessionData.openid) {
+		return c.json({ error: sessionData.errmsg ?? "WeChat auth failed" }, 401);
+	}
+
+	const db = createDb();
+	let dbUser = await db
+		.select()
+		.from(userTable)
+		.where(eq(userTable.wechatOpenId, sessionData.openid))
+		.then((rows) => rows[0] ?? null);
+
+	if (!dbUser) {
+		const userId = crypto.randomUUID();
+		const now = new Date();
+		await db.insert(userTable).values({
+			id: userId,
+			name: "微信用户",
+			email: `wx_mp_${sessionData.openid}@wechat.placeholder`,
+			emailVerified: false,
+			image: null,
+			createdAt: now,
+			updatedAt: now,
+			wechatOpenId: sessionData.openid,
+			wechatUnionId: sessionData.unionid ?? null,
+		});
+		const inserted = await db
+			.select()
+			.from(userTable)
+			.where(eq(userTable.id, userId))
+			.then((rows) => rows[0] ?? null);
+		if (!inserted) {
+			return c.json({ error: "User creation failed" }, 500);
+		}
+		dbUser = inserted;
+	}
+
+	// Create Better Auth session
+	const ctx = await auth.$context;
+	const session = await ctx.internalAdapter.createSession(dbUser.id);
+
+	return c.json({
+		token: session.token,
+		user: {
+			id: dbUser.id,
+			name: dbUser.name,
+			email: dbUser.email,
+		},
+	});
+});

@@ -1,0 +1,35 @@
+// Global styles for DISC miniprogram
+page {
+  background-color: #0f172a;
+  color: #f8fafc;
+  font-family: -apple-system, 'PingFang SC', 'Helvetica Neue', sans-serif;
+  font-size: 28rpx;
+  line-height: 1.5;
+}
+
+// DISC type colors
+.disc-d { color: #ef4444; }
+.disc-i { color: #f59e0b; }
+.disc-s { color: #10b981; }
+.disc-c { color: #3b82f6; }
+
+.disc-bg-d { background-color: #ef4444; }
+.disc-bg-i { background-color: #f59e0b; }
+.disc-bg-s { background-color: #10b981; }
+.disc-bg-c { background-color: #3b82f6; }
+
+// Common layout utilities
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.text-center { text-align: center; }
+
+// Card
+.card {
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(71, 85, 105, 0.3);
+  border-radius: 24rpx;
+  padding: 32rpx;
+}
