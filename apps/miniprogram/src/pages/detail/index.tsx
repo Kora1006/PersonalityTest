@@ -1,8 +1,8 @@
+import { themes } from "@PersonalityTest/api/data/themes/index";
 import { Image, ScrollView, Text, View } from "@tarojs/components";
 import Taro, { useLoad, useShow } from "@tarojs/taro";
 import { useEffect, useRef, useState } from "react";
 import { DISC_COLORS } from "../../data/disc-colors";
-import { DISC_PROFILES } from "../../data/disc-profiles";
 import { quizStore } from "../../utils/quiz-store";
 import { fetchMiniQrcode } from "../../utils/share-card";
 import { storage } from "../../utils/storage";
@@ -94,7 +94,8 @@ export default function Detail() {
 		return null;
 	}
 
-	const profile = DISC_PROFILES[result.dominantType];
+	const themeConfig = themes[result.theme ?? "professional"];
+	const typeContent = themeConfig.types[result.dominantType];
 	const color = DISC_COLORS[result.dominantType];
 	const typeColor = TYPE_COLORS[result.dominantType];
 	const score = result.scores[result.dominantType];
@@ -159,8 +160,10 @@ export default function Detail() {
 					</Text>
 				</View>
 				<View className="type-info">
-					<Text className="type-name">{color.label}</Text>
-					<Text className="type-fullname">{profile.fullName}</Text>
+					<Text className="type-name">{typeContent.name}</Text>
+					<Text className="type-fullname">
+						{color.label} · {themeConfig.name}
+					</Text>
 				</View>
 				<View className="score-badge">
 					<Text className="score-value">{score}%</Text>
@@ -180,7 +183,7 @@ export default function Detail() {
 			<View className="section">
 				<Text className="section-title">核心优势</Text>
 				<View className="strengths-list">
-					{profile.strengths.map((s) => (
+					{typeContent.strengths.map((s) => (
 						<View className="strength-chip" key={s}>
 							<Text className="chip-text">{s}</Text>
 						</View>
@@ -188,66 +191,48 @@ export default function Detail() {
 				</View>
 			</View>
 
-			{/* Workplace Style */}
+			{/* Deep Analysis — 3 themed sections */}
 			<View className="section">
-				<Text className="section-title">职场表现</Text>
+				<Text className="section-title">
+					{typeContent.detailAnalysis.section1Title}
+				</Text>
 				<View className="info-card">
-					<Text className="info-subtitle">团队协作</Text>
 					<Text className="info-text">
-						{profile.workplaceStyle.collaboration}
-					</Text>
-				</View>
-				<View className="info-card">
-					<Text className="info-subtitle">管理风格</Text>
-					<Text className="info-text">{profile.workplaceStyle.management}</Text>
-				</View>
-				<View className="info-card">
-					<Text className="info-subtitle">对微观管理的态度</Text>
-					<Text className="info-text">
-						{profile.workplaceStyle.microManagement}
+						{typeContent.detailAnalysis.section1Content}
 					</Text>
 				</View>
 			</View>
 
-			{/* Communication Style */}
 			<View className="section">
-				<Text className="section-title">沟通风格</Text>
-				<View className="comm-grid">
-					<View className="comm-card">
-						<Text className="comm-title">你的表达方式</Text>
-						{profile.communication.express.map((e) => (
-							<View className="comm-item" key={e}>
-								<Text className="comm-dot" style={{ color: typeColor }}>
-									→
-								</Text>
-								<Text className="comm-text">{e}</Text>
-							</View>
-						))}
-					</View>
-					<View className="comm-card">
-						<Text className="comm-title">如何与你沟通</Text>
-						{profile.communication.receive.map((r) => (
-							<View className="comm-item" key={r}>
-								<Text className="comm-dot" style={{ color: "#94a3b8" }}>
-									→
-								</Text>
-								<Text className="comm-text">{r}</Text>
-							</View>
-						))}
-					</View>
+				<Text className="section-title">
+					{typeContent.detailAnalysis.section2Title}
+				</Text>
+				<View className="info-card">
+					<Text className="info-text">
+						{typeContent.detailAnalysis.section2Content}
+					</Text>
 				</View>
 			</View>
 
-			{/* Growth Habits */}
 			<View className="section">
-				<Text className="section-title">成长机会矩阵</Text>
-				{profile.growthHabits.map((habit) => (
-					<View className="habit-card" key={habit.title}>
-						<Text className="habit-title" style={{ color: typeColor }}>
-							{habit.title}
+				<Text className="section-title">
+					{typeContent.detailAnalysis.section3Title}
+				</Text>
+				<View className="info-card">
+					<Text className="info-text">
+						{typeContent.detailAnalysis.section3Content}
+					</Text>
+				</View>
+			</View>
+
+			{/* Growth Areas */}
+			<View className="section">
+				<Text className="section-title">成长方向</Text>
+				{typeContent.growthAreas.map((area) => (
+					<View className="habit-card" key={area}>
+						<Text className="habit-desc" style={{ color: typeColor }}>
+							• {area}
 						</Text>
-						<Text className="habit-label">{habit.label}</Text>
-						<Text className="habit-desc">{habit.description}</Text>
 					</View>
 				))}
 			</View>

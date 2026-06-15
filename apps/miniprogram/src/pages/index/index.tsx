@@ -1,6 +1,8 @@
+import { themes } from "@PersonalityTest/api/data/themes/index";
 import { ScrollView, Text, View } from "@tarojs/components";
 import Taro, { useLoad } from "@tarojs/taro";
 import { DISC_COLORS } from "../../data/disc-colors";
+import type { ThemeId } from "../../utils/quiz-store";
 import { quizStore } from "../../utils/quiz-store";
 import { storage } from "../../utils/storage";
 import "./index.scss";
@@ -61,9 +63,12 @@ export default function Index() {
 		}
 	});
 
-	const startQuiz = (mode: "full" | "quick" = "full") => {
-		quizStore.reset(mode);
-		Taro.navigateTo({ url: "/pages/quiz/index" });
+	const startQuiz = (
+		mode: "full" | "quick" = "full",
+		theme: ThemeId = "professional"
+	) => {
+		quizStore.reset(mode, theme);
+		Taro.navigateTo({ url: `/pages/quiz/index?theme=${theme}&mode=${mode}` });
 	};
 
 	const goHistory = () => {
@@ -91,6 +96,35 @@ export default function Index() {
 					<View className="btn-secondary" onClick={goHistory}>
 						<Text className="btn-text-dark">查看历史记录</Text>
 					</View>
+				</View>
+			</View>
+
+			{/* Theme Selector (T-010 / T-011) */}
+			<View className="section">
+				<Text className="section-title">选择你的测评视角</Text>
+				<Text className="section-subtitle">同样的算法，不同的场景解读</Text>
+				<View className="theme-cards">
+					{Object.values(themes).map((theme) => (
+						<View
+							className="theme-card"
+							key={theme.id}
+							onClick={() => startQuiz("full", theme.id)}
+							style={{ borderColor: `${theme.cardTheme.primaryColor}50` }}
+						>
+							<View
+								className="theme-card-bar"
+								style={{ backgroundColor: theme.cardTheme.primaryColor }}
+							/>
+							<Text
+								className="theme-card-name"
+								style={{ color: theme.cardTheme.primaryColor }}
+							>
+								{theme.name}
+							</Text>
+							<Text className="theme-card-title">{theme.entryTitle}</Text>
+							<Text className="theme-card-sub">{theme.entrySubtitle}</Text>
+						</View>
+					))}
 				</View>
 			</View>
 

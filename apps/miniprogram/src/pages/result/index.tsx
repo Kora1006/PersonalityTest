@@ -1,9 +1,8 @@
+import { themes } from "@PersonalityTest/api/data/themes/index";
 import { Image, ScrollView, Text, View } from "@tarojs/components";
 import Taro, { useLoad } from "@tarojs/taro";
 import { useState } from "react";
 import { RadarCanvas } from "../../components/radar-canvas";
-import { DISC_COLORS } from "../../data/disc-colors";
-import { DISC_PROFILES } from "../../data/disc-profiles";
 import type { QuizResult } from "../../utils/quiz-store";
 import { quizStore } from "../../utils/quiz-store";
 import { fetchMiniQrcode, saveShareCardToAlbum } from "../../utils/share-card";
@@ -42,9 +41,12 @@ export default function Result() {
 		return null;
 	}
 
-	const profile = DISC_PROFILES[result.dominantType];
-	const color = DISC_COLORS[result.dominantType];
+	const themeConfig = themes[result.theme ?? "professional"];
+	const typeContent = themeConfig.types[result.dominantType];
 	const typeColor = TYPE_COLORS[result.dominantType];
+	const otherThemes = Object.values(themes).filter(
+		(t) => t.id !== themeConfig.id
+	);
 
 	const handleShareCard = async () => {
 		setShareLoading(true);
@@ -57,6 +59,7 @@ export default function Result() {
 				dominantType: result.dominantType,
 				scores: result.scores,
 				qrcodeBase64: qrcodeBase64 ?? undefined,
+				cardTheme: themeConfig.cardTheme,
 			});
 			Taro.showToast({ title: "已保存到相册", icon: "success" });
 		} catch {
@@ -131,8 +134,8 @@ export default function Result() {
 						{result.dominantType}
 					</Text>
 				</View>
-				<Text className="type-name">{color.label}</Text>
-				<Text className="type-tagline">{profile.tagline}</Text>
+				<Text className="type-name">{typeContent.name}</Text>
+				<Text className="type-tagline">{typeContent.tagline}</Text>
 			</View>
 
 			{/* Radar Chart */}
@@ -169,11 +172,26 @@ export default function Result() {
 			{/* Profile Summary */}
 			<View className="profile-section">
 				<Text className="section-title">性格画像</Text>
-				<Text className="profile-desc">{profile.description}</Text>
+				<View className="theme-label-row">
+					<View
+						className="theme-label"
+						style={{
+							backgroundColor: `${themeConfig.cardTheme.primaryColor}20`,
+							borderColor: `${themeConfig.cardTheme.primaryColor}40`,
+						}}
+					>
+						<Text
+							className="theme-label-text"
+							style={{ color: themeConfig.cardTheme.primaryColor }}
+						>
+							{themeConfig.name}
+						</Text>
+					</View>
+				</View>
 				<View className="strengths-grid">
 					<View className="strengths-card">
 						<Text className="card-title">核心优势</Text>
-						{profile.strengths.slice(0, 3).map((s) => (
+						{typeContent.strengths.map((s) => (
 							<View className="strength-item" key={s}>
 								<Text className="strength-dot" style={{ color: typeColor }}>
 									•
@@ -184,7 +202,7 @@ export default function Result() {
 					</View>
 					<View className="strengths-card">
 						<Text className="card-title">成长空间</Text>
-						{profile.growthAreas.slice(0, 3).map((g) => (
+						{typeContent.growthAreas.map((g) => (
 							<View className="strength-item" key={g}>
 								<Text className="strength-dot" style={{ color: "#94a3b8" }}>
 									•
@@ -235,6 +253,32 @@ export default function Result() {
 					</View>
 				</View>
 			)}
+
+			{/* Cross-theme recommendations (T-013) */}
+			<View className="cross-theme-section">
+				<Text className="section-title">查看你在其他场景的风格</Text>
+				<View className="cross-theme-cards">
+					{otherThemes.map((t) => (
+						<View
+							className="cross-theme-card"
+							key={t.id}
+							onClick={() => {
+								quizStore.reset("full", t.id);
+								Taro.navigateTo({ url: `/pages/quiz/index?theme=${t.id}` });
+							}}
+							style={{ borderColor: `${t.cardTheme.primaryColor}40` }}
+						>
+							<Text
+								className="cross-theme-name"
+								style={{ color: t.cardTheme.primaryColor }}
+							>
+								{t.name}
+							</Text>
+							<Text className="cross-theme-subtitle">{t.entryTitle}</Text>
+						</View>
+					))}
+				</View>
+			</View>
 
 			{/* CTAs */}
 			<View className="cta-section">

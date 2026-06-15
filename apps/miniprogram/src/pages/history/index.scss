@@ -193,3 +193,17 @@
     }
   }
 }
+
+.theme-tag {
+  display: inline-flex;
+  align-self: flex-start;
+  border: 1rpx solid;
+  border-radius: 10rpx;
+  padding: 6rpx 20rpx;
+  margin-bottom: 20rpx;
+
+  .theme-tag-text {
+    font-size: 22rpx;
+    font-weight: 600;
+  }
+}

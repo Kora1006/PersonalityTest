@@ -6,6 +6,7 @@ const W = 750;
 const H = 1334;
 
 interface ShareCardInput {
+	cardTheme?: { primaryColor: string; backgroundGradient: [string, string] };
 	dominantType: DiscType;
 	qrcodeBase64?: string;
 	scores: { D: number; I: number; S: number; C: number };
@@ -154,10 +155,12 @@ function wrapText(
 export async function generateShareCard(
 	input: ShareCardInput
 ): Promise<string> {
-	const { dominantType, scores, qrcodeBase64 } = input;
-	const typeColor = DISC_COLORS[dominantType].hex;
+	const { dominantType, scores, qrcodeBase64, cardTheme } = input;
+	const typeColor = cardTheme?.primaryColor ?? DISC_COLORS[dominantType].hex;
 	const quote = getRandomQuote(dominantType);
 	const typeLabel = DISC_COLORS[dominantType].label;
+	const bgFrom = cardTheme?.backgroundGradient[0] ?? "#0f172a";
+	const bgTo = cardTheme?.backgroundGradient[1] ?? "#1e293b";
 
 	// Create offscreen canvas
 	// @ts-expect-error — wx global available in miniprogram
@@ -171,8 +174,8 @@ export async function generateShareCard(
 
 	// 1. Background gradient
 	const gradient = ctx.createLinearGradient(0, 0, 0, H);
-	gradient.addColorStop(0, "#0f172a");
-	gradient.addColorStop(1, "#1e293b");
+	gradient.addColorStop(0, bgFrom);
+	gradient.addColorStop(1, bgTo);
 	ctx.fillStyle = gradient;
 	ctx.fillRect(0, 0, W, H);
 

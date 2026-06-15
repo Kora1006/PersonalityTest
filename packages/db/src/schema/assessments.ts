@@ -26,6 +26,7 @@ export const assessments = mysqlTable("assessments", {
 	isPaid: boolean("is_paid").default(false),
 	mode: varchar("mode", { length: 10 }).default("full"),
 	isUnlocked: boolean("is_unlocked").default(false),
+	theme: varchar("theme", { length: 20 }).default("professional"),
 	createdAt: timestamp("created_at", { fsp: 3 }).defaultNow().notNull(),
 });
 

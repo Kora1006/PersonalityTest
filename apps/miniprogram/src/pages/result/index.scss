@@ -353,3 +353,60 @@
     }
   }
 }
+
+.theme-label-row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24rpx;
+}
+
+.theme-label {
+  border: 1rpx solid;
+  border-radius: 12rpx;
+  padding: 8rpx 28rpx;
+
+  .theme-label-text {
+    font-size: 24rpx;
+    font-weight: 600;
+  }
+}
+
+.cross-theme-section {
+  padding: 40rpx 0;
+
+  .section-title {
+    display: block;
+    font-size: 30rpx;
+    font-weight: 700;
+    color: #f8fafc;
+    margin-bottom: 24rpx;
+  }
+}
+
+.cross-theme-cards {
+  display: flex;
+  flex-direction: row;
+  gap: 20rpx;
+}
+
+.cross-theme-card {
+  flex: 1;
+  background: rgba(30, 41, 59, 0.6);
+  border: 2rpx solid;
+  border-radius: 20rpx;
+  padding: 28rpx 20rpx;
+
+  .cross-theme-name {
+    display: block;
+    font-size: 26rpx;
+    font-weight: 700;
+    margin-bottom: 8rpx;
+  }
+
+  .cross-theme-subtitle {
+    display: block;
+    font-size: 20rpx;
+    color: #64748b;
+    line-height: 1.4;
+  }
+}

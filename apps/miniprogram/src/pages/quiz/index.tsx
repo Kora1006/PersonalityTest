@@ -1,8 +1,10 @@
+import { themes } from "@PersonalityTest/api/data/themes/index";
 import { ScrollView, Text, View } from "@tarojs/components";
 import Taro, { useLoad } from "@tarojs/taro";
 import { useMemo, useState } from "react";
 import type { DiscType } from "../../data/disc-colors";
 import { QUIZ_QUESTIONS } from "../../data/quiz-questions";
+import type { ThemeId } from "../../utils/quiz-store";
 import { quizStore } from "../../utils/quiz-store";
 import { storage } from "../../utils/storage";
 import { trpc } from "../../utils/trpc";
@@ -13,7 +15,8 @@ const QUICK_QUESTION_IDS = [1, 5, 9, 2, 6, 10, 3, 7, 11, 4, 8, 12];
 function shuffleOptions<T>(arr: T[], seed: number): T[] {
 	const out = [...arr];
 	for (let i = out.length - 1; i > 0; i--) {
-		const j = ((seed * (i + 7)) ^ (seed >> 2)) % (i + 1);
+		const h = (seed * 1_664_525 + i * 22_695_477) % 2_147_483_647;
+		const j = Math.abs(h) % (i + 1);
 		[out[i], out[j]] = [out[j], out[i]];
 	}
 	return out;
@@ -37,8 +40,17 @@ export default function Quiz() {
 		quizStore.getCurrentQuestion()
 	);
 	const [answers, setAnswers] = useState<Record<number, DiscType>>({});
+	const [themeId, setThemeId] = useState<ThemeId>(quizStore.getTheme());
 
-	useLoad(() => {
+	useLoad((options: { theme?: string; mode?: string } = {}) => {
+		const paramTheme = (options.theme as ThemeId) || "professional";
+		const paramMode = (options.mode as "full" | "quick") || "full";
+		if (paramTheme !== quizStore.getTheme() || paramMode !== mode) {
+			quizStore.reset(paramMode, paramTheme);
+		} else {
+			quizStore.setTheme(paramTheme);
+		}
+		setThemeId(paramTheme);
 		Taro.setNavigationBarTitle({
 			title: mode === "quick" ? "快速测评" : "DISC 测评",
 		});
@@ -140,7 +152,10 @@ export default function Quiz() {
 			{/* Question */}
 			<ScrollView className="quiz-content" scrollY>
 				<Text className="question-category">{question.category}</Text>
-				<Text className="question-text">{question.scenario}</Text>
+				<Text className="question-text">
+					{themes[themeId].questionPrefix}
+					{question.scenario}
+				</Text>
 
 				{mode === "quick" && (
 					<View className="quick-badge">

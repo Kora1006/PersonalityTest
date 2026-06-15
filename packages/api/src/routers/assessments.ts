@@ -16,6 +16,9 @@ const historyRecordSchema = z.object({
 		C: z.number(),
 	}),
 	note: z.string().default(""),
+	theme: z
+		.enum(["professional", "relationship", "leadership"])
+		.default("professional"),
 });
 
 export const assessmentsRouter = router({
@@ -44,6 +47,7 @@ export const assessmentsRouter = router({
 						scoreD: r.scores.D,
 						scoreI: r.scores.I,
 						scoreS: r.scores.S,
+						theme: r.theme,
 						userId,
 					}))
 				);
@@ -77,6 +81,10 @@ export const assessmentsRouter = router({
 			},
 			note: r.note ?? "",
 			isPaid: r.isPaid ?? false,
+			theme: (r.theme ?? "professional") as
+				| "professional"
+				| "relationship"
+				| "leadership",
 		}));
 	}),
 });

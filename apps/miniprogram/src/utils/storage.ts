@@ -11,6 +11,7 @@ export interface HistoryRecord {
 	id: string;
 	note: string;
 	scores: { D: number; I: number; S: number; C: number };
+	theme?: "professional" | "relationship" | "leadership";
 }
 
 export const storage = {
