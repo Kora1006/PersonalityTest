@@ -22,6 +22,7 @@ export const env = createEnv({
 		ALIPAY_PRIVATE_KEY: z.string().optional(),
 		ALIPAY_PUBLIC_KEY: z.string().optional(),
 		ALIPAY_NOTIFY_URL: z.string().optional(),
+		COOKIE_SECURE: z.string().optional(),
 	},
 	runtimeEnv: process.env,
 	skipValidation: !!process.env.SKIP_ENV_VALIDATION,

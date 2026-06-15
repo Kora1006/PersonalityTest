@@ -41,8 +41,8 @@ export function createAuth() {
 		baseURL: env.BETTER_AUTH_URL,
 		advanced: {
 			defaultCookieAttributes: {
-				sameSite: "none",
-				secure: true,
+				sameSite: env.COOKIE_SECURE === "false" ? "lax" : "none",
+				secure: env.COOKIE_SECURE === "false" ? false : true,
 				httpOnly: true,
 			},
 		},

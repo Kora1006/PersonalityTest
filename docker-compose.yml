@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  # 1. MySQL Database Service
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: personality_test
+      # WARNING: Change this root password in production!
+      MYSQL_ROOT_PASSWORD: root_db_password_change_me
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  # 2. Hono Backend API Service
+  server:
+    build:
+      context: .
+      dockerfile: apps/server/Dockerfile
+    restart: always
+    # Running internally; no public port mapping
+    environment:
+      - NODE_ENV=production
+      # Connecting to the local 'db' container service via Docker networking
+      - DATABASE_URL=mysql://root:root_db_password_change_me@db:3306/personality_test
+      # WARNING: Replace with a 32+ character random string in production!
+      - BETTER_AUTH_SECRET=generate_a_random_32_character_string_for_production
+      # BETTER_AUTH_URL is the endpoint where better-auth is served.
+      - BETTER_AUTH_URL=http://3.15.40.168:3000/api/auth
+      # CORS_ORIGIN is the frontend URL allowed to make requests.
+      - CORS_ORIGIN=http://3.15.40.168:3000
+      - COOKIE_SECURE=false
+    depends_on:
+      - db
+
+  # 3. Frontend Web Service (Served via Nginx)
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        # VITE_SERVER_URL is baked into the SPA assets at build time.
+        - VITE_SERVER_URL=http://3.15.40.168:3000
+    restart: always
+    ports:
+      - "3000:80"
+    depends_on:
+      - server
+
+volumes:
+  mysql_data:
