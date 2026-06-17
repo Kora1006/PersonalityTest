@@ -272,3 +272,45 @@
     font-weight: 600;
   }
 }
+
+.cancel-btn {
+  margin-top: 24rpx;
+  background: #f0f3ff;
+  border-radius: 24rpx;
+  padding: 36rpx 0;
+  text-align: center;
+  transition: all 0.2s;
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  .cancel-text {
+    font-size: 32rpx;
+    font-weight: 700;
+    color: #727785;
+  }
+}
+
+.footer-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 60rpx 0 40rpx;
+  gap: 16rpx;
+
+  .footer-link {
+    font-size: 24rpx;
+    color: #727785;
+    transition: color 0.2s;
+
+    &:active {
+      color: #0058be;
+    }
+  }
+
+  .footer-separator {
+    font-size: 20rpx;
+    color: #c2c6d6;
+  }
+}

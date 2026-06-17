@@ -1,3 +1,4 @@
+import { themes } from "@PersonalityTest/api/data/themes/index";
 import { Button, Image, ScrollView, Text, View } from "@tarojs/components";
 import Taro, { useLoad, useShareAppMessage } from "@tarojs/taro";
 import { useState } from "react";

@@ -16,10 +16,73 @@ export default function Auth() {
 	const [loading, setLoading] = useState(false);
 	const [user, setUser] = useState(() => storage.getUser());
 
+	const [isEditingAccount, setIsEditingAccount] = useState(false);
+	const [newName, setNewName] = useState("");
+	const [currentPassword, setCurrentPassword] = useState("");
+	const [newPassword, setNewPassword] = useState("");
+	const [confirmPassword, setConfirmPassword] = useState("");
+
 	useLoad(() => {
 		Taro.setNavigationBarTitle({ title: "我的" });
 		setUser(storage.getUser());
 	});
+
+	const openAccountSettings = () => {
+		setNewName(user?.name || "");
+		setCurrentPassword("");
+		setNewPassword("");
+		setConfirmPassword("");
+		setIsEditingAccount(true);
+	};
+
+	const handleSaveAccount = async () => {
+		if (!newName.trim()) {
+			Taro.showToast({ title: "昵称不能为空", icon: "none" });
+			return;
+		}
+
+		setLoading(true);
+		try {
+			// 1. Update nickname if changed
+			if (newName !== user?.name) {
+				await api.post("/api/auth/update-user", { name: newName }, false);
+				const updatedUser = { ...user!, name: newName };
+				storage.setUser(updatedUser);
+				setUser(updatedUser);
+			}
+
+			// 2. Update password if newPassword is input
+			if (newPassword) {
+				if (newPassword.length < 6) {
+					Taro.showToast({ title: "新密码至少 6 位", icon: "none" });
+					return;
+				}
+				if (newPassword !== confirmPassword) {
+					Taro.showToast({ title: "两次密码不一致", icon: "none" });
+					return;
+				}
+				if (!currentPassword) {
+					Taro.showToast({ title: "请输入当前密码", icon: "none" });
+					return;
+				}
+				await api.post(
+					"/api/auth/change-password",
+					{ currentPassword, newPassword },
+					false
+				);
+			}
+
+			Taro.showToast({ title: "保存成功", icon: "success" });
+			setIsEditingAccount(false);
+		} catch (err: any) {
+			Taro.showToast({
+				title: err?.message || "修改失败，请检查密码是否正确",
+				icon: "none",
+			});
+		} finally {
+			setLoading(false);
+		}
+	};
 
 	const handleLogin = async () => {
 		if (!(email && password)) {
@@ -117,6 +180,82 @@ export default function Auth() {
 
 	// Logged in state
 	if (user) {
+		if (isEditingAccount) {
+			return (
+				<ScrollView className="auth-page" scrollY>
+					<View className="auth-header">
+						<Text className="auth-title">账号设置</Text>
+						<Text className="auth-subtitle">修改您的昵称或密码</Text>
+					</View>
+
+					<View className="form-section">
+						<View className="form-field">
+							<Text className="field-label">昵称</Text>
+							<Input
+								className="field-input"
+								onInput={(e) => setNewName(e.detail.value)}
+								placeholder="请输入昵称"
+								placeholderClass="field-placeholder"
+								value={newName}
+							/>
+						</View>
+
+						<View className="form-field">
+							<Text className="field-label">当前密码</Text>
+							<Input
+								className="field-input"
+								onInput={(e) => setCurrentPassword(e.detail.value)}
+								password
+								placeholder="修改密码时需输入当前密码"
+								placeholderClass="field-placeholder"
+								value={currentPassword}
+							/>
+						</View>
+
+						<View className="form-field">
+							<Text className="field-label">新密码</Text>
+							<Input
+								className="field-input"
+								onInput={(e) => setNewPassword(e.detail.value)}
+								password
+								placeholder="请输入新密码（至少 6 位）"
+								placeholderClass="field-placeholder"
+								value={newPassword}
+							/>
+						</View>
+
+						<View className="form-field">
+							<Text className="field-label">确认密码</Text>
+							<Input
+								className="field-input"
+								onInput={(e) => setConfirmPassword(e.detail.value)}
+								password
+								placeholder="请再次输入新密码"
+								placeholderClass="field-placeholder"
+								value={confirmPassword}
+							/>
+						</View>
+
+						<View
+							className={`submit-btn ${loading ? "submit-disabled" : ""}`}
+							onClick={loading ? undefined : handleSaveAccount}
+						>
+							<Text className="submit-text">
+								{loading ? "请稍候..." : "保存修改"}
+							</Text>
+						</View>
+
+						<View
+							className="cancel-btn"
+							onClick={() => setIsEditingAccount(false)}
+						>
+							<Text className="cancel-text">返回</Text>
+						</View>
+					</View>
+				</ScrollView>
+			);
+		}
+
 		return (
 			<ScrollView className="auth-page" scrollY>
 				<View className="profile-section">
@@ -126,36 +265,34 @@ export default function Auth() {
 						</Text>
 					</View>
 					<Text className="profile-name">{user.name}</Text>
-					<Text className="profile-email">{user.email}</Text>
+					<Text className="profile-email">{user.email || "微信绑定账户"}</Text>
 				</View>
 
 				<View className="menu-section">
-					<View className="menu-item">
-						<Text className="menu-label">云端历史记录</Text>
-						<Text className="menu-arrow">→</Text>
-					</View>
-					<View className="menu-item">
+					<View className="menu-item" onClick={openAccountSettings}>
 						<Text className="menu-label">账号设置</Text>
-						<Text className="menu-arrow">→</Text>
-					</View>
-					<View
-						className="menu-item"
-						onClick={() => Taro.navigateTo({ url: "/pages/privacy/index" })}
-					>
-						<Text className="menu-label">隐私政策</Text>
-						<Text className="menu-arrow">→</Text>
-					</View>
-					<View
-						className="menu-item"
-						onClick={() => Taro.navigateTo({ url: "/pages/terms/index" })}
-					>
-						<Text className="menu-label">用户协议</Text>
 						<Text className="menu-arrow">→</Text>
 					</View>
 				</View>
 
 				<View className="logout-btn" onClick={handleLogout}>
 					<Text className="logout-text">退出登录</Text>
+				</View>
+
+				<View className="footer-links">
+					<Text
+						className="footer-link"
+						onClick={() => Taro.navigateTo({ url: "/pages/terms/index" })}
+					>
+						《用户协议》
+					</Text>
+					<Text className="footer-separator">|</Text>
+					<Text
+						className="footer-link"
+						onClick={() => Taro.navigateTo({ url: "/pages/privacy/index" })}
+					>
+						《隐私政策》
+					</Text>
 				</View>
 			</ScrollView>
 		);
