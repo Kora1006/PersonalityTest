@@ -7,6 +7,7 @@ import { DISC_COLORS } from "../../data/disc-colors";
 import { quizStore } from "../../utils/quiz-store";
 import { fetchMiniQrcode } from "../../utils/share-card";
 import { storage } from "../../utils/storage";
+import { getThemeHeroImage } from "../../utils/theme-images";
 import { trpc } from "../../utils/trpc";
 import "./index.scss";
 
@@ -77,7 +78,7 @@ export default function Detail() {
 			return {
 				title: "帮我点一下，测测你的 DISC 性格，即可免费解锁性格画像！",
 				path: `/pages/index/index?inv=${currentInvitation.invitationId}&rid=${currentInvitation.inviterResultId}`,
-				imageUrl: themeConfig.heroImage || "",
+				imageUrl: getThemeHeroImage(result?.theme) || "",
 			};
 		}
 		return {
@@ -184,7 +185,7 @@ export default function Detail() {
 			<Image
 				className="detail-bg-mesh"
 				mode="aspectFill"
-				src={themeConfig.heroImage}
+				src={getThemeHeroImage(result.theme)}
 			/>
 			<ScrollView className="detail-page" scrollY>
 				{/* Header */}

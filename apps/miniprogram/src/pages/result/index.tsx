@@ -10,6 +10,7 @@ import type { QuizResult } from "../../utils/quiz-store";
 import { quizStore } from "../../utils/quiz-store";
 import { fetchMiniQrcode, saveShareCardToAlbum } from "../../utils/share-card";
 import { storage } from "../../utils/storage";
+import { getThemeHeroImage } from "../../utils/theme-images";
 import { syncLocalHistoryToServer, trpc } from "../../utils/trpc";
 import "./index.scss";
 
@@ -99,11 +100,10 @@ export default function Result() {
 
 	useShareAppMessage((res) => {
 		if (res.from === "button" && currentInvitation) {
-			const themeConf = themes[result?.theme ?? "professional"];
 			return {
 				title: "快来测测你的 DISC 性格，和我进行性格默契度大比拼吧！",
 				path: `/pages/index/index?inv=${currentInvitation.invitationId}&rid=${currentInvitation.inviterResultId}`,
-				imageUrl: themeConf.heroImage || "",
+				imageUrl: getThemeHeroImage(result?.theme || "professional") || "",
 			};
 		}
 		return {
@@ -199,7 +199,7 @@ export default function Result() {
 					<Image
 						className="hero-bg-image"
 						mode="aspectFill"
-						src={themeConfig.heroImage}
+						src={getThemeHeroImage(result.theme)}
 					/>
 					<View className="hero-gradient-overlay" />
 					<View className="hero-content-wrap">
@@ -399,7 +399,7 @@ export default function Result() {
 					<Image
 						className="hero-bg-image"
 						mode="aspectFill"
-						src={themeConfig.heroImage}
+						src={getThemeHeroImage(result.theme)}
 					/>
 					<View className="hero-gradient-overlay" />
 					<View className="hero-text-center">
@@ -552,7 +552,7 @@ export default function Result() {
 				<Image
 					className="relationship-artwork-bg"
 					mode="aspectFill"
-					src={themeConfig.heroImage}
+					src={getThemeHeroImage(result.theme)}
 				/>
 
 				{/* Hero Header */}

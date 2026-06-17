@@ -11,6 +11,7 @@ import {
 import type { ThemeId } from "../../utils/quiz-store";
 import { quizStore } from "../../utils/quiz-store";
 import { storage } from "../../utils/storage";
+import { getThemeHeroImage } from "../../utils/theme-images";
 import { syncLocalHistoryToServer, trpc } from "../../utils/trpc";
 import "./index.scss";
 
@@ -135,7 +136,7 @@ export default function Quiz() {
 			<Image
 				className="quiz-bg-mesh"
 				mode="aspectFill"
-				src={themes[themeId].heroImage}
+				src={getThemeHeroImage(themeId)}
 			/>
 			{/* Header */}
 			<View className="quiz-header">
