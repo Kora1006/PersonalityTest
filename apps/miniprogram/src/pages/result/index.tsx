@@ -2,12 +2,13 @@ import { themes } from "@PersonalityTest/api/data/themes/index";
 import { Image, ScrollView, Text, View } from "@tarojs/components";
 import Taro, { useLoad } from "@tarojs/taro";
 import { useState } from "react";
+import { Icon } from "../../components/icon";
 import { RadarCanvas } from "../../components/radar-canvas";
 import type { QuizResult } from "../../utils/quiz-store";
 import { quizStore } from "../../utils/quiz-store";
 import { fetchMiniQrcode, saveShareCardToAlbum } from "../../utils/share-card";
 import { storage } from "../../utils/storage";
-import { trpc } from "../../utils/trpc";
+import { syncLocalHistoryToServer, trpc } from "../../utils/trpc";
 import "./index.scss";
 
 const TYPE_COLORS: Record<string, string> = {
@@ -15,6 +16,13 @@ const TYPE_COLORS: Record<string, string> = {
 	I: "#f59e0b",
 	S: "#10b981",
 	C: "#3b82f6",
+};
+
+const LEGEND_NAMES: Record<string, string> = {
+	D: "掌控型 (Dominance)",
+	I: "影响型 (Influence)",
+	S: "稳健型 (Steadiness)",
+	C: "谨慎型 (Conscientiousness)",
 };
 
 export default function Result() {
@@ -26,8 +34,23 @@ export default function Result() {
 	const [inviteModal, setInviteModal] = useState(false);
 	const mode = quizStore.getMode();
 
-	useLoad(() => {
-		const r = quizStore.getLastResult();
+	useLoad((options: Record<string, string | undefined>) => {
+		// Try quizStore first (set by quiz completion or history page)
+		let r = quizStore.getLastResult();
+
+		// Fallback: load from storage via historyId URL param
+		if (!r && options.historyId) {
+			const records = storage.getHistory();
+			const found = records.find((rec) => rec.id === options.historyId);
+			if (found) {
+				r = {
+					...found,
+					theme: (found.theme as QuizResult["theme"]) ?? "professional",
+				};
+				quizStore.setLastResult(r);
+			}
+		}
+
 		if (!r) {
 			Taro.navigateBack();
 			return;
@@ -35,10 +58,14 @@ export default function Result() {
 		setResult(r);
 		Taro.setNavigationBarTitle({ title: "测评结果" });
 		setTimeout(() => setBarWidths(r.scores), 100);
+
+		if (storage.getToken()) {
+			syncLocalHistoryToServer().catch(() => null);
+		}
 	});
 
 	if (!result) {
-		return null;
+		return <View className="result-page" />;
 	}
 
 	const themeConfig = themes[result.theme ?? "professional"];
@@ -62,8 +89,12 @@ export default function Result() {
 				cardTheme: themeConfig.cardTheme,
 			});
 			Taro.showToast({ title: "已保存到相册", icon: "success" });
-		} catch {
-			Taro.showToast({ title: "保存失败，请重试", icon: "none" });
+		} catch (err: any) {
+			console.error("Save share card error:", err);
+			Taro.showToast({
+				title: `保存失败: ${err?.errMsg || err?.message || "未知错误"}`,
+				icon: "none",
+			});
 		} finally {
 			setShareLoading(false);
 		}
@@ -110,7 +141,7 @@ export default function Result() {
 	const goDetail = () => Taro.navigateTo({ url: "/pages/detail/index" });
 	const retakeQuiz = () => {
 		quizStore.reset();
-		Taro.navigateTo({ url: "/pages/quiz/index" });
+		Taro.redirectTo({ url: "/pages/quiz/index" });
 	};
 	const goHistory = () => Taro.switchTab({ url: "/pages/history/index" });
 
@@ -123,19 +154,11 @@ export default function Result() {
 						<Text className="quick-badge-text">快速版结果</Text>
 					</View>
 				)}
-				<View
-					className="type-badge"
-					style={{
-						backgroundColor: `${typeColor}20`,
-						borderColor: `${typeColor}40`,
-					}}
-				>
-					<Text className="type-letter" style={{ color: typeColor }}>
-						{result.dominantType}
-					</Text>
-				</View>
-				<Text className="type-name">{typeContent.name}</Text>
-				<Text className="type-tagline">{typeContent.tagline}</Text>
+				<Text className="header-subtitle">测评已完成</Text>
+				<Text className="header-title">
+					主导色彩：{result.dominantType} ({typeContent.name})
+				</Text>
+				<Text className="header-desc">{typeContent.tagline}</Text>
 			</View>
 
 			{/* Radar Chart */}
@@ -149,12 +172,17 @@ export default function Result() {
 
 			{/* Score Bars */}
 			<View className="scores-section">
-				<Text className="section-title">维度得分</Text>
 				{(["D", "I", "S", "C"] as const).map((type) => (
-					<View className="score-row" key={type}>
-						<Text className="score-label" style={{ color: TYPE_COLORS[type] }}>
-							{type}
-						</Text>
+					<View className="score-row-wrap" key={type}>
+						<View className="score-header-flex">
+							<Text
+								className="score-label"
+								style={{ color: TYPE_COLORS[type] }}
+							>
+								{LEGEND_NAMES[type]}
+							</Text>
+							<Text className="score-pct">{result.scores[type]}%</Text>
+						</View>
 						<View className="score-bar-bg">
 							<View
 								className="score-bar-fill"
@@ -164,52 +192,53 @@ export default function Result() {
 								}}
 							/>
 						</View>
-						<Text className="score-pct">{result.scores[type]}%</Text>
 					</View>
 				))}
 			</View>
 
-			{/* Profile Summary */}
-			<View className="profile-section">
-				<Text className="section-title">性格画像</Text>
-				<View className="theme-label-row">
-					<View
-						className="theme-label"
-						style={{
-							backgroundColor: `${themeConfig.cardTheme.primaryColor}20`,
-							borderColor: `${themeConfig.cardTheme.primaryColor}40`,
-						}}
-					>
-						<Text
-							className="theme-label-text"
-							style={{ color: themeConfig.cardTheme.primaryColor }}
+			{/* Psychological Insights Bento Card */}
+			<View className="section-container">
+				<Text className="section-title">心理洞察</Text>
+				<View className="insight-card">
+					<View className="insight-top">
+						<View
+							className="insight-icon-wrap"
+							style={{ backgroundColor: `${typeColor}15` }}
 						>
-							{themeConfig.name}
-						</Text>
+							<Icon color={typeColor} name="psychology" size={56} />
+						</View>
+						<View className="insight-top-content">
+							<Text className="insight-role" style={{ color: typeColor }}>
+								{typeContent.name}特质
+							</Text>
+							<Text className="insight-paragraph">{typeContent.tagline}</Text>
+						</View>
 					</View>
-				</View>
-				<View className="strengths-grid">
-					<View className="strengths-card">
-						<Text className="card-title">核心优势</Text>
-						{typeContent.strengths.map((s) => (
-							<View className="strength-item" key={s}>
-								<Text className="strength-dot" style={{ color: typeColor }}>
-									•
-								</Text>
-								<Text className="strength-text">{s}</Text>
-							</View>
-						))}
-					</View>
-					<View className="strengths-card">
-						<Text className="card-title">成长空间</Text>
-						{typeContent.growthAreas.map((g) => (
-							<View className="strength-item" key={g}>
-								<Text className="strength-dot" style={{ color: "#94a3b8" }}>
-									•
-								</Text>
-								<Text className="strength-text">{g}</Text>
-							</View>
-						))}
+					<View className="insight-grid">
+						<View className="insight-col col-left">
+							<Text className="col-title">核心优势</Text>
+							{typeContent.strengths.slice(0, 3).map((s) => (
+								<View className="col-item" key={s}>
+									<View
+										className="bullet-dot"
+										style={{ backgroundColor: typeColor }}
+									/>
+									<Text className="item-text">{s}</Text>
+								</View>
+							))}
+						</View>
+						<View className="insight-col col-right">
+							<Text className="col-title">成长空间</Text>
+							{typeContent.growthAreas.slice(0, 3).map((g) => (
+								<View className="col-item" key={g}>
+									<View
+										className="bullet-dot"
+										style={{ backgroundColor: "#ba1a1a" }}
+									/>
+									<Text className="item-text">{g}</Text>
+								</View>
+							))}
+						</View>
 					</View>
 				</View>
 			</View>
@@ -236,7 +265,7 @@ export default function Result() {
 				</View>
 			</View>
 
-			{/* Quick version upgrade prompt */}
+			{/* Upgrade banner for quick mode */}
 			{mode === "quick" && (
 				<View className="upgrade-banner">
 					<Text className="upgrade-text">
@@ -246,7 +275,7 @@ export default function Result() {
 						className="upgrade-btn"
 						onClick={() => {
 							quizStore.reset("full");
-							Taro.navigateTo({ url: "/pages/quiz/index" });
+							Taro.redirectTo({ url: "/pages/quiz/index" });
 						}}
 					>
 						<Text className="upgrade-btn-text">立即完成完整版 →</Text>
@@ -254,7 +283,7 @@ export default function Result() {
 				</View>
 			)}
 
-			{/* Cross-theme recommendations (T-013) */}
+			{/* Cross Theme recommendations */}
 			<View className="cross-theme-section">
 				<Text className="section-title">查看你在其他场景的风格</Text>
 				<View className="cross-theme-cards">
@@ -264,7 +293,7 @@ export default function Result() {
 							key={t.id}
 							onClick={() => {
 								quizStore.reset("full", t.id);
-								Taro.navigateTo({ url: `/pages/quiz/index?theme=${t.id}` });
+								Taro.redirectTo({ url: `/pages/quiz/index?theme=${t.id}` });
 							}}
 							style={{ borderColor: `${t.cardTheme.primaryColor}40` }}
 						>
@@ -292,6 +321,24 @@ export default function Result() {
 					<View className="cta-secondary" onClick={goHistory}>
 						<Text className="cta-text-muted">历史记录</Text>
 					</View>
+				</View>
+			</View>
+
+			{/* Asymmetric Imagery Section */}
+			<View className="imagery-section">
+				<View className="image-wrap-left">
+					<Image
+						className="imagery-img"
+						mode="aspectFill"
+						src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9liOu6UZFBvsfbsIOexIB2V5jhwQSYVvFCouPecdlS1-WMaQKFi856P7prKoyJGJ3hlGorv_vNG_KtQXPtujMgi2dKdD0IldXQBVpbRM6ccLbxxgG7tbyv_PBzJkkz5tDW_gSAc5ygv2l3GT50KzJaeaxecc-mNDp4WV_GyRoR5eb1wLOIPPmed8WibIR8xZUNx0X0e38FYgyjm8oRnk_x52vDCj4NUI5GfhoHXf0P0oM-61xrNb5IU8ogTufMCtEih3YmKW4ZcAj"
+					/>
+				</View>
+				<View className="image-wrap-right">
+					<Image
+						className="imagery-img"
+						mode="aspectFill"
+						src="https://lh3.googleusercontent.com/aida-public/AB6AXuDT22xa9kntGvtOhpOYPsiUGFfSUlPUcGCns9R594ZIGTcehCZPWuZ444ymmO7SlfxXbRFGVs3zf44Q7RiKFC7CvryRaRPpvpaVGZf-wLo_SR3NHsu7r2aVnhtqcHN-7rabZUyn_eOHM1dlGG9PDUMxW3_RBvQBc6PXERxmD-aS4VnFITm6-t6Mmk8HglcwgS1Pu-iMdMRVB2C9JiGCLrILdXG5G3--gtYKSFE58D3wdJP2vVLxPYUWrflbEtIxKHtOvv5d0gDnT4rf"
+					/>
 				</View>
 			</View>
 

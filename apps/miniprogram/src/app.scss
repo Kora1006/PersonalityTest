@@ -1,8 +1,12 @@
-// Global styles for DISC miniprogram
+// Global styles for DISC miniprogram - Insight Kinetic Design System
+page, view, scroll-view, text, input, button, label, image, canvas {
+  box-sizing: border-box;
+}
+
 page {
-  background-color: #0f172a;
-  color: #f8fafc;
-  font-family: -apple-system, 'PingFang SC', 'Helvetica Neue', sans-serif;
+  background-color: #f9f9ff;
+  color: #151c27;
+  font-family: -apple-system, 'PingFang SC', 'Helvetica Neue', 'Manrope', sans-serif;
   font-size: 28rpx;
   line-height: 1.5;
 }
@@ -11,12 +15,18 @@ page {
 .disc-d { color: #ef4444; }
 .disc-i { color: #f59e0b; }
 .disc-s { color: #10b981; }
-.disc-c { color: #3b82f6; }
+.disc-c { color: #0058be; }
 
 .disc-bg-d { background-color: #ef4444; }
 .disc-bg-i { background-color: #f59e0b; }
 .disc-bg-s { background-color: #10b981; }
-.disc-bg-c { background-color: #3b82f6; }
+.disc-bg-c { background-color: #0058be; }
+
+// Gradients
+.disc-gradient-d { background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); }
+.disc-gradient-i { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+.disc-gradient-s { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+.disc-gradient-c { background: linear-gradient(135deg, #3b82f6 0%, #0058be 100%); }
 
 // Common layout utilities
 .flex { display: flex; }
@@ -26,10 +36,16 @@ page {
 .justify-between { justify-content: space-between; }
 .text-center { text-align: center; }
 
-// Card
+// Tactile card shadow
+.ambient-shadow {
+  box-shadow: 0 8rpx 40rpx rgba(0, 0, 0, 0.04);
+}
+
+// Card base
 .card {
-  background: rgba(30, 41, 59, 0.8);
-  border: 1px solid rgba(71, 85, 105, 0.3);
-  border-radius: 24rpx;
+  background: #ffffff;
+  border: 1rpx solid #e2e8f8;
+  border-radius: 32rpx;
   padding: 32rpx;
+  box-shadow: 0 8rpx 40rpx rgba(0, 0, 0, 0.04);
 }

@@ -26,8 +26,8 @@ app.use(
 	})
 );
 
-app.on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw));
 app.route("/api/auth/wechat", wechatRouter);
+app.on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw));
 app.route("/webhooks", webhooksRouter);
 
 app.use(

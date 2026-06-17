@@ -6,19 +6,47 @@ import { z } from "zod";
 import { protectedProcedure, router } from "../index";
 
 const historyRecordSchema = z.object({
-	id: z.string(),
-	date: z.string(),
-	dominantType: z.enum(["D", "I", "S", "C"]),
-	scores: z.object({
-		D: z.number(),
-		I: z.number(),
-		S: z.number(),
-		C: z.number(),
+	id: z
+		.any()
+		.transform((v) =>
+			typeof v === "string" && v
+				? v
+				: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+		),
+	date: z
+		.any()
+		.transform((v) =>
+			typeof v === "string" && v ? v : new Date().toISOString().slice(0, 10)
+		),
+	dominantType: z.any().transform((v) => {
+		const s = String(v).toUpperCase();
+		if (s === "D" || s === "I" || s === "S" || s === "C") {
+			return s;
+		}
+		return "D";
 	}),
-	note: z.string().default(""),
+	scores: z.any().transform((v) => {
+		const obj = v && typeof v === "object" ? v : {};
+		return {
+			D: Number(obj.D) || 0,
+			I: Number(obj.I) || 0,
+			S: Number(obj.S) || 0,
+			C: Number(obj.C) || 0,
+		};
+	}),
+	note: z
+		.any()
+		.optional()
+		.transform((v) => (typeof v === "string" ? v : "")),
 	theme: z
-		.enum(["professional", "relationship", "leadership"])
-		.default("professional"),
+		.any()
+		.optional()
+		.transform((v) => {
+			if (v === "professional" || v === "relationship" || v === "leadership") {
+				return v;
+			}
+			return "professional";
+		}),
 });
 
 export const assessmentsRouter = router({

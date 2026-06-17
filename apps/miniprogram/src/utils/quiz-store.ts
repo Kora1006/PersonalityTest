@@ -65,7 +65,7 @@ export const quizStore = {
 	},
 
 	getTotalQuestions() {
-		return state.mode === "quick" ? 12 : 24;
+		return state.mode === "quick" ? 20 : 40;
 	},
 
 	computeScores(): { D: number; I: number; S: number; C: number } {

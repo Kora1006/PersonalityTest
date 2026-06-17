@@ -13,653 +13,1395 @@ export interface Question {
 	scenario: string;
 }
 
-export const QUIZ_QUESTIONS: Question[] = [
+const D = (text: string): QuestionOption => ({
+	subtitle: "DECISIVE & ASSERTIVE",
+	text,
+	type: "D",
+});
+const I = (text: string): QuestionOption => ({
+	subtitle: "PERSUASIVE & ENTHUSIASTIC",
+	text,
+	type: "I",
+});
+const S = (text: string): QuestionOption => ({
+	subtitle: "PATIENT & RELIABLE",
+	text,
+	type: "S",
+});
+const C = (text: string): QuestionOption => ({
+	subtitle: "ANALYTICAL & PRECISE",
+	text,
+	type: "C",
+});
+
+// ─── 职场版 ───────────────────────────────────────────────────────────────────
+
+const PROFESSIONAL_QUESTIONS: Question[] = [
+	// DECISION MAKING
 	{
 		id: 1,
 		category: "DECISION MAKING",
-		scenario: "当团队面临紧急决策时，你倾向于怎么做？",
+		scenario: "团队面临紧急高风险的决策，时间极其有限，你会怎么做？",
 		options: [
-			{
-				text: "迅速做出决定并推进执行，不让团队陷入等待",
-				subtitle: "DECISIVE & ASSERTIVE",
-				type: "D",
-			},
-			{
-				text: "激励团队成员共同讨论，营造积极的决策氛围",
-				subtitle: "PERSUASIVE & ENTHUSIASTIC",
-				type: "I",
-			},
-			{
-				text: "收集所有人的意见，确保每个人都接受最终决定",
-				subtitle: "PATIENT & RELIABLE",
-				type: "S",
-			},
-			{
-				text: "仔细分析所有可用数据，确保决策有充分依据",
-				subtitle: "ANALYTICAL & PRECISE",
-				type: "C",
-			},
+			D("快速评估核心风险，当机立断，带领团队立即行动"),
+			I("召集关键成员快速讨论，用热情凝聚共识后推进"),
+			S("确保相关成员都了解情况，稳健评估后再做决定"),
+			C("在有限时间内尽量收集数据，基于事实给出方案"),
 		],
 	},
 	{
 		id: 2,
 		category: "DECISION MAKING",
-		scenario: "在没有充分信息的情况下，你如何做决定？",
+		scenario: "项目进行到一半，重要数据丢失且无法恢复，你会？",
 		options: [
-			{
-				text: "基于直觉和经验果断行动，把握先机",
-				subtitle: "DECISIVE & ASSERTIVE",
-				type: "D",
-			},
-			{
-				text: "和团队头脑风暴，集思广益找到创意解决方案",
-				subtitle: "PERSUASIVE & ENTHUSIASTIC",
-				type: "I",
-			},
-			{
-				text: "先征求前辈或专家的建议，再谨慎决定",
-				subtitle: "PATIENT & RELIABLE",
-				type: "S",
-			},
-			{
-				text: "推迟决定，花更多时间收集必要的信息",
-				subtitle: "ANALYTICAL & PRECISE",
-				type: "C",
-			},
+			D("判断现有信息是否足够继续推进，缺少的部分边做边补"),
+			I("鼓励团队不要慌乱，组织大家快速讨论替代方案"),
+			S("回顾哪些步骤可能留有备份，稳步重建关键数据"),
+			C("停下来梳理损失清单，制定严谨的数据恢复计划"),
 		],
 	},
 	{
 		id: 3,
-		category: "WORK STYLE",
-		scenario: "面对一个大型项目，你的工作方式是？",
+		category: "DECISION MAKING",
+		scenario: "同时有三项重要工作需要在本周完成，你的优先级处理方式是？",
 		options: [
-			{
-				text: "直接设定目标并快速推进，关注最终结果",
-				subtitle: "DECISIVE & ASSERTIVE",
-				type: "D",
-			},
-			{
-				text: "与团队成员合作，保持高涨的工作热情",
-				subtitle: "PERSUASIVE & ENTHUSIASTIC",
-				type: "I",
-			},
-			{
-				text: "制定稳健的计划，按部就班地完成每个步骤",
-				subtitle: "PATIENT & RELIABLE",
-				type: "S",
-			},
-			{
-				text: "详细规划每个环节，确保质量和准确性",
-				subtitle: "ANALYTICAL & PRECISE",
-				type: "C",
-			},
+			D("立刻判断影响最大的任务，全力冲刺最关键的那个"),
+			I("根据哪项工作最能激发热情和团队互动来决定顺序"),
+			S("按照既定计划逐项推进，保证每项任务有序完成"),
+			C("制作详细的时间分配表，精确评估每项任务的工作量"),
 		],
 	},
 	{
 		id: 4,
-		category: "WORK STYLE",
-		scenario: "当工作压力增大时，你的反应是？",
+		category: "DECISION MAKING",
+		scenario: "临近截止日期，客户突然大幅修改需求，你的反应是？",
 		options: [
-			{
-				text: "增加工作强度，更积极地推动结果落地",
-				subtitle: "DECISIVE & ASSERTIVE",
-				type: "D",
-			},
-			{
-				text: "寻求团队支持，用积极心态感染周围的人",
-				subtitle: "PERSUASIVE & ENTHUSIASTIC",
-				type: "I",
-			},
-			{
-				text: "保持冷静，有条不紊地处理一件件任务",
-				subtitle: "PATIENT & RELIABLE",
-				type: "S",
-			},
-			{
-				text: "重新审视计划，找出哪些步骤可以优化",
-				subtitle: "ANALYTICAL & PRECISE",
-				type: "C",
-			},
+			D("快速评估影响范围，直接和客户谈修改的边界与代价"),
+			I("用积极的态度安抚客户，鼓励团队发挥创意应对变化"),
+			S("先稳住团队情绪，再有条不紊地重新规划工作顺序"),
+			C("详细记录变更内容，评估工期和质量影响后再做决策"),
 		],
 	},
 	{
 		id: 5,
-		category: "TEAM DYNAMICS",
-		scenario: "在一个团队项目中，你最常扮演的角色是？",
+		category: "DECISION MAKING",
+		scenario: "上级要求明天上午提交重要方案，但你认为信息仍不充分，你会？",
 		options: [
-			{
-				text: "领导者，推动团队聚焦目标、快速行动",
-				subtitle: "DECISIVE & ASSERTIVE",
-				type: "D",
-			},
-			{
-				text: "激励者，鼓励团队保持活力和创造力",
-				subtitle: "PERSUASIVE & ENTHUSIASTIC",
-				type: "I",
-			},
-			{
-				text: "协调者，确保每个人都感到被倾听和尊重",
-				subtitle: "PATIENT & RELIABLE",
-				type: "S",
-			},
-			{
-				text: "分析者，审核计划的可行性和细节准确性",
-				subtitle: "ANALYTICAL & PRECISE",
-				type: "C",
-			},
+			D("基于现有信息做出最佳判断，明天准时提交方案"),
+			I("先提交框架性方案，同时向上级说明需要补充的内容"),
+			S("加班补充信息，尽量做到最完善再提交"),
+			C("主动和上级沟通，说明信息缺口可能带来的风险，请求延期"),
 		],
 	},
+	// WORK STYLE
 	{
 		id: 6,
-		category: "TEAM DYNAMICS",
-		scenario: "当团队成员意见不一致时，你通常怎么处理？",
+		category: "WORK STYLE",
+		scenario: "被分配到一个为期六个月的大型跨部门项目，你的第一步是？",
 		options: [
-			{
-				text: "直接表明自己的立场，推动团队做出决定",
-				subtitle: "DECISIVE & ASSERTIVE",
-				type: "D",
-			},
-			{
-				text: "用热情和说服力让大家统一在最佳方案上",
-				subtitle: "PERSUASIVE & ENTHUSIASTIC",
-				type: "I",
-			},
-			{
-				text: "耐心倾听各方意见，寻求大家都能接受的共识",
-				subtitle: "PATIENT & RELIABLE",
-				type: "S",
-			},
-			{
-				text: "客观地评估每个方案的利弊，找出最优解",
-				subtitle: "ANALYTICAL & PRECISE",
-				type: "C",
-			},
+			D("明确目标和里程碑，迅速推动第一阶段工作启动"),
+			I("先和各个关键成员建立关系，营造积极的合作氛围"),
+			S("制定详细的项目计划，确保每个阶段清晰、有序"),
+			C("仔细阅读所有相关文档，深入理解项目背景后再行动"),
 		],
 	},
 	{
 		id: 7,
-		category: "CONFLICT HANDLING",
-		scenario: "当你和同事发生分歧时，你的第一反应是？",
+		category: "WORK STYLE",
+		scenario: "连续高强度工作两周后感到精力透支，你倾向于？",
 		options: [
-			{
-				text: "直接说出自己的想法，据理力争",
-				subtitle: "DECISIVE & ASSERTIVE",
-				type: "D",
-			},
-			{
-				text: "保持友好，尝试找到双方都满意的解决方式",
-				subtitle: "PERSUASIVE & ENTHUSIASTIC",
-				type: "I",
-			},
-			{
-				text: "退后一步，给对方时间和空间，不急于解决",
-				subtitle: "PATIENT & RELIABLE",
-				type: "S",
-			},
-			{
-				text: "寻找客观事实和数据，理性分析谁更有道理",
-				subtitle: "ANALYTICAL & PRECISE",
-				type: "C",
-			},
+			D("继续推进，集中精力解决最核心的问题"),
+			I("和同事聚聚，通过社交互动恢复能量"),
+			S("保证充足休息，按部就班地继续推进工作"),
+			C("暂缓非紧急工作，梳理任务清单，优化工作流程"),
 		],
 	},
 	{
 		id: 8,
-		category: "CONFLICT HANDLING",
-		scenario: "当你的方案被否定时，你通常会怎么做？",
+		category: "WORK STYLE",
+		scenario: "公司引入全新工作流程工具并强制要求所有人使用，你会？",
 		options: [
-			{
-				text: "坚持自己的观点，用更有力的论据争取支持",
-				subtitle: "DECISIVE & ASSERTIVE",
-				type: "D",
-			},
-			{
-				text: "调整策略，用更有感染力的方式重新展示想法",
-				subtitle: "PERSUASIVE & ENTHUSIASTIC",
-				type: "I",
-			},
-			{
-				text: "接受反馈，认真倾听对方的顾虑后再改进",
-				subtitle: "PATIENT & RELIABLE",
-				type: "S",
-			},
-			{
-				text: "重新研究数据，找出方案被否定的根本原因",
-				subtitle: "ANALYTICAL & PRECISE",
-				type: "C",
-			},
+			D("快速上手，专注掌握最核心功能，尽快恢复工作效率"),
+			I("拉着同事一起学习，互相分享使用心得"),
+			S("按照培训材料一步步学习，保证稳定掌握每个功能"),
+			C("深入研读文档，彻底理解原理后再开始正式使用"),
 		],
 	},
 	{
 		id: 9,
-		category: "COMMUNICATION",
-		scenario: "在向上级汇报工作时，你倾向于？",
+		category: "WORK STYLE",
+		scenario: "在你心目中，效率最高的工作方式是？",
 		options: [
-			{
-				text: "直接汇报关键结果和下一步行动计划",
-				subtitle: "DECISIVE & ASSERTIVE",
-				type: "D",
-			},
-			{
-				text: "用生动的故事和例子展示工作的价值和影响",
-				subtitle: "PERSUASIVE & ENTHUSIASTIC",
-				type: "I",
-			},
-			{
-				text: "有条理地呈现进展，确保没有遗漏任何细节",
-				subtitle: "PATIENT & RELIABLE",
-				type: "S",
-			},
-			{
-				text: "准备详尽的数据报告，用事实和逻辑说话",
-				subtitle: "ANALYTICAL & PRECISE",
-				type: "C",
-			},
+			D("设定清晰目标，快速行动，少开无效会议"),
+			I("保持团队热情，通过良好协作带动整体效率"),
+			S("建立稳定流程，减少不确定性，保证可持续输出"),
+			C("做好充分准备，减少返工，以质量保效率"),
 		],
 	},
 	{
 		id: 10,
-		category: "COMMUNICATION",
-		scenario: "接受工作反馈时，你最看重的是？",
+		category: "WORK STYLE",
+		scenario: "在独立完成一个复杂任务时，你最倾向于？",
 		options: [
-			{
-				text: "是否具体指出了哪里有待改进，能否帮我更快达到目标",
-				subtitle: "DECISIVE & ASSERTIVE",
-				type: "D",
-			},
-			{
-				text: "反馈是否以鼓励为主，让我保持前进的动力",
-				subtitle: "PERSUASIVE & ENTHUSIASTIC",
-				type: "I",
-			},
-			{
-				text: "对方是否理解我的出发点，反馈是否公平",
-				subtitle: "PATIENT & RELIABLE",
-				type: "S",
-			},
-			{
-				text: "反馈是否基于客观标准，逻辑是否严谨",
-				subtitle: "ANALYTICAL & PRECISE",
-				type: "C",
-			},
+			D("直接动手，遇到问题当场解决，保持快节奏推进"),
+			I("找机会和他人分享进展，从反馈中获得灵感"),
+			S("按照事先规划的步骤，稳步完成每个阶段"),
+			C("先做充分调研，确保思路清晰后再开始执行"),
 		],
 	},
+	// TEAM COLLABORATION
 	{
 		id: 11,
-		category: "PROBLEM SOLVING",
-		scenario: "遇到一个棘手的问题时，你的第一步是？",
+		category: "TEAM COLLABORATION",
+		scenario: "在团队项目中，你最常自然扮演的角色是？",
 		options: [
-			{
-				text: "快速找出影响最大的因素，优先解决关键问题",
-				subtitle: "DECISIVE & ASSERTIVE",
-				type: "D",
-			},
-			{
-				text: "和团队成员一起讨论，发散思维找灵感",
-				subtitle: "PERSUASIVE & ENTHUSIASTIC",
-				type: "I",
-			},
-			{
-				text: "回顾以往类似问题的解决方法，借鉴经验",
-				subtitle: "PATIENT & RELIABLE",
-				type: "S",
-			},
-			{
-				text: "系统分析问题的根本原因，列出所有可能的解决方案",
-				subtitle: "ANALYTICAL & PRECISE",
-				type: "C",
-			},
+			D("推动者：确保目标明确，推进团队快速行动"),
+			I("氛围营造者：激励团队，让大家保持热情与创造力"),
+			S("协调者：关注每个人的感受，维持团队和谐稳定"),
+			C("质量把关者：审查方案细节，降低执行风险"),
 		],
 	},
 	{
 		id: 12,
-		category: "PROBLEM SOLVING",
-		scenario: "当你的解决方案执行后效果不理想时，你会？",
+		category: "TEAM COLLABORATION",
+		scenario: "团队内部对某个方向产生了明显分歧，你会？",
 		options: [
-			{
-				text: "迅速调整策略，尝试新的方法",
-				subtitle: "DECISIVE & ASSERTIVE",
-				type: "D",
-			},
-			{
-				text: "鼓励团队不要气馁，共同寻找更好的出路",
-				subtitle: "PERSUASIVE & ENTHUSIASTIC",
-				type: "I",
-			},
-			{
-				text: "耐心分析哪里出了问题，稳扎稳打地做出调整",
-				subtitle: "PATIENT & RELIABLE",
-				type: "S",
-			},
-			{
-				text: "重新审视所有假设和数据，找出分析中的错误",
-				subtitle: "ANALYTICAL & PRECISE",
-				type: "C",
-			},
+			D("主导讨论，推动团队尽快做出决定，避免内耗"),
+			I("用热情和感召力让大家找到共同价值，达成共识"),
+			S("耐心倾听各方声音，寻找能照顾到每个人的平衡方案"),
+			C("收集各方观点和数据，用逻辑分析帮助团队判断"),
 		],
 	},
 	{
 		id: 13,
-		category: "WORK STYLE",
-		scenario: "当你需要学习一项新技能时，你倾向于？",
+		category: "TEAM COLLABORATION",
+		scenario: "刚加入一个新团队，你建立关系的方式是？",
 		options: [
-			{
-				text: "直接上手实践，通过犯错来快速成长",
-				subtitle: "DECISIVE & ASSERTIVE",
-				type: "D",
-			},
-			{
-				text: "和他人一起学习，在互动和分享中获得动力",
-				subtitle: "PERSUASIVE & ENTHUSIASTIC",
-				type: "I",
-			},
-			{
-				text: "找一个稳定的学习路径，按步骤扎实掌握",
-				subtitle: "PATIENT & RELIABLE",
-				type: "S",
-			},
-			{
-				text: "先阅读大量资料，深入理解原理再动手",
-				subtitle: "ANALYTICAL & PRECISE",
-				type: "C",
-			},
+			D("迅速展示自己的能力和价值，用成果建立信任"),
+			I("积极和大家聊天，用真诚和热情拉近距离"),
+			S("观察团队文化，慢慢融入，用可靠的表现积累信任"),
+			C("先了解每个人的专业背景，再找合适的切入点合作"),
 		],
 	},
 	{
 		id: 14,
-		category: "DECISION MAKING",
-		scenario: "当有多个重要任务同时出现时，你如何处理？",
+		category: "TEAM COLLABORATION",
+		scenario: "你认为一个优秀团队最重要的特质是？",
 		options: [
-			{
-				text: "快速判断优先级，强力推进最重要的任务",
-				subtitle: "DECISIVE & ASSERTIVE",
-				type: "D",
-			},
-			{
-				text: "看哪个任务更能激发自己的热情，先做那个",
-				subtitle: "PERSUASIVE & ENTHUSIASTIC",
-				type: "I",
-			},
-			{
-				text: "按计划稳步处理，避免因跳跃而影响质量",
-				subtitle: "PATIENT & RELIABLE",
-				type: "S",
-			},
-			{
-				text: "制作详细的任务清单，系统地分配时间和资源",
-				subtitle: "ANALYTICAL & PRECISE",
-				type: "C",
-			},
+			D("执行力强、目标一致、行动迅速"),
+			I("沟通顺畅、充满活力、善于激发彼此潜能"),
+			S("相互信任、稳定可靠、协作无间"),
+			C("分工明确、严谨专业、做事有条理"),
 		],
 	},
 	{
 		id: 15,
-		category: "TEAM DYNAMICS",
-		scenario: "在一个新团队中，你通常如何建立关系？",
+		category: "TEAM COLLABORATION",
+		scenario: "团队连续几周效率低下，你会？",
 		options: [
-			{
-				text: "主动承担领导角色，通过成果证明自己的价值",
-				subtitle: "DECISIVE & ASSERTIVE",
-				type: "D",
-			},
-			{
-				text: "积极社交，用热情和幽默拉近与同事的距离",
-				subtitle: "PERSUASIVE & ENTHUSIASTIC",
-				type: "I",
-			},
-			{
-				text: "认真观察，先了解团队文化，再慢慢融入",
-				subtitle: "PATIENT & RELIABLE",
-				type: "S",
-			},
-			{
-				text: "专注于工作表现，让专业能力为自己说话",
-				subtitle: "ANALYTICAL & PRECISE",
-				type: "C",
-			},
+			D("直接指出问题所在，推动团队立即采取改善行动"),
+			I("组织一次团建或轻松讨论，重新激发团队活力"),
+			S("逐一和成员沟通，了解深层原因，稳步推进改善"),
+			C("系统分析效率低下的原因，提出有针对性的优化方案"),
 		],
 	},
+	// CONFLICT RESOLUTION
 	{
 		id: 16,
-		category: "CONFLICT HANDLING",
-		scenario: "你如何应对工作中的不确定性和变化？",
+		category: "CONFLICT RESOLUTION",
+		scenario: "和同事就工作方法产生了明显分歧，你的第一反应是？",
 		options: [
-			{
-				text: "把变化看作机会，快速适应并抢占先机",
-				subtitle: "DECISIVE & ASSERTIVE",
-				type: "D",
-			},
-			{
-				text: "保持乐观，相信事情最终会向好的方向发展",
-				subtitle: "PERSUASIVE & ENTHUSIASTIC",
-				type: "I",
-			},
-			{
-				text: "先稳住阵脚，等局势明朗后再做出判断",
-				subtitle: "PATIENT & RELIABLE",
-				type: "S",
-			},
-			{
-				text: "评估变化带来的风险，制定应对不同情况的预案",
-				subtitle: "ANALYTICAL & PRECISE",
-				type: "C",
-			},
+			D("直接表明自己的立场，用逻辑和事实据理力争"),
+			I("保持友善，尝试找到双方都能接受的折中方案"),
+			S("退一步，给对方时间，避免在情绪高涨时争论"),
+			C("搜集相关数据和案例，用客观依据说服对方"),
 		],
 	},
 	{
 		id: 17,
-		category: "COMMUNICATION",
-		scenario: "当你需要说服他人接受你的想法时，你会？",
+		category: "CONFLICT RESOLUTION",
+		scenario: "你精心准备的方案在汇报中被全盘否定，你会？",
 		options: [
-			{
-				text: "直接指出执行这个想法能带来的具体利益",
-				subtitle: "DECISIVE & ASSERTIVE",
-				type: "D",
-			},
-			{
-				text: "用热情的态度和引人入胜的故事打动对方",
-				subtitle: "PERSUASIVE & ENTHUSIASTIC",
-				type: "I",
-			},
-			{
-				text: "耐心解释自己的考量，建立信任后再推进",
-				subtitle: "PATIENT & RELIABLE",
-				type: "S",
-			},
-			{
-				text: "用翔实的数据和逻辑论证想法的可行性",
-				subtitle: "ANALYTICAL & PRECISE",
-				type: "C",
-			},
+			D("坚持核心观点，用更有力的论据继续争取支持"),
+			I("调整呈现方式，用更生动的方式重新展示方案价值"),
+			S("认真聆听否定原因，虚心接受后反复打磨方案"),
+			C("深入分析被否定的具体原因，重新审视方案每个细节"),
 		],
 	},
 	{
 		id: 18,
-		category: "PROBLEM SOLVING",
-		scenario: "面对一个没有明确答案的问题，你会？",
+		category: "CONFLICT RESOLUTION",
+		scenario: "公司突然宣布大规模组织架构调整，涉及你的团队，你的反应是？",
 		options: [
-			{
-				text: "大胆提出假设并快速验证，不怕失败",
-				subtitle: "DECISIVE & ASSERTIVE",
-				type: "D",
-			},
-			{
-				text: "发散思维，探索各种有趣的可能性",
-				subtitle: "PERSUASIVE & ENTHUSIASTIC",
-				type: "I",
-			},
-			{
-				text: "参考以往经验和成功案例，寻找稳妥方案",
-				subtitle: "PATIENT & RELIABLE",
-				type: "S",
-			},
-			{
-				text: "深入研究问题的每个方面，直到找到最优解",
-				subtitle: "ANALYTICAL & PRECISE",
-				type: "C",
-			},
+			D("快速判断变化对自己的影响，主动适应并寻找新机会"),
+			I("保持乐观，积极沟通，帮助团队平稳渡过过渡期"),
+			S("先稳住自己的工作节奏，等局势明朗后再做判断"),
+			C("深入了解调整背后的原因和逻辑，评估对工作的具体影响"),
 		],
 	},
 	{
 		id: 19,
-		category: "WORK STYLE",
-		scenario: "你认为高效工作最重要的是？",
+		category: "CONFLICT RESOLUTION",
+		scenario: "团队内两名成员因工作分歧产生了明显矛盾，你会？",
 		options: [
-			{
-				text: "清晰的目标和结果导向，减少不必要的过程",
-				subtitle: "DECISIVE & ASSERTIVE",
-				type: "D",
-			},
-			{
-				text: "充满热情的团队氛围和相互激励的环境",
-				subtitle: "PERSUASIVE & ENTHUSIASTIC",
-				type: "I",
-			},
-			{
-				text: "稳定的节奏和可靠的协作关系",
-				subtitle: "PATIENT & RELIABLE",
-				type: "S",
-			},
-			{
-				text: "严谨的流程和高质量的输出标准",
-				subtitle: "ANALYTICAL & PRECISE",
-				type: "C",
-			},
+			D("直接介入，推动双方快速解决矛盾，恢复团队战斗力"),
+			I("分别和两人聊聊，用温和的方式化解紧张气氛"),
+			S("给双方一些时间和空间，待情绪平稳后再介入调解"),
+			C("客观分析矛盾根源，帮助两人找到基于事实的解决方案"),
 		],
 	},
 	{
 		id: 20,
-		category: "DECISION MAKING",
-		scenario: "当计划被突然打乱时，你倾向于？",
+		category: "CONFLICT RESOLUTION",
+		scenario: "同事的失误直接导致你的工作进度受阻，你会？",
 		options: [
-			{
-				text: "立即重新规划，快速恢复行动节奏",
-				subtitle: "DECISIVE & ASSERTIVE",
-				type: "D",
-			},
-			{
-				text: "保持灵活，轻松地适应变化并保持正能量",
-				subtitle: "PERSUASIVE & ENTHUSIASTIC",
-				type: "I",
-			},
-			{
-				text: "沉着冷静，有序地重新整理优先级",
-				subtitle: "PATIENT & RELIABLE",
-				type: "S",
-			},
-			{
-				text: "分析变化原因，评估对整体计划的影响",
-				subtitle: "ANALYTICAL & PRECISE",
-				type: "C",
-			},
+			D("直接和同事沟通失误的影响，要求对方尽快补救"),
+			I("以理解和幽默化解尴尬，和对方一起想办法补救"),
+			S("先调整自己的工作计划，再温和地和同事沟通"),
+			C("记录影响范围，帮助同事分析失误原因，避免重蹈"),
 		],
 	},
+	// COMMUNICATION
 	{
 		id: 21,
-		category: "TEAM DYNAMICS",
-		scenario: "在你看来，一个优秀的团队最重要的特质是？",
+		category: "COMMUNICATION",
+		scenario: "向高层汇报项目进展时，你的风格是？",
 		options: [
-			{
-				text: "执行力强、目标一致、行动迅速",
-				subtitle: "DECISIVE & ASSERTIVE",
-				type: "D",
-			},
-			{
-				text: "充满活力、善于沟通、具有感染力",
-				subtitle: "PERSUASIVE & ENTHUSIASTIC",
-				type: "I",
-			},
-			{
-				text: "相互信任、稳定可靠、协作无间",
-				subtitle: "PATIENT & RELIABLE",
-				type: "S",
-			},
-			{
-				text: "专业严谨、注重质量、做事有条理",
-				subtitle: "ANALYTICAL & PRECISE",
-				type: "C",
-			},
+			D("直接报告核心成果、关键数字和下一步计划"),
+			I("用故事和亮点展示项目价值，让汇报生动有影响力"),
+			S("有条理地梳理进展，确保每个细节都有据可查"),
+			C("用详细的数据和逻辑，严谨地呈现每个关键节点"),
 		],
 	},
 	{
 		id: 22,
 		category: "COMMUNICATION",
-		scenario: "在会议中，你通常会？",
+		scenario: "收到上级对你工作的负面反馈，你最在乎的是？",
 		options: [
-			{
-				text: "主导议程，推动讨论聚焦和快速得出结论",
-				subtitle: "DECISIVE & ASSERTIVE",
-				type: "D",
-			},
-			{
-				text: "活跃气氛，让会议充满能量和互动",
-				subtitle: "PERSUASIVE & ENTHUSIASTIC",
-				type: "I",
-			},
-			{
-				text: "认真倾听，在适当时机表达深思熟虑的意见",
-				subtitle: "PATIENT & RELIABLE",
-				type: "S",
-			},
-			{
-				text: "关注会议逻辑，指出讨论中的不严谨之处",
-				subtitle: "ANALYTICAL & PRECISE",
-				type: "C",
-			},
+			D("反馈是否具体指出了问题，能否帮我快速改进"),
+			I("反馈是否以鼓励为主，让我保持前进的动力"),
+			S("上级是否理解我的出发点，反馈是否公平公正"),
+			C("反馈的依据是否客观，逻辑是否严谨"),
 		],
 	},
 	{
 		id: 23,
-		category: "PROBLEM SOLVING",
-		scenario: "当你发现团队犯了一个错误时，你会？",
+		category: "COMMUNICATION",
+		scenario: "需要推动一个跨部门的重要提案获得批准，你会？",
 		options: [
-			{
-				text: "直接指出问题，推动团队立即采取纠正措施",
-				subtitle: "DECISIVE & ASSERTIVE",
-				type: "D",
-			},
-			{
-				text: "以鼓励为主，帮助团队从错误中找到积极的一面",
-				subtitle: "PERSUASIVE & ENTHUSIASTIC",
-				type: "I",
-			},
-			{
-				text: "私下和相关成员沟通，避免让对方感到难堪",
-				subtitle: "PATIENT & RELIABLE",
-				type: "S",
-			},
-			{
-				text: "详细记录错误原因，制定流程以避免类似问题",
-				subtitle: "ANALYTICAL & PRECISE",
-				type: "C",
-			},
+			D("直接找到关键决策者，明确说明执行方案能带来的具体利益"),
+			I("用热情和故事打动关键人，先赢得他们的情感支持"),
+			S("耐心和各方逐一沟通，建立信任后再推进"),
+			C("准备详尽的分析报告，用数据和逻辑证明方案可行性"),
 		],
 	},
 	{
 		id: 24,
-		category: "WORK STYLE",
-		scenario: "下班后，你最常做的事情是？",
+		category: "COMMUNICATION",
+		scenario: "在一个冗长低效的会议中，你通常会？",
 		options: [
-			{
-				text: "思考如何进一步推进工作目标，或准备明天的计划",
-				subtitle: "DECISIVE & ASSERTIVE",
-				type: "D",
-			},
-			{
-				text: "和朋友或同事聚会，保持社交活跃",
-				subtitle: "PERSUASIVE & ENTHUSIASTIC",
-				type: "I",
-			},
-			{
-				text: "享受安静的家庭时光，为明天积蓄能量",
-				subtitle: "PATIENT & RELIABLE",
-				type: "S",
-			},
-			{
-				text: "阅读、学习或深入研究一个感兴趣的话题",
-				subtitle: "ANALYTICAL & PRECISE",
-				type: "C",
-			},
+			D("主动打断跑题，将讨论拉回核心议题，推动尽快结论"),
+			I("用积极的互动让气氛活跃，找时机推动大家达成共识"),
+			S("认真倾听，在适当时机发表深思熟虑的意见"),
+			C("关注讨论的逻辑性，在发现问题时提出修正"),
+		],
+	},
+	{
+		id: 25,
+		category: "COMMUNICATION",
+		scenario: "需要给下属传达一个绩效不达标的消息，你会？",
+		options: [
+			D("直接、清晰地说明事实和改进要求，不绕弯子"),
+			I("先肯定对方的努力，再用积极的方式引导改进"),
+			S("选择私下、安静的时机，温和而诚恳地进行沟通"),
+			C("准备具体的数据对比，帮助对方清楚理解差距"),
+		],
+	},
+	// PROBLEM SOLVING
+	{
+		id: 26,
+		category: "PROBLEM SOLVING",
+		scenario: "遇到一个技术上全新、从未面对过的难题，你的第一步是？",
+		options: [
+			D("快速锁定关键突破口，优先解决最核心的障碍"),
+			I("和同事头脑风暴，发散思维，寻找创意解决方案"),
+			S("梳理过往类似经验，从已知中寻找可借鉴的路径"),
+			C("系统收集资料，深入分析问题的每个维度后再行动"),
+		],
+	},
+	{
+		id: 27,
+		category: "PROBLEM SOLVING",
+		scenario: "一套方案执行后效果不理想，你会？",
+		options: [
+			D("迅速评估问题所在，果断调整策略，继续推进"),
+			I("鼓励团队不要气馁，一起讨论更有创意的改进思路"),
+			S("耐心复盘哪个环节出了问题，稳扎稳打地做出调整"),
+			C("重新审视所有假设，找出分析中的漏洞，彻底优化"),
+		],
+	},
+	{
+		id: 28,
+		category: "PROBLEM SOLVING",
+		scenario: "面对一个业界也没有标准答案的新型问题，你的处理方式是？",
+		options: [
+			D("大胆提出假设，快速试验，通过迭代找到最优解"),
+			I("探索多种有趣的可能性，从碰撞中找到灵感"),
+			S("参考相对成熟的解决路径，选择最稳妥的方向"),
+			C("深入研究每个可能性，直到找到理论上最优的解法"),
+		],
+	},
+	{
+		id: 29,
+		category: "PROBLEM SOLVING",
+		scenario: "发现团队执行中出现了一个系统性错误，你会？",
+		options: [
+			D("立即指出问题，推动团队迅速采取纠正措施"),
+			I("以建设性、鼓励的方式引导团队从错误中学习"),
+			S("私下和相关成员沟通，减少不必要的压力和尴尬"),
+			C("详细记录错误模式，建立系统性的预防机制"),
+		],
+	},
+	{
+		id: 30,
+		category: "PROBLEM SOLVING",
+		scenario: "一个问题牵涉三个部门，责任边界不清晰，你会？",
+		options: [
+			D("直接召集相关负责人，推动明确责任分工和解决时间表"),
+			I("主动联络各部门，用积极的态度促进协作"),
+			S("先把自己职责范围内的部分做好，再协助推动其他部分"),
+			C("梳理清楚各方的权责边界，再提出合理的协作方案"),
+		],
+	},
+	// PERFORMANCE & GROWTH
+	{
+		id: 31,
+		category: "PERFORMANCE & GROWTH",
+		scenario: "年度绩效评定结果低于自己的预期，你的反应是？",
+		options: [
+			D("立即找上级沟通，了解差距原因，制定明确的改进计划"),
+			I("先消化情绪，找信任的同事聊聊，重新找到前进动力"),
+			S("认真反思哪些地方做得不够好，稳步改善"),
+			C("详细对比自己的表现与评定标准，找出具体的差距所在"),
+		],
+	},
+	{
+		id: 32,
+		category: "PERFORMANCE & GROWTH",
+		scenario: "上级给了你一个超出现有能力范围的新挑战，你的反应是？",
+		options: [
+			D("欣然接受，相信可以在实战中快速成长"),
+			I("感到兴奋，积极寻求支持和合作，共同推进"),
+			S("先评估自己的准备情况，和上级沟通获得足够的支持"),
+			C("详细了解期望和要求，制定系统的学习和执行计划"),
+		],
+	},
+	{
+		id: 33,
+		category: "PERFORMANCE & GROWTH",
+		scenario: "设定本年度工作目标时，你倾向于？",
+		options: [
+			D("设定挑战性高的目标，激励自己突破极限"),
+			I("设定能激发自己热情的目标，让工作充满意义"),
+			S("设定可实现、有稳定进展的目标，避免过度承诺"),
+			C("基于详细分析设定目标，确保每个目标有清晰的实现路径"),
+		],
+	},
+	{
+		id: 34,
+		category: "PERFORMANCE & GROWTH",
+		scenario: "在职场成长中，你最看重的是？",
+		options: [
+			D("快速晋升和影响力扩大"),
+			I("广泛的人脉和良好的职场口碑"),
+			S("稳定的职业发展和良好的团队关系"),
+			C("深厚的专业积累和被认可的专业能力"),
+		],
+	},
+	{
+		id: 35,
+		category: "PERFORMANCE & GROWTH",
+		scenario: "成功掌握一项新技能后，你倾向于？",
+		options: [
+			D("立即在工作中应用，看看能带来多大的效果提升"),
+			I("和同事分享，帮助他人也快速掌握这项技能"),
+			S("稳步巩固，确保能持续稳定地输出质量"),
+			C("继续深化这项技能，直到达到更高的精通程度"),
+		],
+	},
+	// WORKPLACE DYNAMICS
+	{
+		id: 36,
+		category: "WORKPLACE DYNAMICS",
+		scenario: "忙碌的工作周结束后，你最倾向于？",
+		options: [
+			D("快速总结本周成果，规划下周的行动重点"),
+			I("和朋友或同事聚会，通过社交恢复活力"),
+			S("回家好好休息，陪伴家人，沉淀能量"),
+			C("阅读、学习或深入研究一个感兴趣的话题"),
+		],
+	},
+	{
+		id: 37,
+		category: "WORKPLACE DYNAMICS",
+		scenario: "公司组织团队建设活动，你更倾向于？",
+		options: [
+			D("选择有竞争性和挑战性的活动，激发团队斗志"),
+			I("选择轻松有趣的互动活动，让大家充分放松和交流"),
+			S("选择包容性强、让每个人都能参与的活动"),
+			C("选择有实质意义或学习价值的活动"),
+		],
+	},
+	{
+		id: 38,
+		category: "WORKPLACE DYNAMICS",
+		scenario: "公司新政策与你自己的判断相悖，你会？",
+		options: [
+			D("通过正当渠道表达异议，力争改变不合理的政策"),
+			I("和同事讨论，看看大家的感受，再考虑下一步行动"),
+			S("先适应执行，私下保留自己的看法，观察后续发展"),
+			C("仔细研究政策的依据，用数据和逻辑提出有理有据的修改建议"),
+		],
+	},
+	{
+		id: 39,
+		category: "WORKPLACE DYNAMICS",
+		scenario: "与工作风格截然不同的同事合作时，你会？",
+		options: [
+			D("明确分工，确保对方理解目标和期限，直接推进"),
+			I("主动找到共同点，用开放的态度欣赏不同风格的价值"),
+			S("耐心适应对方的节奏，寻找双方都舒适的合作方式"),
+			C("先了解对方的工作方法，找到互补合作的最优模式"),
+		],
+	},
+	{
+		id: 40,
+		category: "WORKPLACE DYNAMICS",
+		scenario: "察觉到团队整体士气低落，你会？",
+		options: [
+			D("直接找出影响士气的根源，推动管理层快速解决"),
+			I("主动营造轻松积极的氛围，用热情感染和带动大家"),
+			S("私下关心成员，做好倾听者，给予每个人情感支持"),
+			C("深入分析士气问题的成因，提出系统性的改善建议"),
 		],
 	},
 ];
+
+// ─── 情感版 ───────────────────────────────────────────────────────────────────
+
+const RELATIONSHIP_QUESTIONS: Question[] = [
+	// COMMUNICATION
+	{
+		id: 1,
+		category: "COMMUNICATION",
+		scenario: "和伴侣或好友在重要事项上意见不一致，你的第一反应是？",
+		options: [
+			D("直接说出自己的想法，坦率表明自己认为哪个选择更合适"),
+			I("以轻松的方式表达自己的想法，让对方也感到被重视"),
+			S("先听对方说完，尊重对方的感受，再温和地分享自己的看法"),
+			C("找到客观依据，用逻辑帮助双方做出最合理的选择"),
+		],
+	},
+	{
+		id: 2,
+		category: "COMMUNICATION",
+		scenario: "伴侣/好友希望你改变某个行为习惯，你会？",
+		options: [
+			D("评估这个改变是否合理，如果不合理会直接说明"),
+			I("用轻松的方式探讨彼此的期望，寻找双方都接受的平衡"),
+			S("认真考虑对方的感受，慢慢调整自己的行为"),
+			C("深入了解对方需求背后的原因，再决定是否调整"),
+		],
+	},
+	{
+		id: 3,
+		category: "COMMUNICATION",
+		scenario: "当你需要拒绝一个亲近的人的请求时，你会？",
+		options: [
+			D("直接、清晰地说不，不做不必要的解释"),
+			I("用温和幽默的方式拒绝，确保对方不会因此受伤"),
+			S("先说明自己的顾虑，再温和但坚定地婉拒"),
+			C("解释自己不能接受的具体原因，让对方充分理解"),
+		],
+	},
+	{
+		id: 4,
+		category: "COMMUNICATION",
+		scenario: "在关系中对方做了让你不舒服的事情，你会？",
+		options: [
+			D("当下直接表达感受，不等下去"),
+			I("找合适的时机，以不伤害关系的方式说出感受"),
+			S("先自我消化，不想因为小事破坏关系的氛围"),
+			C("思考这件事是否有合理的解释，再决定是否提出"),
+		],
+	},
+	{
+		id: 5,
+		category: "COMMUNICATION",
+		scenario: "需要和亲密的人谈一件比较敏感的事情时，你会？",
+		options: [
+			D("选择直接说，清楚明了，不拖延"),
+			I("找一个轻松的场合和时机，用温和的方式切入"),
+			S("选择对方状态最好的时候，温柔而诚恳地开口"),
+			C("事先想好沟通的逻辑，确保表达准确清晰，不被误解"),
+		],
+	},
+	// EMOTIONAL EXPRESSION
+	{
+		id: 6,
+		category: "EMOTIONAL EXPRESSION",
+		scenario: "你向亲密的人表达爱意的方式通常是？",
+		options: [
+			D("用具体的行动和承诺表达，不拐弯抹角"),
+			I("通过言语、惊喜和充满创意的方式表达"),
+			S("用稳定的陪伴和日常的小细节默默表达"),
+			C("用深思熟虑的礼物或行动表达，注重细节和心意"),
+		],
+	},
+	{
+		id: 7,
+		category: "EMOTIONAL EXPRESSION",
+		scenario: "当你感到在关系中被忽视时，你会？",
+		options: [
+			D("直接说出自己的感受，要求对方给予更多关注"),
+			I("用活泼的方式创造更多共同时光，让关系重新升温"),
+			S("默默等待，相信对方会注意到，不想制造压力"),
+			C("分析被忽视是否有具体原因，再决定是否提出"),
+		],
+	},
+	{
+		id: 8,
+		category: "EMOTIONAL EXPRESSION",
+		scenario: "在关系中如何应对对方的坏情绪？",
+		options: [
+			D("关心对方的同时，推动他/她面对和解决问题"),
+			I("用温暖的陪伴和积极的态度帮助对方走出负面情绪"),
+			S("不施加压力，静静陪伴，让对方自然平复"),
+			C("帮助对方分析情绪背后的原因，找到解决情绪的根本方法"),
+		],
+	},
+	{
+		id: 9,
+		category: "EMOTIONAL EXPRESSION",
+		scenario: "当你感到关系中的压力增大时，你的倾向是？",
+		options: [
+			D("直接处理造成压力的问题，不让其积累"),
+			I("通过增加互动和乐趣来缓解关系中的压力"),
+			S("保持日常的稳定，用时间慢慢化解压力"),
+			C("深入思考压力的来源，制定有针对性的应对策略"),
+		],
+	},
+	{
+		id: 10,
+		category: "EMOTIONAL EXPRESSION",
+		scenario: "如何处理在关系中对对方的失望？",
+		options: [
+			D("直接说出失望的原因，要求对方做出改变"),
+			I("先找到一个合适的时机，用温和的方式表达感受"),
+			S("内化消化，不轻易表达，给对方和自己时间"),
+			C("分析失望的根源，区分是对方的问题还是自己的期待过高"),
+		],
+	},
+	// SUPPORT STYLE
+	{
+		id: 11,
+		category: "SUPPORT STYLE",
+		scenario: "伴侣/好友最近情绪低落，你会怎么支持对方？",
+		options: [
+			D("直接问清楚是什么问题，帮助对方快速找到解决方案"),
+			I("陪伴左右，用积极的言语和共情让对方感到被理解"),
+			S("静静地陪在身边，给对方足够的时间和安全感"),
+			C("帮助对方理清思路，分析情绪低落的根本原因"),
+		],
+	},
+	{
+		id: 12,
+		category: "SUPPORT STYLE",
+		scenario: "当好友倾诉自己遭遇到的挫折时，你的反应是？",
+		options: [
+			D("帮助对方梳理问题，给出直接可执行的建议"),
+			I("充分表达共情，鼓励对方看到积极的一面"),
+			S("专注倾听，不急于给建议，让对方感到被接纳"),
+			C("帮助对方分析问题的根本原因，提供深思熟虑的建议"),
+		],
+	},
+	{
+		id: 13,
+		category: "SUPPORT STYLE",
+		scenario: "好友/伴侣在做重要决定时需要你的建议，你会？",
+		options: [
+			D("给出直接、明确的建议，不模糊不回避"),
+			I("先倾听，再用鼓励的方式帮他/她看到各种可能性"),
+			S("充分了解对方的感受和顾虑，再给出贴心的建议"),
+			C("帮助对方全面分析各种选项的利弊，支持对方做出理性决定"),
+		],
+	},
+	{
+		id: 14,
+		category: "SUPPORT STYLE",
+		scenario: "面对亲密关系中存在的长期矛盾，你会？",
+		options: [
+			D("直接提出解决方案，推动双方在短期内达成明确共识"),
+			I("用创意和积极的方式转化矛盾，把问题变成增强关系的契机"),
+			S("耐心处理，一点一点地推进改善，不急于求成"),
+			C("深入分析矛盾的根源，找到系统性的解决路径"),
+		],
+	},
+	{
+		id: 15,
+		category: "SUPPORT STYLE",
+		scenario: "当关系中出现付出不均衡的情况时，你的应对方式是？",
+		options: [
+			D("直接提出，明确说明自己的感受和期望"),
+			I("用轻松但有深意的方式表达，化解不对等的尴尬"),
+			S("长期观察，给对方机会自然调整，不轻易摊牌"),
+			C("收集具体事实，理性而坦诚地和对方讨论"),
+		],
+	},
+	// CONFLICT & RESOLUTION
+	{
+		id: 16,
+		category: "CONFLICT & RESOLUTION",
+		scenario: "和伴侣/好友发生了争吵，你最先做的是？",
+		options: [
+			D("把问题说清楚，推动尽快解决，不让矛盾拖延"),
+			I("先消化情绪，然后以轻松的方式修复关系"),
+			S("给彼此一些冷静的时间，再温和地重新开启话题"),
+			C("反思争吵的根本原因，找到最合理的解决逻辑"),
+		],
+	},
+	{
+		id: 17,
+		category: "CONFLICT & RESOLUTION",
+		scenario: "你和伴侣/好友因忙碌而疏于联系，你会？",
+		options: [
+			D("主动联系，重新建立规律的交流"),
+			I("策划一次久违的聚会或活动，让关系重新升温"),
+			S("发一条温暖的消息，让对方知道你随时都在"),
+			C("思考疏于联系的原因，再有针对性地调整"),
+		],
+	},
+	{
+		id: 18,
+		category: "CONFLICT & RESOLUTION",
+		scenario: "伴侣想做一个你觉得有风险的决定，你会？",
+		options: [
+			D("直接指出风险，坚定表达自己的看法，力争改变决策"),
+			I("用关心而不强硬的方式分享顾虑，同时尊重对方的想法"),
+			S("先了解对方的想法和感受，再温和地分享自己的担忧"),
+			C("收集相关信息，帮助对方全面分析利弊后做决定"),
+		],
+	},
+	{
+		id: 19,
+		category: "CONFLICT & RESOLUTION",
+		scenario: "你更倾向于用哪种方式解决关系中的误解？",
+		options: [
+			D("直接澄清，不让误解拖延"),
+			I("用幽默和轻松的方式化解，不让误解变得严重"),
+			S("给对方时间慢慢理解，不强行立刻解释"),
+			C("仔细梳理误解的起因，确保解释清楚、不留疑问"),
+		],
+	},
+	{
+		id: 20,
+		category: "CONFLICT & RESOLUTION",
+		scenario: "你和亲密的人一起面对外部压力（如财务压力、家庭压力）时，你会？",
+		options: [
+			D("快速制定应对计划，主导解决问题的过程"),
+			I("保持乐观，鼓励对方，用积极态度一起面对"),
+			S("陪伴对方共同承担，给对方稳定的支持"),
+			C("仔细分析压力来源，制定系统的应对方案"),
+		],
+	},
+	// DECISION MAKING
+	{
+		id: 21,
+		category: "DECISION MAKING",
+		scenario: "在规划一次重要的旅行或活动时，你倾向于？",
+		options: [
+			D("提出一个方向，迅速确定计划，推动行动"),
+			I("集思广益，讨论各种有趣的可能性，享受规划的过程"),
+			S("做好充分的行程安排，确保每个人都能舒适参与"),
+			C("详细研究各种选项，比较后再选出最优方案"),
+		],
+	},
+	{
+		id: 22,
+		category: "DECISION MAKING",
+		scenario: "你和伴侣/好友对未来有不同的规划时，你会？",
+		options: [
+			D("直接说出自己的规划，推动双方尽快找到方向"),
+			I("开放性地探讨各种可能性，让讨论充满活力和想象"),
+			S("先了解对方规划背后的原因，再温和地分享自己的想法"),
+			C("列出双方规划的异同，理性分析哪些方向可以兼容"),
+		],
+	},
+	{
+		id: 23,
+		category: "DECISION MAKING",
+		scenario: "在关系中需要为对方做出妥协时，你会？",
+		options: [
+			D("评估这个妥协是否值得，不会无原则地让步"),
+			I("乐于为关系的和谐做出调整，只要大方向一致"),
+			S("愿意在对方需要的时候默默付出，不计较得失"),
+			C("思考妥协的边界和长期影响，确保不损害核心原则"),
+		],
+	},
+	{
+		id: 24,
+		category: "DECISION MAKING",
+		scenario: "面对关系的重大转折（如搬离、结束友情），你会？",
+		options: [
+			D("冷静评估关系的现状，果断做出决定"),
+			I("先和几位信任的朋友聊聊，再做决定"),
+			S("反复权衡，不急于改变，给双方更多时间"),
+			C("深入分析关系走到这一步的原因，基于事实做出判断"),
+		],
+	},
+	{
+		id: 25,
+		category: "DECISION MAKING",
+		scenario: "如何在关系中建立长期的信任？",
+		options: [
+			D("言出必行，用行动证明，不说空话"),
+			I("用真诚的沟通和持续的关心让对方感到被重视"),
+			S("日积月累地稳定陪伴，让对方感到安全和可靠"),
+			C("诚实透明，绝不隐瞒对关系有影响的重要信息"),
+		],
+	},
+	// TRUST & RELIABILITY
+	{
+		id: 26,
+		category: "TRUST & RELIABILITY",
+		scenario: "亲密关系中出现信任危机时，你会？",
+		options: [
+			D("直接摊牌，把所有问题摆到台面上，要求明确的解释"),
+			I("先稳定情绪，通过坦诚沟通寻找重建信任的方式"),
+			S("给对方时间解释，自己也慢慢消化，不轻易下结论"),
+			C("收集所有相关信息，理性判断情况的严重程度后再行动"),
+		],
+	},
+	{
+		id: 27,
+		category: "TRUST & RELIABILITY",
+		scenario: "如何判断一段关系是否健康？",
+		options: [
+			D("双方都在成长，能够坦率沟通，不互相依赖"),
+			I("彼此都感到快乐，愿意共同创造美好体验"),
+			S("关系稳定，有安全感，在困难时能够相互支持"),
+			C("彼此真正理解，能够坦诚交流内心深处的想法"),
+		],
+	},
+	{
+		id: 28,
+		category: "TRUST & RELIABILITY",
+		scenario: "你在关系中最怕的是？",
+		options: [
+			D("被控制或失去独立性"),
+			I("关系变得无聊、枯燥、失去活力"),
+			S("关系不稳定、充满不确定性"),
+			C("无法深入交流，停留在表面层次"),
+		],
+	},
+	{
+		id: 29,
+		category: "TRUST & RELIABILITY",
+		scenario: "在关系中处理长期压力的方式是？",
+		options: [
+			D("直接面对问题，快速解决，不让压力积压"),
+			I("通过聊天、外出活动和欢笑来释放压力"),
+			S("保持日常生活规律，用熟悉的环境给自己安全感"),
+			C("独处思考，厘清压力的来源，再有针对性地处理"),
+		],
+	},
+	{
+		id: 30,
+		category: "TRUST & RELIABILITY",
+		scenario: "在关系中如何应对对方的错误？",
+		options: [
+			D("直接指出，推动对方快速修正"),
+			I("以温和的方式表达影响，并帮助对方找到改进的方法"),
+			S("给对方空间和时间，不急于追究"),
+			C("分析错误的原因，帮助对方理解问题的根本"),
+		],
+	},
+	// SOCIAL BEHAVIOR
+	{
+		id: 31,
+		category: "SOCIAL BEHAVIOR",
+		scenario: "在新的社交场合中，你通常会？",
+		options: [
+			D("主动出击，快速建立有价值的连接"),
+			I("广泛交流，轻松和不同的人打成一片"),
+			S("先观察，选择和自己有共鸣的人慢慢熟悉"),
+			C("有选择地和感兴趣的人深入交谈，不追求数量"),
+		],
+	},
+	{
+		id: 32,
+		category: "SOCIAL BEHAVIOR",
+		scenario: "在社交聚会中，你通常是？",
+		options: [
+			D("主导话题，引领聚会的方向和节奏"),
+			I("活跃气氛，成为大家关注和喜欢的焦点"),
+			S("认真倾听，让每个人都感到被重视和接纳"),
+			C("与少数人深入交流，比浅层寒暄更有意义"),
+		],
+	},
+	{
+		id: 33,
+		category: "SOCIAL BEHAVIOR",
+		scenario: "对你来说，一段好的关系最重要的基础是？",
+		options: [
+			D("相互尊重、共同进步、保持独立"),
+			I("欢笑、活力、让彼此成为更好的自己"),
+			S("稳定、陪伴、在任何情况下的无条件支持"),
+			C("诚实、深度理解、精神层面的高度契合"),
+		],
+	},
+	{
+		id: 34,
+		category: "SOCIAL BEHAVIOR",
+		scenario: "在与他人建立关系的过程中，你最重视的是？",
+		options: [
+			D("直接坦率，有效率，彼此尊重各自的时间和边界"),
+			I("快乐轻松，充满活力，随时都有话聊"),
+			S("真诚可靠，稳定长久，相互信任"),
+			C("深度理解，价值共鸣，能进行有实质内容的交流"),
+		],
+	},
+	{
+		id: 35,
+		category: "SOCIAL BEHAVIOR",
+		scenario: "你和亲近的人在生活习惯上有明显差异，你的处理方式是？",
+		options: [
+			D("坦率地说出哪些是自己难以接受的，推动找到解决方案"),
+			I("用轻松的方式调侃差异，把它变成增进关系的谈资"),
+			S("包容对方的习惯，在最关键的问题上再寻求妥协"),
+			C("系统地梳理哪些差异有影响，找到长期可持续的相处方式"),
+		],
+	},
+	// RELATIONSHIPS & GROWTH
+	{
+		id: 36,
+		category: "RELATIONSHIPS & GROWTH",
+		scenario: "在一段关系中，你最看重的是？",
+		options: [
+			D("彼此独立、相互尊重、共同成长"),
+			I("充满活力、互相激励、带来快乐的关系"),
+			S("稳定信任、相互陪伴、无条件支持"),
+			C("深度交流、精神共鸣、彼此真正理解"),
+		],
+	},
+	{
+		id: 37,
+		category: "RELATIONSHIPS & GROWTH",
+		scenario: "在重要的纪念日或节日，你更倾向于？",
+		options: [
+			D("策划一个有意义的特别活动，让这一天留下深刻印记"),
+			I("安排一场充满惊喜和互动的庆祝，让大家都感到快乐"),
+			S("保持温馨的传统仪式，用稳定和熟悉带来安全感"),
+			C("精心准备每一个细节，确保这一天完美而有意义"),
+		],
+	},
+	{
+		id: 38,
+		category: "RELATIONSHIPS & GROWTH",
+		scenario: "你在关系中通常扮演的角色是？",
+		options: [
+			D("推动者：主导重要决定，带领关系不断向前"),
+			I("活跃者：为关系注入活力，让每一天都有乐趣"),
+			S("稳定者：提供安全感和支持，做可靠的后盾"),
+			C("思考者：帮助双方看清问题，避免冲动决策"),
+		],
+	},
+	{
+		id: 39,
+		category: "RELATIONSHIPS & GROWTH",
+		scenario: "对你来说，维持一段长期关系最重要的是？",
+		options: [
+			D("持续的成长和挑战，关系不能原地踏步"),
+			I("共同创造美好的回忆，保持关系的新鲜感"),
+			S("稳定的陪伴和承诺，无论发生什么都在彼此身边"),
+			C("深度的理解和诚实，彼此真正了解对方的内心"),
+		],
+	},
+	{
+		id: 40,
+		category: "RELATIONSHIPS & GROWTH",
+		scenario: "当关系中的对方需要独处空间时，你会？",
+		options: [
+			D("尊重但会主动问清楚是否有需要帮忙的地方"),
+			I("给予空间，但保持联系，让对方知道你随时都在"),
+			S("完全尊重，不打扰，等对方准备好了自然会回来"),
+			C("思考对方需要空间背后的原因，再决定如何回应"),
+		],
+	},
+];
+
+// ─── 管理版 ───────────────────────────────────────────────────────────────────
+
+const LEADERSHIP_QUESTIONS: Question[] = [
+	// LEADERSHIP STYLE
+	{
+		id: 1,
+		category: "LEADERSHIP STYLE",
+		scenario: "刚接手一个新团队，你的第一步是？",
+		options: [
+			D("快速了解团队现状，制定清晰目标，推动团队立即行动"),
+			I("和每位成员建立个人连接，营造开放积极的团队文化"),
+			S("深入了解每个成员的能力和感受，再制定方向"),
+			C("系统收集团队现有数据和绩效，基于事实制定改进策略"),
+		],
+	},
+	{
+		id: 2,
+		category: "LEADERSHIP STYLE",
+		scenario: "你的管理风格是？",
+		options: [
+			D("结果导向，目标清晰，要求团队高效执行"),
+			I("激励驱动，关注团队激情，用愿景凝聚人心"),
+			S("支持型管理，关注成员感受，提供稳定的成长环境"),
+			C("系统化管理，建立完善流程，用标准和数据驱动"),
+		],
+	},
+	{
+		id: 3,
+		category: "LEADERSHIP STYLE",
+		scenario: "在向团队布置工作时，你的方式通常是？",
+		options: [
+			D("明确说明目标和期限，给成员自主空间去执行"),
+			I("用充满感染力的方式解释任务的意义，激发成员热情"),
+			S("详细说明背景和期望，确保每个人都了解任务全貌"),
+			C("提供清晰的标准和流程，确保执行质量有保障"),
+		],
+	},
+	{
+		id: 4,
+		category: "LEADERSHIP STYLE",
+		scenario: "你如何看待管理中的授权与控制？",
+		options: [
+			D("明确目标后充分授权，关注结果不干预过程"),
+			I("基于信任大胆授权，相信团队的能力和自驱力"),
+			S("循序渐进地授权，确保成员有能力承担相应职责"),
+			C("在有清晰流程和标准的基础上进行有序授权"),
+		],
+	},
+	{
+		id: 5,
+		category: "LEADERSHIP STYLE",
+		scenario: "你如何评价自己作为管理者的价值？",
+		options: [
+			D("通过团队结果和影响力来衡量"),
+			I("通过团队成员的成长和积极性来衡量"),
+			S("通过团队的稳定性和成员的满意度来衡量"),
+			C("通过系统化、可量化的管理指标来衡量"),
+		],
+	},
+	// DECISION MAKING
+	{
+		id: 6,
+		category: "DECISION MAKING",
+		scenario: "团队绩效持续低于目标，你会？",
+		options: [
+			D("直接找出关键瓶颈，采取果断措施，推动快速改善"),
+			I("和团队坦诚沟通，激发大家找到改善动力"),
+			S("逐一和成员沟通，了解深层原因，制定有针对性的支持计划"),
+			C("系统分析绩效数据，找出根本原因，制定精准的改善方案"),
+		],
+	},
+	{
+		id: 7,
+		category: "DECISION MAKING",
+		scenario: "需要做一个可能不受团队欢迎但对整体有利的决策时，你会？",
+		options: [
+			D("直接决定并执行，清晰传达决策理由，推动落地"),
+			I("先和关键成员沟通，争取理解和支持后再宣布"),
+			S("充分考虑团队感受，尽量找到让大多数人接受的方式"),
+			C("准备充分的数据支撑，用逻辑帮助团队理解决策的必要性"),
+		],
+	},
+	{
+		id: 8,
+		category: "DECISION MAKING",
+		scenario: "在多个策略方向上存在不确定性时，你如何决策？",
+		options: [
+			D("基于现有最佳判断果断选择，并准备快速调整"),
+			I("广泛征求团队意见，集思广益后做出决定"),
+			S("选择风险最低、最稳健的方向，确保平稳推进"),
+			C("深入分析每个方向的数据和风险，选出最优方案"),
+		],
+	},
+	{
+		id: 9,
+		category: "DECISION MAKING",
+		scenario: "公司决策与你的管理判断相悖，你会？",
+		options: [
+			D("通过正当渠道据理力争，表达异议，力争改变"),
+			I("和团队坦诚沟通，同时寻求在现有框架内的最优解"),
+			S("先执行公司决策，同时关注团队反应，适时反馈"),
+			C("用数据和逻辑向上级提出有据可查的修改建议"),
+		],
+	},
+	{
+		id: 10,
+		category: "DECISION MAKING",
+		scenario: "如何确保重要决策被有效执行？",
+		options: [
+			D("明确责任人和时间节点，定期检查进展"),
+			I("激励团队认同决策的意义，用内驱力推动执行"),
+			S("建立稳健的执行机制，确保每个人清楚自己的职责"),
+			C("制定详细的执行计划，建立质量检查节点"),
+		],
+	},
+	// TEAM BUILDING
+	{
+		id: 11,
+		category: "TEAM BUILDING",
+		scenario: "团队中出现了一位绩效突出但难以合作的成员，你会？",
+		options: [
+			D("直接和该成员沟通，明确行为改变的要求和后果"),
+			I("尝试通过积极的互动和激励改变对方的行为模式"),
+			S("私下建立信任关系，再温和地引导对方改变"),
+			C("系统分析该成员的行为模式，制定针对性的管理方案"),
+		],
+	},
+	{
+		id: 12,
+		category: "TEAM BUILDING",
+		scenario: "在团队建设中，你最看重的是？",
+		options: [
+			D("打造高执行力、目标一致的团队文化"),
+			I("建立充满活力、互相激励的团队氛围"),
+			S("打造高信任、稳定可靠的团队关系"),
+			C("建立流程完善、标准清晰的专业团队"),
+		],
+	},
+	{
+		id: 13,
+		category: "TEAM BUILDING",
+		scenario: "你如何激励一个失去动力的团队成员？",
+		options: [
+			D("设定明确的短期目标，用成果刺激行动"),
+			I("和成员谈未来的可能性，帮助他/她找到工作的意义"),
+			S("关心成员遇到的困难，提供支持，让其感到被重视"),
+			C("帮助成员分析失去动力的原因，制定针对性的改善计划"),
+		],
+	},
+	{
+		id: 14,
+		category: "TEAM BUILDING",
+		scenario: "当团队完成了一个重要目标时，你会？",
+		options: [
+			D("快速总结经验，设定下一个更高的目标"),
+			I("充分庆祝团队的成就，让大家感受到成功的喜悦"),
+			S("认可每个人的贡献，确保每位成员都感到被尊重"),
+			C("系统复盘成功因素，将成功经验沉淀为可复用的方法"),
+		],
+	},
+	{
+		id: 15,
+		category: "TEAM BUILDING",
+		scenario: "如何在团队中处理绩效差异（高绩效 vs 低绩效）？",
+		options: [
+			D("明确奖惩机制，推动优胜劣汰"),
+			I("用正向激励促进整体提升，减少内部比较"),
+			S("提供差异化支持，帮助低绩效者找到提升路径"),
+			C("基于数据制定差异化的绩效改善计划"),
+		],
+	},
+	// PERFORMANCE MANAGEMENT
+	{
+		id: 16,
+		category: "PERFORMANCE MANAGEMENT",
+		scenario: "在绩效评估中向表现欠佳的成员反馈，你会？",
+		options: [
+			D("直接说明问题所在和改进要求，不绕弯子"),
+			I("先肯定努力，再用建设性的方式指出改进方向"),
+			S("选择私下、安静的场合，温和而诚恳地进行沟通"),
+			C("用具体数据对比，帮助成员清楚理解差距和改进路径"),
+		],
+	},
+	{
+		id: 17,
+		category: "PERFORMANCE MANAGEMENT",
+		scenario: "处理团队成员的职业发展请求（如转岗、晋升）时，你会？",
+		options: [
+			D("根据实际绩效和业务需要做出决策，不感情用事"),
+			I("充分了解成员的意愿，帮助对方找到最适合的发展方向"),
+			S("尊重成员的意愿，同时照顾团队的稳定和整体需求"),
+			C("系统评估成员的能力和岗位匹配度，再做出有依据的决策"),
+		],
+	},
+	{
+		id: 18,
+		category: "PERFORMANCE MANAGEMENT",
+		scenario: "在有限资源下分配任务时，你会？",
+		options: [
+			D("把资源集中在最能产生影响的地方，放弃次要任务"),
+			I("激励团队用创意克服资源限制，发挥最大潜力"),
+			S("合理分配资源，确保每项任务都能稳步推进"),
+			C("精细计算资源投入产出比，找出最优分配方案"),
+		],
+	},
+	{
+		id: 19,
+		category: "PERFORMANCE MANAGEMENT",
+		scenario: "当下属提出不同意见时，你会？",
+		options: [
+			D("认真倾听，快速判断是否有价值，及时给出明确反馈"),
+			I("肯定下属的勇气，鼓励更多的创意和想法涌现"),
+			S("耐心听完，给予尊重，再温和地反馈自己的看法"),
+			C("客观分析下属意见的合理性，基于事实给出判断"),
+		],
+	},
+	{
+		id: 20,
+		category: "PERFORMANCE MANAGEMENT",
+		scenario: "你如何为团队设定战略目标？",
+		options: [
+			D("设定挑战性目标，激励团队突破极限"),
+			I("设定充满愿景的目标，让团队感到使命感和价值"),
+			S("设定稳健可实现的目标，确保团队有信心推进"),
+			C("基于数据分析设定目标，确保每个目标有清晰的实现路径"),
+		],
+	},
+	// COMMUNICATION
+	{
+		id: 21,
+		category: "COMMUNICATION",
+		scenario: "在跨部门合作中，你如何发挥影响力？",
+		options: [
+			D("主导推动，明确共同目标和各方责任"),
+			I("建立良好的跨部门关系，用影响力推动协作"),
+			S("在合作中发挥桥梁作用，促进各方理解和配合"),
+			C("用严谨的方案和数据建立跨部门信任和话语权"),
+		],
+	},
+	{
+		id: 22,
+		category: "COMMUNICATION",
+		scenario: "在制定团队会议规则时，你倾向于？",
+		options: [
+			D("制定简洁高效的规则，减少无效会议，提升产出"),
+			I("保持一定的灵活性，让会议既高效又有互动活力"),
+			S("建立稳定的会议规范，让每个人都知道边界和期望"),
+			C("制定详细的会议议程和规则，确保讨论有序进行"),
+		],
+	},
+	{
+		id: 23,
+		category: "COMMUNICATION",
+		scenario: "在为团队争取资源和支持时，你会？",
+		options: [
+			D("直接向上级争取，用结果和数据证明价值"),
+			I("通过良好的关系和影响力为团队争取更多支持"),
+			S("稳步积累信任，在合适时机提出资源需求"),
+			C("用详细的业务案例和ROI分析说服决策层"),
+		],
+	},
+	{
+		id: 24,
+		category: "COMMUNICATION",
+		scenario: "当你发现自己的管理方式出现了问题时，你会？",
+		options: [
+			D("直接承认错误，快速调整方向"),
+			I("和团队坦诚沟通，共同探索更好的方式"),
+			S("认真反思，慢慢调整，确保改变有持续效果"),
+			C("系统分析管理问题的根本原因，制定针对性的改进方案"),
+		],
+	},
+	{
+		id: 25,
+		category: "COMMUNICATION",
+		scenario: "当你发现下属能力不足以完成当前任务时，你会？",
+		options: [
+			D("明确指出差距，制定提升计划，设定考核时间点"),
+			I("先激励成员的信心，再提供针对性的辅导和支持"),
+			S("逐步调整任务难度，让成员在安全环境中成长"),
+			C("系统评估能力差距，制定精准的培训和发展计划"),
+		],
+	},
+	// CHANGE MANAGEMENT
+	{
+		id: 26,
+		category: "CHANGE MANAGEMENT",
+		scenario: "面对团队整体的变革阻力，你会？",
+		options: [
+			D("推动变革，直接面对阻力，用结果证明变革的价值"),
+			I("用感染力和愿景打动团队，减少对变革的恐惧"),
+			S("充分沟通变革的原因，给团队足够的时间适应"),
+			C("深入了解阻力的具体原因，提出系统的解决方案"),
+		],
+	},
+	{
+		id: 27,
+		category: "CHANGE MANAGEMENT",
+		scenario: "当公司面临转型或重大战略调整时，你会？",
+		options: [
+			D("快速判断趋势，主动推动团队在转型中占得先机"),
+			I("用积极的愿景激励团队拥抱变化，共同创造新机遇"),
+			S("确保团队在转型期间的稳定，减少不确定性带来的焦虑"),
+			C("深入分析转型的背景和影响，为团队制定清晰的应对路径"),
+		],
+	},
+	{
+		id: 28,
+		category: "CHANGE MANAGEMENT",
+		scenario: "需要推动团队接受一种新的工作方式时，你会？",
+		options: [
+			D("明确说明新方式的好处，直接推动执行"),
+			I("用热情展示新方式的可能性，激励团队主动拥抱变化"),
+			S("给团队足够时间适应，循序渐进地推进改变"),
+			C("用数据和案例证明新方式的有效性，再系统推进落地"),
+		],
+	},
+	{
+		id: 29,
+		category: "CHANGE MANAGEMENT",
+		scenario: "面对突发危机（如重大客户流失、关键成员离职），你会？",
+		options: [
+			D("快速稳定局面，立即采取行动，推动问题解决"),
+			I("安抚团队情绪，用乐观的态度帮助大家找到出路"),
+			S("确保核心业务稳定，有序推进危机应对"),
+			C("详细评估危机影响，制定分步骤的应对和恢复计划"),
+		],
+	},
+	{
+		id: 30,
+		category: "CHANGE MANAGEMENT",
+		scenario: "如何在战略上看待团队的长期发展？",
+		options: [
+			D("持续提高团队战斗力，追求更高的目标"),
+			I("打造一个让每个人都想留下来、充满活力的团队"),
+			S("保持团队稳定发展，减少人员流动，积累长期能力"),
+			C("建立标准化体系，提升团队整体的专业水平"),
+		],
+	},
+	// CONFLICT RESOLUTION
+	{
+		id: 31,
+		category: "CONFLICT RESOLUTION",
+		scenario: "团队成员之间出现了严重矛盾，你会？",
+		options: [
+			D("直接介入，推动双方快速解决矛盾，恢复团队战斗力"),
+			I("分别和双方沟通，用温和的方式化解冲突"),
+			S("给双方冷静时间，再以中立者身份推动和解"),
+			C("客观分析矛盾根源，基于事实帮助双方找到解决方案"),
+		],
+	},
+	{
+		id: 32,
+		category: "CONFLICT RESOLUTION",
+		scenario: "当团队在执行中遇到重大障碍时，你会？",
+		options: [
+			D("快速评估，直接拍板解决方案，推动团队继续前进"),
+			I("激发团队集思广益，用共同创意找到突破口"),
+			S("耐心帮助团队逐步拆解问题，稳健推进解决"),
+			C("系统分析障碍的成因，制定精准的排障方案"),
+		],
+	},
+	{
+		id: 33,
+		category: "CONFLICT RESOLUTION",
+		scenario: "如何在管理中平衡短期绩效和长期发展？",
+		options: [
+			D("优先保证短期结果，在此基础上兼顾长期发展"),
+			I("通过激励和文化建设实现短期和长期的双赢"),
+			S("在短期和长期之间寻求稳定平衡，避免走极端"),
+			C("基于数据分析，制定科学的短期和长期目标框架"),
+		],
+	},
+	{
+		id: 34,
+		category: "CONFLICT RESOLUTION",
+		scenario: "当你需要在影响深远的组织决策上做判断时，你会？",
+		options: [
+			D("快速评估，果断决策，全力推进执行"),
+			I("广泛征求团队和利益相关者的意见，凝聚共识后决策"),
+			S("充分评估各方影响，确保决策对团队稳定性的冲击最小"),
+			C("全面收集数据，模拟不同决策的可能影响后再做决定"),
+		],
+	},
+	{
+		id: 35,
+		category: "CONFLICT RESOLUTION",
+		scenario: "在你的管理中，最重要的成就是？",
+		options: [
+			D("带领团队实现重大突破，超越预期目标"),
+			I("帮助成员成长，建立了一支充满凝聚力的团队"),
+			S("维持了团队的长期稳定和可持续发展"),
+			C("建立了一套高效、可复用的团队管理体系"),
+		],
+	},
+	// COACHING & DEVELOPMENT
+	{
+		id: 36,
+		category: "COACHING & DEVELOPMENT",
+		scenario: "在发掘和培养团队中的高潜人才时，你会？",
+		options: [
+			D("给予挑战性的任务，推动高潜人才快速成长"),
+			I("帮助高潜人才建立影响力和人际网络，拓展视野"),
+			S("为高潜人才创造稳定的成长环境，提供持续支持"),
+			C("制定系统的发展计划，用量化指标追踪成长进展"),
+		],
+	},
+	{
+		id: 37,
+		category: "COACHING & DEVELOPMENT",
+		scenario: "你如何看待管理者的学习和成长？",
+		options: [
+			D("通过挑战更高难度的任务和目标来持续成长"),
+			I("通过与优秀的同行和导师的交流获得成长"),
+			S("通过稳扎稳打的实践积累，持续提升管理能力"),
+			C("通过系统的学习和深入的自我反思实现成长"),
+		],
+	},
+	{
+		id: 38,
+		category: "COACHING & DEVELOPMENT",
+		scenario: "如何在管理中建立团队信任？",
+		options: [
+			D("言出必行，用一致的行为建立团队对你的信任"),
+			I("通过真诚的关心和开放的沟通建立信任"),
+			S("通过长期稳定的支持和陪伴建立深厚信任"),
+			C("通过专业能力和公正公平的行为建立信任"),
+		],
+	},
+	{
+		id: 39,
+		category: "COACHING & DEVELOPMENT",
+		scenario: "你如何在管理中处理团队的多元化和包容性？",
+		options: [
+			D("关注能力和结果，不因背景差异影响对人的评价"),
+			I("积极欣赏不同背景带来的多元视角，促进相互学习"),
+			S("创造一个让每个人都感到被接纳和安全的团队环境"),
+			C("制定明确的团队规范，确保每个人受到公平对待"),
+		],
+	},
+	{
+		id: 40,
+		category: "COACHING & DEVELOPMENT",
+		scenario: "在你的管理理念中，最重要的是？",
+		options: [
+			D("结果导向、执行力强、敢于担责"),
+			I("以人为本、激发潜能、营造正能量"),
+			S("稳定发展、建立信任、长期经营"),
+			C("系统思考、流程优化、专业精进"),
+		],
+	},
+];
+
+// ─── 导出 ──────────────────────────────────────────────────────────────────────
+
+export const QUIZ_QUESTIONS_BY_THEME = {
+	professional: PROFESSIONAL_QUESTIONS,
+	relationship: RELATIONSHIP_QUESTIONS,
+	leadership: LEADERSHIP_QUESTIONS,
+} as const;
+
+export const QUICK_QUESTION_COUNT = 20;
+
+// Backward compatibility
+export const QUIZ_QUESTIONS = PROFESSIONAL_QUESTIONS;

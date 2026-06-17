@@ -1,7 +1,8 @@
 import { themes } from "@PersonalityTest/api/data/themes/index";
 import { Input, ScrollView, Text, View } from "@tarojs/components";
-import Taro, { useLoad, useShow } from "@tarojs/taro";
+import Taro, { useDidShow, useLoad } from "@tarojs/taro";
 import { useCallback, useState } from "react";
+import { Icon } from "../../components/icon";
 import { DISC_COLORS } from "../../data/disc-colors";
 import type { ThemeId } from "../../utils/quiz-store";
 import { quizStore } from "../../utils/quiz-store";
@@ -29,21 +30,27 @@ export default function History() {
 		loadRecords();
 	});
 
-	useShow(() => {
+	useDidShow(() => {
 		loadRecords();
 	});
 
-	const filtered = records.filter((r) => {
+	const filtered = records.filter((r: HistoryRecord) => {
+		if (!r.dominantType) {
+			return false;
+		}
 		if (!search) {
 			return true;
 		}
 		const q = search.toLowerCase();
 		const color = DISC_COLORS[r.dominantType];
+		if (!color) {
+			return false;
+		}
 		return (
 			r.dominantType.toLowerCase().includes(q) ||
 			color.label.includes(q) ||
-			r.date.includes(q) ||
-			r.note.toLowerCase().includes(q)
+			(r.date && r.date.includes(q)) ||
+			(r.note && r.note.toLowerCase().includes(q))
 		);
 	});
 
@@ -52,7 +59,7 @@ export default function History() {
 			...record,
 			theme: (record.theme as ThemeId) ?? "professional",
 		});
-		Taro.navigateTo({ url: "/pages/result/index" });
+		Taro.navigateTo({ url: `/pages/result/index?historyId=${record.id}` });
 	};
 
 	const handleDelete = (id: string) => {
@@ -62,7 +69,9 @@ export default function History() {
 			success: (res) => {
 				if (res.confirm) {
 					storage.deleteHistoryRecord(id);
-					setRecords((prev) => prev.filter((r) => r.id !== id));
+					setRecords((prev: HistoryRecord[]) =>
+						prev.filter((r: HistoryRecord) => r.id !== id)
+					);
 				}
 			},
 		});
@@ -72,10 +81,15 @@ export default function History() {
 		<View className="history-page">
 			{/* Search */}
 			<View className="search-bar">
-				<Text className="search-icon">🔍</Text>
+				<Icon
+					color="#727785"
+					name="search"
+					size={28}
+					style={{ marginRight: "8rpx" }}
+				/>
 				<Input
 					className="search-input"
-					onInput={(e) => setSearch(e.detail.value)}
+					onInput={(e: any) => setSearch(e.detail.value)}
 					placeholder="搜索类型、日期..."
 					placeholderClass="search-placeholder"
 					value={search}
@@ -90,7 +104,12 @@ export default function History() {
 			<ScrollView className="records-list" scrollY>
 				{filtered.length === 0 ? (
 					<View className="empty-state">
-						<Text className="empty-icon">📋</Text>
+						<Icon
+							color="#c2c6d6"
+							name="history"
+							size={96}
+							style={{ marginBottom: "24rpx" }}
+						/>
 						<Text className="empty-title">
 							{search ? "没有匹配的记录" : "还没有测评记录"}
 						</Text>
@@ -110,48 +129,56 @@ export default function History() {
 						)}
 					</View>
 				) : (
-					filtered.map((record) => {
-						const color = DISC_COLORS[record.dominantType];
-						const typeColor = TYPE_COLORS[record.dominantType];
+					filtered.map((record: HistoryRecord) => {
+						const color = record.dominantType
+							? DISC_COLORS[record.dominantType]
+							: null;
+						const typeColor = record.dominantType
+							? TYPE_COLORS[record.dominantType]
+							: "#0058be";
 						return (
 							<View className="record-card" key={record.id}>
 								<View className="record-header">
 									<View
 										className="type-badge"
-										style={{ backgroundColor: `${typeColor}20` }}
+										style={{ backgroundColor: `${typeColor}15` }}
 									>
 										<Text className="type-letter" style={{ color: typeColor }}>
 											{record.dominantType}
 										</Text>
 									</View>
 									<View className="record-meta">
-										<Text className="record-type-name">{color.label}</Text>
+										<Text className="record-type-name">
+											{color
+												? `${color.label} (${record.dominantType})`
+												: "未知类型"}
+										</Text>
 										<Text className="record-date">{record.date}</Text>
 									</View>
 									<View
 										className="delete-btn"
 										onClick={() => handleDelete(record.id)}
 									>
-										<Text className="delete-icon">🗑</Text>
+										<Icon color="#ba1a1a" name="trash" size={32} />
 									</View>
 								</View>
-								{record.theme && (
+								{record.theme && themes[record.theme as ThemeId] && (
 									<View
 										className="theme-tag"
 										style={{
-											backgroundColor: `${themes[record.theme as ThemeId]?.cardTheme.primaryColor}15`,
-											borderColor: `${themes[record.theme as ThemeId]?.cardTheme.primaryColor}30`,
+											backgroundColor: `${themes[record.theme as ThemeId].cardTheme.primaryColor}15`,
+											borderColor: `${themes[record.theme as ThemeId].cardTheme.primaryColor}30`,
 										}}
 									>
 										<Text
 											className="theme-tag-text"
 											style={{
 												color:
-													themes[record.theme as ThemeId]?.cardTheme
+													themes[record.theme as ThemeId].cardTheme
 														.primaryColor,
 											}}
 										>
-											{themes[record.theme as ThemeId]?.name}
+											{themes[record.theme as ThemeId].name}
 										</Text>
 									</View>
 								)}

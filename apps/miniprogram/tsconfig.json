@@ -10,7 +10,12 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "noEmit": true,
+    "ignoreDeprecations": "6.0",
+    "baseUrl": ".",
     "paths": {
+      "react": ["./node_modules/@types/react"],
+      "react-dom": ["./node_modules/@types/react-dom"],
+      "@types/react": ["./node_modules/@types/react"],
       "@/*": ["./src/*"]
     }
   },

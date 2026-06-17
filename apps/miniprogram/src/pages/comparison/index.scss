@@ -1,7 +1,8 @@
 .comparison-page {
-  background: #0f172a;
+  background: #f9f9ff;
   min-height: 100vh;
   padding: 0 40rpx;
+  box-sizing: border-box;
 
   &.loading,
   &.error {
@@ -13,7 +14,8 @@
   .loading-text,
   .error-text {
     font-size: 28rpx;
-    color: #64748b;
+    color: #727785;
+    font-weight: 500;
   }
 }
 
@@ -25,14 +27,15 @@
     display: block;
     font-size: 48rpx;
     font-weight: 800;
-    color: #f8fafc;
+    color: #151c27;
     margin-bottom: 12rpx;
+    font-family: 'Manrope', sans-serif;
   }
 
   .comparison-sub {
     display: block;
     font-size: 26rpx;
-    color: #64748b;
+    color: #727785;
   }
 }
 
@@ -45,43 +48,48 @@
 
   .type-card {
     flex: 1;
-    background: rgba(30, 41, 59, 0.6);
+    background: #ffffff;
     border-radius: 24rpx;
     padding: 32rpx 20rpx;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 10rpx;
+    box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.03);
 
     .type-tag {
       font-size: 72rpx;
       font-weight: 900;
+      font-family: 'Manrope', sans-serif;
     }
 
     .type-name {
       font-size: 26rpx;
-      color: #e2e8f0;
-      font-weight: 600;
+      color: #151c27;
+      font-weight: 700;
     }
 
     .type-role {
       font-size: 22rpx;
-      color: #64748b;
+      color: #727785;
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
     }
   }
 
   .my-card {
-    border: 1rpx solid rgba(59, 130, 246, 0.3);
+    border: 1rpx solid rgba(0, 88, 190, 0.2);
   }
 
   .friend-card {
-    border: 1rpx solid rgba(249, 115, 22, 0.3);
+    border: 1rpx solid rgba(245, 158, 11, 0.2);
   }
 
   .vs-text {
     font-size: 36rpx;
     font-weight: 900;
-    color: #475569;
+    color: #c2c6d6;
+    font-family: 'JetBrains Mono', monospace;
   }
 }
 
@@ -92,26 +100,30 @@
 }
 
 .insight-card {
-  background: rgba(59, 130, 246, 0.08);
-  border: 1rpx solid rgba(59, 130, 246, 0.2);
+  background: rgba(0, 88, 190, 0.04);
+  border: 1rpx solid rgba(0, 88, 190, 0.1);
   border-radius: 24rpx;
   padding: 32rpx;
   margin-bottom: 40rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.02);
 
   .insight-label {
     display: block;
     font-size: 22rpx;
     font-weight: 700;
-    color: #3b82f6;
+    color: #0058be;
     letter-spacing: 2rpx;
+    text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace;
     margin-bottom: 16rpx;
   }
 
   .insight-text {
     display: block;
     font-size: 28rpx;
-    color: #e2e8f0;
+    color: #424754;
     line-height: 1.7;
+    font-weight: 500;
   }
 }
 
@@ -121,9 +133,10 @@
   .section-title {
     display: block;
     font-size: 34rpx;
-    font-weight: 700;
-    color: #f8fafc;
+    font-weight: 800;
+    color: #151c27;
     margin-bottom: 32rpx;
+    font-family: 'Manrope', sans-serif;
   }
 
   .score-compare-row {
@@ -138,6 +151,7 @@
       width: 40rpx;
       flex-shrink: 0;
       text-align: center;
+      font-family: 'JetBrains Mono', monospace;
     }
 
     .compare-bars {
@@ -149,7 +163,7 @@
       .bar-wrap {
         width: 100%;
         height: 12rpx;
-        background: rgba(30, 41, 59, 0.8);
+        background: #e2e8f3;
         border-radius: 999rpx;
         overflow: hidden;
 
@@ -160,21 +174,22 @@
         }
 
         .my-bar {
-          background: #3b82f6;
+          background: #0058be;
         }
 
         .friend-bar {
-          background: #f97316;
+          background: #f59e0b;
         }
       }
     }
 
     .compare-pct {
       font-size: 22rpx;
-      color: #64748b;
+      color: #727785;
       width: 140rpx;
       flex-shrink: 0;
       text-align: center;
+      font-family: 'JetBrains Mono', monospace;
     }
   }
 }
@@ -189,27 +204,33 @@
     border-radius: 24rpx;
     padding: 36rpx 0;
     text-align: center;
+    transition: all 0.2s;
+
+    &:active {
+      transform: scale(0.98);
+    }
 
     .action-btn-text {
       font-size: 30rpx;
-      font-weight: 600;
-      color: #f8fafc;
+      font-weight: 700;
+      color: #ffffff;
     }
 
     .action-btn-text-muted {
       font-size: 30rpx;
-      font-weight: 500;
-      color: #94a3b8;
+      font-weight: 600;
+      color: #727785;
     }
   }
 
   .share-btn {
-    background: rgba(16, 185, 129, 0.15);
-    border: 1rpx solid rgba(16, 185, 129, 0.3);
+    background: #0058be;
+    box-shadow: 0 16rpx 32rpx rgba(0, 88, 190, 0.2);
   }
 
   .retake-btn {
-    background: rgba(30, 41, 59, 0.6);
-    border: 1rpx solid rgba(71, 85, 105, 0.3);
+    background: #ffffff;
+    border: 1rpx solid #e2e8f8;
+    box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.02);
   }
 }

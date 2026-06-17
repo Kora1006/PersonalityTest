@@ -1,7 +1,8 @@
 import { themes } from "@PersonalityTest/api/data/themes/index";
 import { Image, ScrollView, Text, View } from "@tarojs/components";
-import Taro, { useLoad, useShow } from "@tarojs/taro";
+import Taro, { useDidShow, useLoad } from "@tarojs/taro";
 import { useEffect, useRef, useState } from "react";
+import { Icon } from "../../components/icon";
 import { DISC_COLORS } from "../../data/disc-colors";
 import { quizStore } from "../../utils/quiz-store";
 import { fetchMiniQrcode } from "../../utils/share-card";
@@ -29,14 +30,19 @@ export default function Detail() {
 	const [inviteLoading, setInviteLoading] = useState(false);
 	const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-	const result = quizStore.getLastResult();
+	const [result, setResult] = useState(quizStore.getLastResult());
 
 	useLoad(() => {
 		Taro.setNavigationBarTitle({ title: "深度解析" });
+		const r = quizStore.getLastResult();
+		if (!r) {
+			Taro.navigateBack();
+			return;
+		}
+		setResult(r);
 	});
 
-	// Fetch unlock status when page shows (also handles polling refresh)
-	useShow(() => {
+	useDidShow(() => {
 		if (!result) {
 			return;
 		}
@@ -53,7 +59,6 @@ export default function Detail() {
 			.catch(() => null);
 	});
 
-	// Poll every 5s while modal is open
 	useEffect(() => {
 		if (!(showInviteModal && result)) {
 			return;
@@ -90,8 +95,7 @@ export default function Detail() {
 	}, [showInviteModal, result]);
 
 	if (!result) {
-		Taro.navigateBack();
-		return null;
+		return <View className="detail-page" />;
 	}
 
 	const themeConfig = themes[result.theme ?? "professional"];
@@ -129,10 +133,9 @@ export default function Detail() {
 			setInviteQrcode(qr);
 			setShowInviteModal(true);
 
-			// T-018: Request subscribe message permission
+			// @ts-expect-error
 			Taro.requestSubscribeMessage({
 				tmplIds: [process.env.TARO_APP_SUBSCRIBE_TEMPLATE_ID ?? ""],
-				// @ts-expect-error
 				success: () => null,
 				fail: () => null,
 			});
@@ -153,7 +156,7 @@ export default function Detail() {
 			<View className="detail-header">
 				<View
 					className="type-icon"
-					style={{ backgroundColor: `${typeColor}20` }}
+					style={{ backgroundColor: `${typeColor}15` }}
 				>
 					<Text className="type-letter" style={{ color: typeColor }}>
 						{result.dominantType}
@@ -162,7 +165,7 @@ export default function Detail() {
 				<View className="type-info">
 					<Text className="type-name">{typeContent.name}</Text>
 					<Text className="type-fullname">
-						{color.label} · {themeConfig.name}
+						主要类型：{color.label} ({result.dominantType})
 					</Text>
 				</View>
 				<View className="score-badge">
@@ -181,7 +184,15 @@ export default function Detail() {
 
 			{/* Core Strengths */}
 			<View className="section">
-				<Text className="section-title">核心优势</Text>
+				<View className="section-header-flex">
+					<Icon
+						color={typeColor}
+						name="workspace_premium"
+						size={36}
+						style={{ marginRight: "12rpx" }}
+					/>
+					<Text className="section-title">核心优势</Text>
+				</View>
 				<View className="strengths-list">
 					{typeContent.strengths.map((s) => (
 						<View className="strength-chip" key={s}>
@@ -193,9 +204,17 @@ export default function Detail() {
 
 			{/* Deep Analysis — 3 themed sections */}
 			<View className="section">
-				<Text className="section-title">
-					{typeContent.detailAnalysis.section1Title}
-				</Text>
+				<View className="section-header-flex">
+					<Icon
+						color={typeColor}
+						name="corporate_fare"
+						size={36}
+						style={{ marginRight: "12rpx" }}
+					/>
+					<Text className="section-title">
+						{typeContent.detailAnalysis.section1Title}
+					</Text>
+				</View>
 				<View className="info-card">
 					<Text className="info-text">
 						{typeContent.detailAnalysis.section1Content}
@@ -204,9 +223,17 @@ export default function Detail() {
 			</View>
 
 			<View className="section">
-				<Text className="section-title">
-					{typeContent.detailAnalysis.section2Title}
-				</Text>
+				<View className="section-header-flex">
+					<Icon
+						color={typeColor}
+						name="forum"
+						size={36}
+						style={{ marginRight: "12rpx" }}
+					/>
+					<Text className="section-title">
+						{typeContent.detailAnalysis.section2Title}
+					</Text>
+				</View>
 				<View className="info-card">
 					<Text className="info-text">
 						{typeContent.detailAnalysis.section2Content}
@@ -215,9 +242,17 @@ export default function Detail() {
 			</View>
 
 			<View className="section">
-				<Text className="section-title">
-					{typeContent.detailAnalysis.section3Title}
-				</Text>
+				<View className="section-header-flex">
+					<Icon
+						color={typeColor}
+						name="psychology"
+						size={36}
+						style={{ marginRight: "12rpx" }}
+					/>
+					<Text className="section-title">
+						{typeContent.detailAnalysis.section3Title}
+					</Text>
+				</View>
 				<View className="info-card">
 					<Text className="info-text">
 						{typeContent.detailAnalysis.section3Content}
@@ -227,21 +262,32 @@ export default function Detail() {
 
 			{/* Growth Areas */}
 			<View className="section">
-				<Text className="section-title">成长方向</Text>
-				{typeContent.growthAreas.map((area) => (
-					<View className="habit-card" key={area}>
-						<Text className="habit-desc" style={{ color: typeColor }}>
-							• {area}
-						</Text>
-					</View>
-				))}
+				<View className="section-header-flex">
+					<Icon
+						color={typeColor}
+						name="trending_up"
+						size={36}
+						style={{ marginRight: "12rpx" }}
+					/>
+					<Text className="section-title">成长机会</Text>
+				</View>
+				<View className="growth-grid">
+					{typeContent.growthAreas.map((area, idx) => (
+						<View className="habit-card" key={area}>
+							<Text className="habit-title" style={{ color: typeColor }}>
+								SUGGESTION {idx + 1}
+							</Text>
+							<Text className="habit-desc">{area}</Text>
+						</View>
+					))}
+				</View>
 			</View>
 
 			{/* Report Download CTA */}
 			<View className="report-section">
-				<Text className="report-title">完整深度报告</Text>
+				<Text className="report-title">解锁完整档案</Text>
 				<Text className="report-desc">
-					30 页专业报告，包含行为盲点分析、职业路径建议、团队协作指南
+					获取完整的 30 页 PDF 分析，包括盲点和团队动态。
 				</Text>
 				{isUnlocked ? (
 					<View className="unlocked-badge">
@@ -270,7 +316,7 @@ export default function Detail() {
 
 			<View style={{ height: "80rpx" }} />
 
-			{/* Invite Unlock Modal (T-017) */}
+			{/* Invite Unlock Modal */}
 			{showInviteModal && (
 				<View
 					className="modal-overlay"
@@ -279,7 +325,6 @@ export default function Detail() {
 					<View className="modal-card" onClick={(e) => e.stopPropagation()}>
 						<Text className="modal-title">邀请好友解锁报告</Text>
 
-						{/* Progress */}
 						<View className="progress-track">
 							{Array.from({ length: needed }, (_, i) => i).map((i) => (
 								<View

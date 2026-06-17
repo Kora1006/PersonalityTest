@@ -2,39 +2,32 @@ import { themes } from "@PersonalityTest/api/data/themes/index";
 import { ScrollView, Text, View } from "@tarojs/components";
 import Taro, { useLoad } from "@tarojs/taro";
 import { useMemo, useState } from "react";
+import { Icon } from "../../components/icon";
 import type { DiscType } from "../../data/disc-colors";
-import { QUIZ_QUESTIONS } from "../../data/quiz-questions";
+import {
+	QUICK_QUESTION_COUNT,
+	QUIZ_QUESTIONS_BY_THEME,
+} from "../../data/quiz-questions";
 import type { ThemeId } from "../../utils/quiz-store";
 import { quizStore } from "../../utils/quiz-store";
 import { storage } from "../../utils/storage";
-import { trpc } from "../../utils/trpc";
+import { syncLocalHistoryToServer, trpc } from "../../utils/trpc";
 import "./index.scss";
-
-const QUICK_QUESTION_IDS = [1, 5, 9, 2, 6, 10, 3, 7, 11, 4, 8, 12];
 
 function shuffleOptions<T>(arr: T[], seed: number): T[] {
 	const out = [...arr];
 	for (let i = out.length - 1; i > 0; i--) {
 		const h = (seed * 1_664_525 + i * 22_695_477) % 2_147_483_647;
 		const j = Math.abs(h) % (i + 1);
-		[out[i], out[j]] = [out[j], out[i]];
+		const temp = out[i] as T;
+		out[i] = out[j] as T;
+		out[j] = temp;
 	}
 	return out;
 }
 
-const COLORS: Record<string, string> = {
-	D: "#ef4444",
-	I: "#f59e0b",
-	S: "#10b981",
-	C: "#3b82f6",
-};
-
 export default function Quiz() {
 	const mode = quizStore.getMode();
-	const questions =
-		mode === "quick"
-			? QUIZ_QUESTIONS.filter((q) => QUICK_QUESTION_IDS.includes(q.id))
-			: QUIZ_QUESTIONS;
 
 	const [currentIndex, setCurrentIndex] = useState(() =>
 		quizStore.getCurrentQuestion()
@@ -42,21 +35,29 @@ export default function Quiz() {
 	const [answers, setAnswers] = useState<Record<number, DiscType>>({});
 	const [themeId, setThemeId] = useState<ThemeId>(quizStore.getTheme());
 
+	const questions = useMemo(() => {
+		const all =
+			QUIZ_QUESTIONS_BY_THEME[themeId] ?? QUIZ_QUESTIONS_BY_THEME.professional;
+		return mode === "quick" ? all.slice(0, QUICK_QUESTION_COUNT) : all;
+	}, [themeId, mode]);
+
 	useLoad((options: { theme?: string; mode?: string } = {}) => {
 		const paramTheme = (options.theme as ThemeId) || "professional";
 		const paramMode = (options.mode as "full" | "quick") || "full";
 		if (paramTheme !== quizStore.getTheme() || paramMode !== mode) {
 			quizStore.reset(paramMode, paramTheme);
+			setCurrentIndex(0);
+			setAnswers({});
 		} else {
 			quizStore.setTheme(paramTheme);
 		}
 		setThemeId(paramTheme);
 		Taro.setNavigationBarTitle({
-			title: mode === "quick" ? "快速测评" : "DISC 测评",
+			title: paramMode === "quick" ? "快速测评" : "DISC 测评",
 		});
 	});
 
-	const question = questions[currentIndex];
+	const question = questions[currentIndex]!;
 	const total = questions.length;
 	const progress = ((currentIndex + 1) / total) * 100;
 	const isLast = currentIndex === total - 1;
@@ -71,7 +72,7 @@ export default function Quiz() {
 		setAnswers((prev) => ({ ...prev, [currentIndex]: type }));
 	};
 
-	const handleNext = () => {
+	const handleNext = async () => {
 		if (!currentAnswer) {
 			return;
 		}
@@ -79,15 +80,16 @@ export default function Quiz() {
 		quizStore.setAnswer(currentIndex, currentAnswer);
 
 		if (isLast) {
-			// Submit: compute final result
 			for (const [idx, choice] of Object.entries(answers)) {
 				quizStore.setAnswer(Number(idx), choice);
 			}
 			const result = quizStore.buildResult();
 			quizStore.setLastResult(result);
 			storage.addHistoryRecord(result);
+			if (storage.getToken()) {
+				await syncLocalHistoryToServer().catch(() => null);
+			}
 
-			// Handle pending invitation from QR code scan
 			const pending = storage.getPendingInvitation();
 			if (pending) {
 				storage.clearPendingInvitation();
@@ -131,11 +133,14 @@ export default function Quiz() {
 		<View className="quiz-page">
 			{/* Header */}
 			<View className="quiz-header">
-				<View className="back-btn" onClick={handleBack}>
-					<Text className="back-icon">←</Text>
+				<View className="header-left">
+					<View className="back-btn" onClick={handleBack}>
+						<Icon color="#0058be" name="arrow_back" size={36} />
+					</View>
+					<Text className="header-title">DISC 测评</Text>
 				</View>
 				<Text className="progress-text">
-					{currentIndex + 1} / {total}
+					第 {currentIndex + 1} / {total} 题
 				</Text>
 			</View>
 
@@ -149,46 +154,46 @@ export default function Quiz() {
 				</View>
 			</View>
 
-			{/* Question */}
+			{/* Question content */}
 			<ScrollView className="quiz-content" scrollY>
-				<Text className="question-category">{question.category}</Text>
-				<Text className="question-text">
-					{themes[themeId].questionPrefix}
-					{question.scenario}
-				</Text>
+				<View className="question-wrap">
+					<Text className="question-text">
+						{themes[themeId].questionPrefix}
+						{question.scenario}
+					</Text>
 
-				{mode === "quick" && (
-					<View className="quick-badge">
-						<Text className="quick-badge-text">快速版</Text>
-					</View>
-				)}
-
-				{/* Options */}
-				{shuffledOptions.map((option) => {
-					const isSelected = currentAnswer === option.type;
-					return (
-						<View
-							className={`option-card ${isSelected ? "option-selected" : ""}`}
-							key={option.type}
-							onClick={() => handleAnswer(option.type)}
-						>
-							<View className="option-inner">
-								<View className={`radio ${isSelected ? "radio-checked" : ""}`}>
-									{isSelected && <Text className="radio-check">✓</Text>}
-								</View>
-								<Text className="option-text">{option.text}</Text>
-							</View>
-							<Text
-								className="option-subtitle"
-								style={{ color: COLORS[option.type] }}
-							>
-								{option.subtitle}
-							</Text>
+					{mode === "quick" && (
+						<View className="quick-badge">
+							<Text className="quick-badge-text">快速版</Text>
 						</View>
-					);
-				})}
+					)}
 
-				<View style={{ height: "200rpx" }} />
+					{/* Options list */}
+					<View className="options-list">
+						{shuffledOptions.map((option) => {
+							const isSelected = currentAnswer === option.type;
+							return (
+								<View
+									className={`option-card ${isSelected ? "option-selected" : ""}`}
+									key={option.type}
+									onClick={() => handleAnswer(option.type)}
+								>
+									<View className="option-flex">
+										<View
+											className={`radio ${isSelected ? "radio-checked" : ""}`}
+										>
+											{isSelected && <View className="radio-inner" />}
+										</View>
+										<View className="option-content">
+											<Text className="option-text">{option.text}</Text>
+										</View>
+									</View>
+								</View>
+							);
+						})}
+					</View>
+				</View>
+				<View style={{ height: "100rpx" }} />
 			</ScrollView>
 
 			{/* Bottom Bar */}
@@ -198,7 +203,7 @@ export default function Quiz() {
 					onClick={handleNext}
 				>
 					<Text className="next-btn-text">
-						{isLast ? "提交结果" : "下一题 →"}
+						{isLast ? "提交结果" : "下一题"}
 					</Text>
 				</View>
 			</View>

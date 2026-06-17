@@ -8,6 +8,7 @@ import {
 import { env } from "@PersonalityTest/env/server";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { bearer } from "better-auth/plugins/bearer";
 import { Resend } from "resend";
 
 export function createAuth() {
@@ -46,7 +47,7 @@ export function createAuth() {
 				httpOnly: true,
 			},
 		},
-		plugins: [],
+		plugins: [bearer()],
 	});
 }
 

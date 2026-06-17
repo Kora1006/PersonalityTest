@@ -30,6 +30,14 @@
     "db:studio": {
       "cache": false,
       "persistent": true
+    },
+    "build:weapp": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
+    "dev:weapp": {
+      "cache": false,
+      "persistent": true
     }
   }
 }

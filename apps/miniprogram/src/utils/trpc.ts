@@ -12,7 +12,7 @@ function getAuthHeader(): Record<string, string> {
 export const trpc = {
 	async query<T>(path: string, input?: unknown): Promise<T> {
 		const inputStr =
-			input === undefined ? undefined : JSON.stringify({ 0: { json: input } });
+			input === undefined ? undefined : JSON.stringify({ 0: input });
 		const url = `${BASE_URL}/trpc/${path}?batch=1${inputStr ? `&input=${encodeURIComponent(inputStr)}` : ""}`;
 
 		const res = await Taro.request({
@@ -26,13 +26,13 @@ export const trpc = {
 		}
 
 		const results = res.data as Array<{
-			result?: { data?: { json?: T } };
-			error?: { json?: { message?: string } };
+			result?: { data?: T };
+			error?: { message?: string };
 		}>;
 		if (results[0]?.error) {
-			throw new Error(results[0].error.json?.message ?? "tRPC error");
+			throw new Error(results[0].error.message ?? "tRPC error");
 		}
-		return results[0]?.result?.data?.json as T;
+		return results[0]?.result?.data as T;
 	},
 
 	async mutate<T>(path: string, input?: unknown): Promise<T> {
@@ -40,7 +40,7 @@ export const trpc = {
 			url: `${BASE_URL}/trpc/${path}?batch=1`,
 			method: "POST",
 			header: { "Content-Type": "application/json", ...getAuthHeader() },
-			data: { 0: { json: input } },
+			data: { 0: input },
 		});
 
 		if (res.statusCode >= 400) {
@@ -48,12 +48,30 @@ export const trpc = {
 		}
 
 		const results = res.data as Array<{
-			result?: { data?: { json?: T } };
-			error?: { json?: { message?: string } };
+			result?: { data?: T };
+			error?: { message?: string };
 		}>;
 		if (results[0]?.error) {
-			throw new Error(results[0].error.json?.message ?? "tRPC error");
+			throw new Error(results[0].error.message ?? "tRPC error");
 		}
-		return results[0]?.result?.data?.json as T;
+		return results[0]?.result?.data as T;
 	},
 };
+
+export async function syncLocalHistoryToServer(): Promise<void> {
+	const token = storage.getToken();
+	if (!token) {
+		return;
+	}
+
+	const local = storage.getHistory();
+	if (local.length === 0) {
+		return;
+	}
+
+	try {
+		await trpc.mutate("assessments.syncHistory", local);
+	} catch (err) {
+		console.error("Failed to sync history to server:", err);
+	}
+}

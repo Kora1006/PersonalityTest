@@ -21,5 +21,5 @@ export const typeQuotes: Record<DiscType, string[]> = {
 
 export function getRandomQuote(type: DiscType): string {
 	const quotes = typeQuotes[type];
-	return quotes[Math.floor(Math.random() * quotes.length)];
+	return quotes[Math.floor(Math.random() * quotes.length)]!;
 }

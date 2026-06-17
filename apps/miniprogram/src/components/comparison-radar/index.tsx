@@ -32,26 +32,31 @@ function drawOneRadar(
 	scores: { D: number; I: number; S: number; C: number },
 	fillColor: string,
 	strokeColor: string,
+	maxScale: number,
 	progress: number
 ) {
 	const pts = AXES.map(({ type, angle }) => {
-		const r = maxR * (Math.max(scores[type], 5) / 100) * progress;
+		const r = maxR * (Math.max(scores[type], 5) / maxScale) * progress;
 		return toXY(cx, cy, angle, r);
 	});
 
+	const startPt = pts[0]!;
+
 	ctx.beginPath();
-	ctx.moveTo(pts[0].x, pts[0].y);
+	ctx.moveTo(startPt.x, startPt.y);
 	for (let i = 1; i < pts.length; i++) {
-		ctx.lineTo(pts[i].x, pts[i].y);
+		const p = pts[i]!;
+		ctx.lineTo(p.x, p.y);
 	}
 	ctx.closePath();
 	ctx.setFillStyle(fillColor);
 	ctx.fill();
 
 	ctx.beginPath();
-	ctx.moveTo(pts[0].x, pts[0].y);
+	ctx.moveTo(startPt.x, startPt.y);
 	for (let i = 1; i < pts.length; i++) {
-		ctx.lineTo(pts[i].x, pts[i].y);
+		const p = pts[i]!;
+		ctx.lineTo(p.x, p.y);
 	}
 	ctx.closePath();
 	ctx.setStrokeStyle(strokeColor);
@@ -59,12 +64,31 @@ function drawOneRadar(
 	ctx.stroke();
 
 	pts.forEach((p) => {
+		const pt = p!;
 		ctx.beginPath();
-		ctx.arc(p.x, p.y, 4, 0, 2 * Math.PI);
+		ctx.arc(pt.x, pt.y, 4, 0, 2 * Math.PI);
 		ctx.setFillStyle(strokeColor);
 		ctx.fill();
 	});
 }
+
+const requestAnimFrame = (cb: () => void): any => {
+	if (typeof requestAnimationFrame === "function") {
+		return requestAnimationFrame(cb);
+	}
+	return setTimeout(cb, 16);
+};
+
+const cancelAnimFrame = (id: any) => {
+	if (!id) {
+		return;
+	}
+	if (typeof cancelAnimationFrame === "function") {
+		cancelAnimationFrame(id);
+	} else {
+		clearTimeout(id);
+	}
+};
 
 export function ComparisonRadar({
 	myScores,
@@ -74,12 +98,24 @@ export function ComparisonRadar({
 }: ComparisonRadarProps) {
 	const cx = size / 2;
 	const cy = size / 2;
-	const maxR = size * 0.37;
+	const maxR = size * 0.35;
 
 	useEffect(() => {
 		const ctx = Taro.createCanvasContext(canvasId);
 		const start = Date.now();
 		const DURATION = 800;
+		let animId: any = null;
+
+		// Calculate max scale dynamically for comparison
+		const myMax = Math.max(myScores.D, myScores.I, myScores.S, myScores.C);
+		const friendMax = Math.max(
+			friendScores.D,
+			friendScores.I,
+			friendScores.S,
+			friendScores.C
+		);
+		const maxVal = Math.max(myMax, friendMax);
+		const maxScale = Math.max(50, Math.ceil(maxVal / 10) * 10);
 
 		function animate() {
 			const elapsed = Date.now() - start;
@@ -89,31 +125,28 @@ export function ComparisonRadar({
 			ctx.clearRect(0, 0, size, size);
 
 			// Grid rings
-			ctx.setStrokeStyle("rgba(71,85,105,0.4)");
+			ctx.setStrokeStyle("rgba(71,85,105,0.25)");
 			ctx.setLineWidth(1);
 			for (const pct of [25, 50, 75, 100]) {
 				const r = maxR * (pct / 100);
 				ctx.beginPath();
-				const ringPts = AXES.map(({ angle }) => toXY(cx, cy, angle, r));
-				ctx.moveTo(ringPts[0].x, ringPts[0].y);
-				ringPts.slice(1).forEach((p) => ctx.lineTo(p.x, p.y));
-				ctx.closePath();
+				ctx.arc(cx, cy, r, 0, 2 * Math.PI);
 				ctx.stroke();
 			}
 
 			// Axis lines + labels
 			AXES.forEach(({ angle, label }) => {
 				const end = toXY(cx, cy, angle, maxR);
-				ctx.setStrokeStyle("rgba(71,85,105,0.4)");
+				ctx.setStrokeStyle("rgba(71,85,105,0.25)");
 				ctx.setLineWidth(1);
 				ctx.beginPath();
 				ctx.moveTo(cx, cy);
 				ctx.lineTo(end.x, end.y);
 				ctx.stroke();
 
-				const lp = toXY(cx, cy, angle, maxR + 20);
-				ctx.setFontSize(14);
-				ctx.setFillStyle("#94a3b8");
+				const lp = toXY(cx, cy, angle, maxR + 16);
+				ctx.setFontSize(12);
+				ctx.setFillStyle("#727785");
 				ctx.setTextAlign("center");
 				ctx.setTextBaseline("middle");
 				ctx.fillText(label, lp.x, lp.y);
@@ -128,6 +161,7 @@ export function ComparisonRadar({
 				friendScores,
 				FRIEND_COLOR.fill,
 				FRIEND_COLOR.stroke,
+				maxScale,
 				progress
 			);
 			// My radar on top
@@ -139,17 +173,24 @@ export function ComparisonRadar({
 				myScores,
 				MY_COLOR.fill,
 				MY_COLOR.stroke,
+				maxScale,
 				progress
 			);
 
 			ctx.draw();
 
 			if (t < 1) {
-				requestAnimationFrame(animate);
+				animId = requestAnimFrame(animate);
 			}
 		}
 
-		requestAnimationFrame(animate);
+		animId = requestAnimFrame(animate);
+
+		return () => {
+			if (animId) {
+				cancelAnimFrame(animId);
+			}
+		};
 	}, [myScores, friendScores, canvasId, size, cx, cy, maxR]);
 
 	return (
@@ -160,7 +201,6 @@ export function ComparisonRadar({
 				canvasId={canvasId}
 				id={canvasId}
 				style={{ width: `${size}px`, height: `${size}px` }}
-				type="2d"
 			/>
 			<View
 				style={{

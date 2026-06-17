@@ -12,6 +12,8 @@
     "check-types": "turbo check-types",
     "dev:web": "turbo -F web dev",
     "dev:server": "turbo -F server dev",
+    "dev:miniprogram": "turbo -F miniprogram dev:weapp",
+    "build:weapp": "turbo -F miniprogram build:weapp",
     "db:push": "turbo -F @PersonalityTest/db db:push",
     "db:studio": "turbo -F @PersonalityTest/db db:studio",
     "db:generate": "turbo -F @PersonalityTest/db db:generate",
@@ -26,13 +28,15 @@
     "zod": "^4.1.13"
   },
   "devDependencies": {
-    "@PersonalityTest/config": "*",
     "@biomejs/biome": "2.4.16",
+    "@PersonalityTest/config": "*",
+    "@tarojs/taro-loader": "^4.2.0",
     "@types/node": "^22.13.14",
     "husky": "latest",
     "turbo": "^2.9.16",
     "typescript": "^6",
-    "ultracite": "7.8.3"
+    "ultracite": "7.8.3",
+    "webpack": "^5.91.0"
   },
   "packageManager": "npm@11.12.1"
 }

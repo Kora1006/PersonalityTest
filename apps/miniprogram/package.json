@@ -1,6 +1,7 @@
 {
   "name": "miniprogram",
   "version": "1.0.0",
+  "type": "commonjs",
   "private": true,
   "description": "DISC 职业性格测评 — 微信小程序",
   "scripts": {
@@ -19,15 +20,17 @@
     "zod": "^4.1.13"
   },
   "devDependencies": {
-    "@PersonalityTest/config": "*",
     "@babel/core": "^7.24.0",
+    "@babel/preset-react": "^7.29.7",
+    "@PersonalityTest/config": "*",
     "@tarojs/cli": "4.x",
-    "@tarojs/mini-runner": "4.x",
     "@tarojs/plugin-framework-react": "4.x",
+    "@tarojs/plugin-platform-weapp": "^4.2.0",
     "@tarojs/webpack5-runner": "4.x",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "babel-preset-taro": "4.x",
-    "typescript": "^6"
+    "typescript": "^6",
+    "webpack": "^5.91.0"
   }
 }
