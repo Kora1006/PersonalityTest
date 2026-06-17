@@ -1,8 +1,15 @@
 import { Component, type PropsWithChildren } from "react";
+import Taro from "@tarojs/taro";
 import "./app.scss";
 
 class App extends Component<PropsWithChildren<{}>> {
-	componentDidMount() {}
+	componentDidMount() {
+		if (process.env.TARO_ENV === "weapp") {
+			Taro.cloud.init({
+				traceUser: true,
+			});
+		}
+	}
 	componentDidShow() {}
 	componentDidHide() {}
 
