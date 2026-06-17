@@ -24,6 +24,7 @@ export const env = createEnv({
 		ALIPAY_NOTIFY_URL: z.string().optional(),
 		COOKIE_SECURE: z.string().optional(),
 		WECHAT_INVITE_TEMPLATE_ID: z.string().optional(),
+		WECHAT_AUDIT_MODE: z.string().optional().default("false"),
 	},
 	runtimeEnv: process.env,
 	skipValidation: !!process.env.SKIP_ENV_VALIDATION,

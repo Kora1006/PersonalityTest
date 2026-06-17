@@ -1,6 +1,5 @@
-import { themes } from "@PersonalityTest/api/data/themes/index";
-import { Image, ScrollView, Text, View } from "@tarojs/components";
-import Taro, { useLoad } from "@tarojs/taro";
+import { Button, Image, ScrollView, Text, View } from "@tarojs/components";
+import Taro, { useLoad, useShareAppMessage } from "@tarojs/taro";
 import { useState } from "react";
 import adviceMeetingImg from "../../assets/images/advice-meeting.png";
 import imageryLeftImg from "../../assets/images/imagery-left.png";
@@ -63,6 +62,10 @@ export default function Result() {
 	const [inviteLoading, setInviteLoading] = useState(false);
 	const [inviteQrcode, setInviteQrcode] = useState<string | null>(null);
 	const [inviteModal, setInviteModal] = useState(false);
+	const [currentInvitation, setCurrentInvitation] = useState<{
+		invitationId: string;
+		inviterResultId: string;
+	} | null>(null);
 	const mode = quizStore.getMode();
 
 	useLoad((options: Record<string, string | undefined>) => {
@@ -92,6 +95,21 @@ export default function Result() {
 		if (storage.getToken()) {
 			syncLocalHistoryToServer().catch(() => null);
 		}
+	});
+
+	useShareAppMessage((res) => {
+		if (res.from === "button" && currentInvitation) {
+			const themeConf = themes[result?.theme ?? "professional"];
+			return {
+				title: "快来测测你的 DISC 性格，和我进行性格默契度大比拼吧！",
+				path: `/pages/index/index?inv=${currentInvitation.invitationId}&rid=${currentInvitation.inviterResultId}`,
+				imageUrl: themeConf.heroImage || "",
+			};
+		}
+		return {
+			title: `我的 DISC 性格测评结果是【${result?.dominantType}】，快来测测你的！`,
+			path: `/pages/index/index`,
+		};
 	});
 
 	if (!result) {
@@ -154,13 +172,10 @@ export default function Result() {
 				inviterId: string;
 				inviterResultId: string;
 			}>("invitation.createInvitation", { resultId: result.id });
-			const scene = `inv=${inv.invitationId}&rid=${result.id}`;
-			const qrBase64 = await fetchMiniQrcode(scene);
-			setInviteQrcode(
-				qrBase64
-					? `data:image/png;base64,${qrBase64.replace("data:image/png;base64,", "")}`
-					: null
-			);
+			setCurrentInvitation({
+				invitationId: inv.invitationId,
+				inviterResultId: result.id,
+			});
 			setInviteModal(true);
 		} catch {
 			Taro.showToast({ title: "生成邀请失败", icon: "none" });
@@ -816,16 +831,16 @@ export default function Result() {
 					<View className="modal-card" onClick={(e) => e.stopPropagation()}>
 						<Text className="modal-title">邀请好友对比 DISC</Text>
 						<Text className="modal-desc">
-							让好友扫码完成测评，对比你们的性格差异
+							直接发送给微信好友，当好友完成测评后，即可查看双方的 DISC 对比报告。
 						</Text>
-						{inviteQrcode ? (
-							<Image className="invite-qrcode" src={inviteQrcode} />
-						) : (
-							<View className="qrcode-placeholder">
-								<Text className="qrcode-placeholder-text">
-									小程序码生成中...
-								</Text>
-							</View>
+						{currentInvitation && (
+							<Button
+								openType="share"
+								className="modal-share-btn"
+								onClick={() => setInviteModal(false)}
+							>
+								发送给微信好友
+							</Button>
 						)}
 						<View
 							className="modal-close-btn"

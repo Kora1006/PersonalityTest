@@ -35,10 +35,15 @@ const STATS = [
 ];
 
 export default function Index() {
-	useLoad((options: { scene?: string } | undefined) => {
+	useLoad((options: { scene?: string; inv?: string; rid?: string } | undefined) => {
 		Taro.setNavigationBarTitle({ title: "DISC 职业性格测评" });
 
-		if (options?.scene) {
+		if (options?.inv && options?.rid) {
+			storage.setPendingInvitation({
+				invitationId: options.inv,
+				inviterResultId: options.rid,
+			});
+		} else if (options?.scene) {
 			try {
 				const params = Object.fromEntries(
 					decodeURIComponent(options.scene)

@@ -349,6 +349,25 @@
       font-family: 'JetBrains Mono', monospace;
     }
 
+    .modal-share-btn {
+      width: 100%;
+      background: #0058be;
+      color: #ffffff;
+      font-size: 28rpx;
+      font-weight: 600;
+      border-radius: 16rpx;
+      padding: 24rpx 0;
+      margin-bottom: 24rpx;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      line-height: 1;
+      &::after {
+        border: none;
+      }
+    }
+
     .modal-close-btn {
       background: #f0f3ff;
       border-radius: 16rpx;

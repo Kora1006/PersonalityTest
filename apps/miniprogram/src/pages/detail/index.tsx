@@ -1,6 +1,6 @@
 import { themes } from "@PersonalityTest/api/data/themes/index";
-import { Image, ScrollView, Text, View } from "@tarojs/components";
-import Taro, { useDidShow, useLoad } from "@tarojs/taro";
+import { Button, Image, ScrollView, Text, View } from "@tarojs/components";
+import Taro, { useDidShow, useLoad, useShareAppMessage } from "@tarojs/taro";
 import { useEffect, useRef, useState } from "react";
 import { Icon } from "../../components/icon";
 import { DISC_COLORS } from "../../data/disc-colors";
@@ -28,6 +28,11 @@ export default function Detail() {
 	const [showInviteModal, setShowInviteModal] = useState(false);
 	const [inviteQrcode, setInviteQrcode] = useState<string | null>(null);
 	const [inviteLoading, setInviteLoading] = useState(false);
+	const [auditMode, setAuditMode] = useState(false);
+	const [currentInvitation, setCurrentInvitation] = useState<{
+		invitationId: string;
+		inviterResultId: string;
+	} | null>(null);
 	const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
 	const [result, setResult] = useState(quizStore.getLastResult());
@@ -46,6 +51,14 @@ export default function Detail() {
 		if (!result) {
 			return;
 		}
+
+		trpc
+			.query<{ auditMode: boolean }>("getSettings")
+			.then((cfg) => {
+				setAuditMode(cfg.auditMode);
+			})
+			.catch(() => null);
+
 		const user = storage.getUser();
 		if (!user) {
 			return;
@@ -57,6 +70,20 @@ export default function Detail() {
 			})
 			.then(setUnlockStatus)
 			.catch(() => null);
+	});
+
+	useShareAppMessage((res) => {
+		if (res.from === "button" && currentInvitation) {
+			return {
+				title: "帮我点一下，测测你的 DISC 性格，即可免费解锁性格画像！",
+				path: `/pages/index/index?inv=${currentInvitation.invitationId}&rid=${currentInvitation.inviterResultId}`,
+				imageUrl: themeConfig.heroImage || "",
+			};
+		}
+		return {
+			title: `想知道你的 DISC 性格画像吗？快来测测吧！`,
+			path: `/pages/index/index`,
+		};
 	});
 
 	useEffect(() => {
@@ -128,9 +155,10 @@ export default function Detail() {
 					resultId: result.id,
 				}
 			);
-			const scene = `inv=${inv.invitationId}&rid=${result.id}`;
-			const qr = await fetchMiniQrcode(scene);
-			setInviteQrcode(qr);
+			setCurrentInvitation({
+				invitationId: inv.invitationId,
+				inviterResultId: result.id,
+			});
 			setShowInviteModal(true);
 
 			// @ts-expect-error
@@ -146,7 +174,7 @@ export default function Detail() {
 		}
 	};
 
-	const isUnlocked = unlockStatus?.isUnlocked ?? false;
+	const isUnlocked = auditMode || (unlockStatus?.isUnlocked ?? false);
 	const inviteCount = unlockStatus?.inviteCount ?? 0;
 	const needed = unlockStatus?.needed ?? 2;
 
@@ -345,17 +373,17 @@ export default function Detail() {
 						</Text>
 
 						<Text className="modal-desc">
-							分享下方小程序码，好友完成测评即计入进度
+							直接发送给微信好友，好友点击完成测评即可为您增加进度。
 						</Text>
 
-						{inviteQrcode ? (
-							<Image className="invite-qrcode" src={inviteQrcode} />
-						) : (
-							<View className="qrcode-placeholder">
-								<Text className="qrcode-placeholder-text">
-									小程序码生成中...
-								</Text>
-							</View>
+						{currentInvitation && (
+							<Button
+								openType="share"
+								className="modal-share-btn"
+								onClick={() => setShowInviteModal(false)}
+							>
+								发送给微信好友
+							</Button>
 						)}
 
 						<Text className="polling-hint">页面每 5 秒自动刷新进度</Text>
