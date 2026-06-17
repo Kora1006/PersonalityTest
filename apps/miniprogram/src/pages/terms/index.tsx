@@ -27,11 +27,9 @@ export default function Terms() {
 					3. 商业性转售或二次开发（未获书面授权）。
 				</Text>
 
-				<Text className="policy-section-title">三、付费服务</Text>
+				<Text className="policy-section-title">三、邀请解锁与报告获取</Text>
 				<Text className="policy-text">
-					完整深度报告提供付费解锁或邀请好友解锁两种方式：{"\n"}
-					1. 邀请解锁：邀请 2 位好友完成测评，免费获得完整报告；{"\n"}
-					2. 数字产品一经解锁，不支持退款（但我们会尽力保障产品质量）。
+					本产品的所有测评服务和分析报告均为免费提供。部分深度分析报告可通过邀请好友完成测评来免费解锁。我们承诺本产品内不包含任何计费项目或付费解锁服务。
 				</Text>
 
 				<Text className="policy-section-title">四、免责声明</Text>

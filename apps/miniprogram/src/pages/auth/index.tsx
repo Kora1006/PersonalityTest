@@ -21,6 +21,7 @@ export default function Auth() {
 	const [currentPassword, setCurrentPassword] = useState("");
 	const [newPassword, setNewPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
+	const [agreedToTerms, setAgreedToTerms] = useState(false);
 
 	useLoad(() => {
 		Taro.setNavigationBarTitle({ title: "我的" });
@@ -85,6 +86,13 @@ export default function Auth() {
 	};
 
 	const handleLogin = async () => {
+		if (!agreedToTerms) {
+			Taro.showToast({
+				title: "请先勾选同意《用户协议》与《隐私政策》",
+				icon: "none",
+			});
+			return;
+		}
 		if (!(email && password)) {
 			Taro.showToast({ title: "请填写邮箱和密码", icon: "none" });
 			return;
@@ -108,6 +116,13 @@ export default function Auth() {
 	};
 
 	const handleRegister = async () => {
+		if (!agreedToTerms) {
+			Taro.showToast({
+				title: "请先勾选同意《用户协议》与《隐私政策》",
+				icon: "none",
+			});
+			return;
+		}
 		if (!(email && password && name)) {
 			Taro.showToast({ title: "请填写完整信息", icon: "none" });
 			return;
@@ -135,6 +150,13 @@ export default function Auth() {
 	};
 
 	const handleWechatLogin = () => {
+		if (!agreedToTerms) {
+			Taro.showToast({
+				title: "请先勾选同意《用户协议》与《隐私政策》",
+				icon: "none",
+			});
+			return;
+		}
 		Taro.login({
 			success: async (loginRes) => {
 				if (!loginRes.code) {
@@ -391,21 +413,33 @@ export default function Auth() {
 				<Text className="wechat-text">微信一键登录</Text>
 			</View>
 
-			<View className="terms-note">
-				<Text className="terms-text">
-					登录即同意{" "}
+			<View
+				className="terms-checkbox-wrap"
+				onClick={() => setAgreedToTerms(!agreedToTerms)}
+			>
+				<View className={`checkbox-box ${agreedToTerms ? "checkbox-checked" : ""}`}>
+					{agreedToTerms && <Text className="checkbox-checkmark">✓</Text>}
+				</View>
+				<Text className="terms-checkbox-text">
+					我已阅读并同意
 					<Text
 						className="terms-link"
-						onClick={() => Taro.navigateTo({ url: "/pages/terms/index" })}
+						onClick={(e) => {
+							e.stopPropagation();
+							Taro.navigateTo({ url: "/pages/terms/index" });
+						}}
 					>
-						用户协议
-					</Text>{" "}
-					和{" "}
+						《用户协议》
+					</Text>
+					与
 					<Text
 						className="terms-link"
-						onClick={() => Taro.navigateTo({ url: "/pages/privacy/index" })}
+						onClick={(e) => {
+							e.stopPropagation();
+							Taro.navigateTo({ url: "/pages/privacy/index" });
+						}}
 					>
-						隐私政策
+						《隐私政策》
 					</Text>
 				</Text>
 			</View>
