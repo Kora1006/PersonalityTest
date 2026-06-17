@@ -1,6 +1,7 @@
 import { themes } from "@PersonalityTest/api/data/themes/index";
 import { Image, ScrollView, Text, View } from "@tarojs/components";
 import Taro, { useLoad } from "@tarojs/taro";
+import benefitsImg from "../../assets/images/benefits.png";
 import { Icon } from "../../components/icon";
 import { DISC_COLORS } from "../../data/disc-colors";
 import type { ThemeId } from "../../utils/quiz-store";
@@ -169,7 +170,7 @@ export default function Index() {
 						<Image
 							className="benefits-image"
 							mode="aspectFill"
-							src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNyLvduMFjo7c_b2WnxFmSqXGPW7SpPj2-Z61KwVPRLk86LfNaD1Ph5mUNW10OIMDwxiBYnu5-ymOQUg076QpFMYfY7ebD8u0T7_poyEquJDA0VwtTBuYYaC_50-GTwMMCQQppSnpWnsah1wxLzNCEL70tZWS6b30zRcskv6zgApazmD7NzysiVfIUqm_xGAZdzXCpForrOMKP9T0Lw70H0ZTGt6-sVu6L81PQGoGuCzlEVJYXfdSI18zD0mdg6CgBJTyGMeCdF3--"
+							src={benefitsImg}
 						/>
 					</View>
 					<View className="benefits-list">

@@ -1,3 +1,4 @@
+import heroImg from "./assets/leadership.png";
 import type { ThemeConfig } from "./index";
 
 export const leadershipTheme: ThemeConfig = {
@@ -10,8 +11,7 @@ export const leadershipTheme: ThemeConfig = {
 		primaryColor: "#7c3aed",
 		backgroundGradient: ["#0d0a1a", "#1a1030"],
 	},
-	heroImage:
-		"https://lh3.googleusercontent.com/aida-public/AB6AXuCnR_k3SKmjNmCHGGNddXEsHWvfFWUcn6WwqZRbvyf0JPw3kLWIS79hlSG8eiyducm923FpGJEZbeQkSDZTWSjevyY15T803ViPsWBgEP4eR3tSezusEkofo9SbLV1VamgCBjn78rXtYI-Q6p6TaR9GjOwaXQOtrT3OIp5YnOzIwbX7dAW-8qTtsDeTusYF7p4Zun9anzBlavz8qN6Ll11N-jJi3W4dkN9Z5AsPRcsLxsbRjnWKitzuhuFG9cO1ipYfLuc_P-sawZE8",
+	heroImage: heroImg,
 	themeIcon: "psychology",
 	types: {
 		D: {

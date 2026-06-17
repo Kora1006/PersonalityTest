@@ -1,3 +1,4 @@
+import heroImg from "./assets/professional.png";
 import type { ThemeConfig } from "./index";
 
 export const professionalTheme: ThemeConfig = {
@@ -10,8 +11,7 @@ export const professionalTheme: ThemeConfig = {
 		primaryColor: "#3b82f6",
 		backgroundGradient: ["#0f172a", "#1e293b"],
 	},
-	heroImage:
-		"https://lh3.googleusercontent.com/aida-public/AB6AXuAd8fS_Yj3ekVMdLDhRkrp6a9IdJ3JuXTBx9lqzr-aA0ZizK9GWj9PoHT_QgMuvD4aY8lUrtzGtjVdnSLiWpMpm-uzomBvEaK6ZqPG3E36bKacpXeRECh0TRQwUYKXTpTmUsYvtY6_kzeJJQuwy36MyImmpPjZROX5GgnMeoV0AdFm3UGSJSbtgTF2WKSVBbo2tThrU4TTIpElJEnQ5jCSGxbXf7QFLkPJGpIKwtp4YiDbfSwBtYE-MChnU6ekE2f_W_6kRthL_rEoQ",
+	heroImage: heroImg,
 	themeIcon: "corporate_fare",
 	types: {
 		D: {

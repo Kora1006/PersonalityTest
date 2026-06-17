@@ -1,3 +1,4 @@
+import heroImg from "./assets/relationship.png";
 import type { ThemeConfig } from "./index";
 
 export const relationshipTheme: ThemeConfig = {
@@ -10,8 +11,7 @@ export const relationshipTheme: ThemeConfig = {
 		primaryColor: "#e11d48",
 		backgroundGradient: ["#1a0a10", "#2d1420"],
 	},
-	heroImage:
-		"https://lh3.googleusercontent.com/aida-public/AB6AXuD3mVg03b15vwPigXBs6ramrH3EQ_xntnQbt4fj4RYzWyaCYKTY3DUokzLTb9tZK3CeYmFakkgmjmI0th5sWuEGjLuHDOxYlC8s8ZbUiRP5FwxofkGdVyQXjiKUIKq5xk4RFltcAE0sg47kou4CU1T2-kteG5dsaEg-DF5uiagsEStd6dLVKfUIlsEL5VuIcevdAt8fVf6kdTgVRx3wcoTSV-9QoV_0lmqX2FF-J1LxB7DBM12NQn45w4FWkV9h0KQQqHElljMw_8Nu",
+	heroImage: heroImg,
 	themeIcon: "favorite",
 	types: {
 		D: {

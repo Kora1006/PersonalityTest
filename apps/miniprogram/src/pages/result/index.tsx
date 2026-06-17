@@ -2,6 +2,9 @@ import { themes } from "@PersonalityTest/api/data/themes/index";
 import { Image, ScrollView, Text, View } from "@tarojs/components";
 import Taro, { useLoad } from "@tarojs/taro";
 import { useState } from "react";
+import adviceMeetingImg from "../../assets/images/advice-meeting.png";
+import imageryLeftImg from "../../assets/images/imagery-left.png";
+import imageryRightImg from "../../assets/images/imagery-right.png";
 import { Icon, toBase64 } from "../../components/icon";
 import { RadarCanvas } from "../../components/radar-canvas";
 import type { QuizResult } from "../../utils/quiz-store";
@@ -294,7 +297,7 @@ export default function Result() {
 						<Image
 							className="advice-meeting-img"
 							mode="aspectFill"
-							src="https://lh3.googleusercontent.com/aida-public/AB6AXuCF3au4r3exv0bQpxZ-S-hI4fZscazG4fk0Okd9LeG638g8-dDFiZfbBsR57C7hxsvMjQXwKp7CHRjNN6PE0eBfCkib7Zak2GuAvP6sjv0ZqmdIlnN2W3JnLhzKxCkugPC1eEJw0ja7MWQV1aEHQWmLp9_uVidK0qyjIROWt_N7sUSIeCeGBpbR1qEWyw7-OBgXwu9NAPKkbns29uEeuiO_A4-ui7_ZpCQbAFsrB8Gyr3TJ45xknrrVoEpHo600IOShgTLE5U1lcWdr"
+							src={adviceMeetingImg}
 						/>
 					</View>
 				</View>
@@ -792,14 +795,14 @@ export default function Result() {
 						<Image
 							className="imagery-img"
 							mode="aspectFill"
-							src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9liOu6UZFBvsfbsIOexIB2V5jhwQSYVvFCouPecdlS1-WMaQKFi856P7prKoyJGJ3hlGorv_vNG_KtQXPtujMgi2dKdD0IldXQBVpbRM6ccLbxxgG7tbyv_PBzJkkz5tDW_gSAc5ygv2l3GT50KzJaeaxecc-mNDp4WV_GyRoR5eb1wLOIPPmed8WibIR8xZUNx0X0e38FYgyjm8oRnk_x52vDCj4NUI5GfhoHXf0P0oM-61xrNb5IU8ogTufMCtEih3YmKW4ZcAj"
+							src={imageryLeftImg}
 						/>
 					</View>
 					<View className="image-wrap-right">
 						<Image
 							className="imagery-img"
 							mode="aspectFill"
-							src="https://lh3.googleusercontent.com/aida-public/AB6AXuDT22xa9kntGvtOhpOYPsiUGFfSUlPUcGCns9R594ZIGTcehCZPWuZ444ymmO7SlfxXbRFGVs3zf44Q7RiKFC7CvryRaRPpvpaVGZf-wLo_SR3NHsu7r2aVnhtqcHN-7rabZUyn_eOHM1dlGG9PDUMxW3_RBvQBc6PXERxmD-aS4VnFITm6-t6Mmk8HglcwgS1Pu-iMdMRVB2C9JiGCLrILdXG5G3--gtYKSFE58D3wdJP2vVLxPYUWrflbEtIxKHtOvv5d0gDnT4rf"
+							src={imageryRightImg}
 						/>
 					</View>
 				</View>
