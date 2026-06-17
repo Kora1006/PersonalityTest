@@ -13,8 +13,8 @@ WORKDIR /app
 COPY --from=pruner /app/out/json/ .
 COPY --from=pruner /app/out/package-lock.json ./package-lock.json
 
-# Install dependencies using npm ci
-RUN npm ci
+# Install dependencies using npm install
+RUN npm install
 
 # Copy full source and config files
 COPY --from=pruner /app/out/full/ .
