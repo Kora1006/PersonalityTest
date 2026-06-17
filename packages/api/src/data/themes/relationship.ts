@@ -10,6 +10,9 @@ export const relationshipTheme: ThemeConfig = {
 		primaryColor: "#e11d48",
 		backgroundGradient: ["#1a0a10", "#2d1420"],
 	},
+	heroImage:
+		"https://lh3.googleusercontent.com/aida-public/AB6AXuD3mVg03b15vwPigXBs6ramrH3EQ_xntnQbt4fj4RYzWyaCYKTY3DUokzLTb9tZK3CeYmFakkgmjmI0th5sWuEGjLuHDOxYlC8s8ZbUiRP5FwxofkGdVyQXjiKUIKq5xk4RFltcAE0sg47kou4CU1T2-kteG5dsaEg-DF5uiagsEStd6dLVKfUIlsEL5VuIcevdAt8fVf6kdTgVRx3wcoTSV-9QoV_0lmqX2FF-J1LxB7DBM12NQn45w4FWkV9h0KQQqHElljMw_8Nu",
+	themeIcon: "favorite",
 	types: {
 		D: {
 			name: "主导型恋人",
@@ -39,6 +42,39 @@ export const relationshipTheme: ThemeConfig = {
 				"你是感情里那个帮对方做决定的人",
 				"爱你的人，被你的确定性治愈",
 				"在你身边，不需要迷路",
+			],
+			relationshipMetrics: [
+				{ title: "关系掌控度", score: 94 },
+				{ title: "主动解决力", score: 90 },
+			],
+			relationshipInsight: {
+				intimacy:
+					"你习惯掌控关系节奏，遇到问题喜欢迅速做出决断。你通过切实的行动和提供安全感来表达爱，是对方最稳固的后盾。",
+				communicationPreference: [
+					"偏好直接坦率的沟通方式，讨厌被动攻击和猜测",
+					"需要伴侣清晰直白地提出他们的实际需求",
+					"欣赏有主见、不盲从的交流伙伴",
+				],
+			},
+			relationshipSuggestions: [
+				{
+					title: "倾听重于解决",
+					icon: "hearing",
+					description:
+						"当伴侣表达情绪时，先给予拥抱和倾听，不急于纠正或提供方案。",
+				},
+				{
+					title: "展现温情一面",
+					icon: "favorite",
+					description:
+						"允许自己说出“我需要你的陪伴”，展现感性软弱的一面能让爱升温。",
+				},
+				{
+					title: "分享决策权力",
+					icon: "share_reviews",
+					description:
+						"在日常约会或生活规划中多让伴侣做主，体验被照顾的轻松感。",
+				},
 			],
 		},
 		I: {
@@ -70,6 +106,39 @@ export const relationshipTheme: ThemeConfig = {
 				"你的热情，是最会制造心动的魔法",
 				"爱是场冒险，而你天生是探险家",
 			],
+			relationshipMetrics: [
+				{ title: "浪漫仪式感", score: 96 },
+				{ title: "情感表达力", score: 92 },
+			],
+			relationshipInsight: {
+				intimacy:
+					"你的感情世界每天都有新创意。你擅长制造意想不到的浪漫惊喜，用全心全意的热情去包围并点燃你的伴侣。",
+				communicationPreference: [
+					"偏好积极、高频且双向的即时情感互动",
+					"在一对一交流中，需要伴侣给予高度关注和口头肯定",
+					"喜欢通过分享创意想法和日常趣事来传递爱意",
+				],
+			},
+			relationshipSuggestions: [
+				{
+					title: "做到言行一致",
+					icon: "event_available",
+					description:
+						"承诺给伴侣的事情尽量切实履行，有助于提升关系里的安全感。",
+				},
+				{
+					title: "平复情绪波动",
+					icon: "spa",
+					description:
+						"避免在情绪过分亢奋或沮丧时做大决定，学会冷静和自我沉淀。",
+				},
+				{
+					title: "倾听他人声音",
+					icon: "hearing",
+					description:
+						"多留心伴侣的情感需求，不要让每一场对话都变成个人的精彩秀场。",
+				},
+			],
 		},
 		S: {
 			name: "支持型恋人",
@@ -90,15 +159,48 @@ export const relationshipTheme: ThemeConfig = {
 					"你对感情极度忠诚，一旦认定就会全力投入，默默付出，很少喊累。你擅长照顾伴侣的情绪，总是在对方需要时出现。但你也容易忽视自己的需求——太多时候你把伴侣的感受放在自己前面。你是感情里那个「稳稳的依靠」，是让对方在动荡中能找到的锚。",
 				section2Title: "和你相处的密码",
 				section2Content:
-					"你需要的不是刺激，而是稳定和可预期。伴侣的真诚陪伴和言出必行，对你来说比任何礼物都重要。当感情出现摩擦时，温和而直接地沟通比强硬争论更能打动你。记住：你也值得被追求、被用心对待。你给予的爱是细水长流的，你也值得接受同样深度的回应。",
+					"你需要的不是刺激，而是稳定和可预期。伴侣的真诚陪伴和言出必行，对你来说比任何礼物都重要。当感情摩擦时，温和直接沟通比强硬争端更有效。记住：你同样值得被追求、被用心对待。你给予的爱是细水长流的，你也应该接受同等深度的回馈。",
 				section3Title: "你在关系中的成长点",
 				section3Content:
-					"你的挑战是「学会索取」。你已经很擅长给予，现在需要练习说「我需要……」。允许自己不完美，允许关系中有时出现张力——那不是危机，而是更深连接的契机。尝试提出一次你想要的约会方式，让伴侣来安排——被用心对待的感觉，你也应该拥有。",
+					"你最大的挑战是「学会索取」。你已经很擅长给予，现在需要练习说「我需要……」。允许自己不完美，允许关系中有时出现张力——那不是危机，而是更深连接的契机。尝试提出一次你想要的约会方式，让伴侣来安排——被用心对待的感觉，你也应该拥有。",
 			},
 			shareQuotes: [
 				"在你身边，伴侣知道自己永远被接住",
 				"稳定，是你给感情最珍贵的礼物",
 				"爱你，是因为你从不需要证明自己值得被爱",
+			],
+			relationshipMetrics: [
+				{ title: "情感共鸣度", score: 92 },
+				{ title: "冲突处理 (包容性)", score: 88 },
+			],
+			relationshipInsight: {
+				intimacy:
+					"你追求长久而安稳的感情联结。在相处中你极富耐心，愿意花费大量时间陪伴和倾听，但也常常为了回避冲突而隐藏自己的需求。",
+				communicationPreference: [
+					"追求温和、无压力、非对抗性的交谈氛围",
+					"更钟爱深度的一对一私密情感交流",
+					"在发表关键意见前，习惯有充分时间去梳理思绪",
+				],
+			},
+			relationshipSuggestions: [
+				{
+					title: "勇敢说出“不”",
+					icon: "campaign",
+					description:
+						"不必强求百分百的和谐，适当的拒绝反而会让你的付出和关怀更有分量。",
+				},
+				{
+					title: "坦承自我情绪",
+					icon: "volunteer_activism",
+					description:
+						"在照顾他人的同时，也试着直接告诉爱人，你希望被怎样关心与呵护。",
+				},
+				{
+					title: "主动拥抱改变",
+					icon: "trending_up",
+					description:
+						"虽然喜欢踏实的日常，但偶尔尝试新的约会和挑战，能为关系注入活力。",
+				},
 			],
 		},
 		C: {
@@ -117,18 +219,51 @@ export const relationshipTheme: ThemeConfig = {
 			detailAnalysis: {
 				section1Title: "你的恋爱模式",
 				section1Content:
-					"你对感情的投入是认真严肃的——在确定之前你会花大量时间观察和分析。一旦决定，你会是极度可靠的伴侣：说到做到，不轻易承诺，但承诺必达。你的爱往往体现在细节里：记住对方的偏好，默默安排好一切，用行动替代言语。你不是不爱，你只是用自己的方式爱。",
+					"你对感情的投入是认真严肃的——在确定之前你会花大量时间观察 and 分析。一旦决定，你会是极度可靠的伴侣：说到做到，不轻易承诺，但承诺必达。你的爱往往体现在细节里：记住对方的偏好，默默安排好一切，用行动替代言语。你不是不爱，你只是用自己的方式爱。",
 				section2Title: "和你相处的密码",
 				section2Content:
-					"不要催促你表态——你需要时间建立信任和确定感。伴侣的理性和尊重让你感到安全。你讨厌情绪化的争吵和不合逻辑的要求，更喜欢平静的交流。给你空间深思，你会给出深思熟虑的回应，而不是冲动的承诺。理解你的「沉默」——那通常意味着你正在认真对待这段关系。",
+					"不要催促你表态——你需要时间建立信任 and 确定感。伴侣的理性和尊重让你感到安全。你讨厌情绪化的争吵 and 不合逻辑的要求，更喜欢平静的交流。给你空间设计，你会给出深思熟虑的回应，而不是冲动的承诺。理解你的「沉默」——那通常意味着你正在认真对待这段关系。",
 				section3Title: "你在关系中的成长点",
 				section3Content:
-					"你最大的挑战是「让爱看得见」。你心里有很深的情感，但常常没有说出口。试着每天说一句具体的赞美，不是因为逻辑要求，而是因为对方值得听到。感情里不需要每件事都有完美答案——有时候，「我不知道，但我在这里」就够了。脆弱和不确定，也是连接的桥梁。",
+					"你最大的挑战是「让爱看得见」。你心里有很深的情感，但常常没有说出口。试着每天说一句具体的赞美，不是因为逻辑要求，而是因为对方值得听到。感情里不需要每件事都有完美答案——有时候，「我不知道，但我在这里」就够了。脆弱 and 不确定，也是连接的桥梁。",
 			},
 			shareQuotes: [
 				"你用逻辑爱人，却比任何人都更深情",
 				"你的可靠，是最持久的浪漫",
 				"爱你，因为你是那个说到做到的人",
+			],
+			relationshipMetrics: [
+				{ title: "理性支撑力", score: 93 },
+				{ title: "细节关注度", score: 90 },
+			],
+			relationshipInsight: {
+				intimacy:
+					"你习惯用深思熟虑的逻辑与规则来守护感情，可能略显慢热，但极其真诚。你的深情大都隐藏在扎实的长期规划与行动细节中。",
+				communicationPreference: [
+					"极其推崇基于事实与建设性的理性分析",
+					"更乐于通过书面长消息来做深刻有逻辑的思想交换",
+					"极其需要有边界的私人思考空间 and 独立时间",
+				],
+			},
+			relationshipSuggestions: [
+				{
+					title: "开口表达爱意",
+					icon: "chat",
+					description:
+						"行动固然可贵，但在适当的时候说出温存的赞美，能大大拉近心与心的距离。",
+				},
+				{
+					title: "减少过度分析",
+					icon: "psychology",
+					description:
+						"亲密关系并非数学模型，试着去体会 and 享受当下的直觉 and 纯粹的浪漫。",
+				},
+				{
+					title: "主动分享心路",
+					icon: "share",
+					description:
+						"你的深藏不露可能让对方误会，主动与伴侣倾诉心里的小纠结能建立深度默契。",
+				},
 			],
 		},
 	},

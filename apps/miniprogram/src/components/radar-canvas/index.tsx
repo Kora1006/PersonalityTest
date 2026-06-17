@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 
 interface RadarCanvasProps {
 	canvasId?: string;
+	color?: string;
 	scores: { D: number; I: number; S: number; C: number };
 	size?: number;
 }
@@ -23,6 +24,27 @@ const AXES: { type: keyof typeof DISC_COLORS; angle: number; label: string }[] =
 		{ type: "C", angle: 180, label: "C" },
 	];
 
+function hexToRgba(hex: string, alpha: number): string {
+	const cleanHex = hex.replace("#", "");
+	let r = 0;
+	let g = 0;
+	let b = 0;
+
+	if (cleanHex.length === 3) {
+		r = Number.parseInt(cleanHex.charAt(0) + cleanHex.charAt(0), 16);
+		g = Number.parseInt(cleanHex.charAt(1) + cleanHex.charAt(1), 16);
+		b = Number.parseInt(cleanHex.charAt(2) + cleanHex.charAt(2), 16);
+	} else if (cleanHex.length === 6) {
+		r = Number.parseInt(cleanHex.slice(0, 2), 16);
+		g = Number.parseInt(cleanHex.slice(2, 4), 16);
+		b = Number.parseInt(cleanHex.slice(4, 6), 16);
+	} else {
+		return hex;
+	}
+
+	return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
 function toXY(center: number, angle: number, radius: number) {
 	const rad = (angle * Math.PI) / 180;
 	return {
@@ -35,7 +57,8 @@ function drawRadar(
 	ctx: Taro.CanvasContext,
 	scores: { D: number; I: number; S: number; C: number },
 	size: number,
-	progress = 1
+	progress = 1,
+	color?: string
 ) {
 	const center = size / 2;
 	const maxRadius = size * 0.35;
@@ -96,7 +119,12 @@ function drawRadar(
 		ctx.lineTo(p.x, p.y);
 	}
 	ctx.closePath();
-	ctx.setFillStyle("rgba(59,130,246,0.15)");
+
+	let fillStyle = "rgba(59,130,246,0.15)";
+	if (color) {
+		fillStyle = hexToRgba(color, 0.15);
+	}
+	ctx.setFillStyle(fillStyle);
 	ctx.fill();
 
 	// Stroke
@@ -107,7 +135,7 @@ function drawRadar(
 		ctx.lineTo(p.x, p.y);
 	}
 	ctx.closePath();
-	ctx.setStrokeStyle("#3b82f6");
+	ctx.setStrokeStyle(color || "#3b82f6");
 	ctx.setLineWidth(2);
 	ctx.stroke();
 
@@ -145,6 +173,7 @@ export function RadarCanvas({
 	scores,
 	size = 260,
 	canvasId = "radar-canvas",
+	color,
 }: RadarCanvasProps) {
 	const animFrameRef = useRef<any>(null);
 	const startTimeRef = useRef<number>(0);
@@ -158,7 +187,7 @@ export function RadarCanvas({
 			const elapsed = Date.now() - startTimeRef.current;
 			const progress = Math.min(elapsed / DURATION, 1);
 			const eased = 1 - (1 - progress) ** 3;
-			drawRadar(ctx, scores, size, eased);
+			drawRadar(ctx, scores, size, eased, color);
 
 			if (progress < 1) {
 				animFrameRef.current = requestAnimFrame(animate);
@@ -172,7 +201,7 @@ export function RadarCanvas({
 				cancelAnimFrame(animFrameRef.current);
 			}
 		};
-	}, [scores, canvasId, size]);
+	}, [scores, canvasId, size, color]);
 
 	return (
 		<View

@@ -1,6 +1,25 @@
-.detail-page {
+.detail-page-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
   background: #f9f9ff;
-  min-height: 100vh;
+  overflow: hidden;
+}
+
+.detail-bg-mesh {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+.detail-page {
+  background: transparent;
+  height: 100vh;
   padding: 0 40rpx;
   box-sizing: border-box;
   overflow-x: hidden;
@@ -12,6 +31,8 @@
   align-items: center;
   gap: 28rpx;
   padding: 40rpx 0 32rpx;
+  position: relative;
+  z-index: 1;
 
   .type-icon {
     width: 96rpx;
@@ -63,6 +84,8 @@
 
 .dominant-bar-wrap {
   margin-bottom: 48rpx;
+  position: relative;
+  z-index: 1;
 
   .dominant-bar-bg {
     height: 16rpx;
@@ -80,6 +103,8 @@
 
 .section {
   margin-bottom: 48rpx;
+  position: relative;
+  z-index: 1;
 
   .section-header-flex {
     display: flex;
@@ -169,6 +194,8 @@
   padding: 40rpx;
   margin-bottom: 48rpx;
   box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.02);
+  position: relative;
+  z-index: 1;
 
   .report-title {
     display: block;

@@ -10,6 +10,9 @@ export const professionalTheme: ThemeConfig = {
 		primaryColor: "#3b82f6",
 		backgroundGradient: ["#0f172a", "#1e293b"],
 	},
+	heroImage:
+		"https://lh3.googleusercontent.com/aida-public/AB6AXuAd8fS_Yj3ekVMdLDhRkrp6a9IdJ3JuXTBx9lqzr-aA0ZizK9GWj9PoHT_QgMuvD4aY8lUrtzGtjVdnSLiWpMpm-uzomBvEaK6ZqPG3E36bKacpXeRECh0TRQwUYKXTpTmUsYvtY6_kzeJJQuwy36MyImmpPjZROX5GgnMeoV0AdFm3UGSJSbtgTF2WKSVBbo2tThrU4TTIpElJEnQ5jCSGxbXf7QFLkPJGpIKwtp4YiDbfSwBtYE-MChnU6ekE2f_W_6kRthL_rEoQ",
+	themeIcon: "corporate_fare",
 	types: {
 		D: {
 			name: "支配型",
@@ -30,7 +33,7 @@ export const professionalTheme: ThemeConfig = {
 					"你在团队中主动承担领导角色，喜欢清晰的分工与快速的决策机制。你推动进度、不拖延，但有时可能忽略团队成员的情感需求。你最适合在高压、快节奏的环境中发挥价值，也是团队在关键时刻最需要的人。",
 				section2Title: "你的沟通方式",
 				section2Content:
-					"你表达直接、简洁，省去不必要的铺垫，直奔主题。以结果和影响为中心组织观点，在压力下表达更果断，有时显得强势。与你沟通最有效的方式：用数据和结果说话，给予足够的决策权，让你自主推进。",
+					"你表达直接、简洁，省去不必要的铺垫，直奔主题。以结果和影响为中心组织观点，在压力下表达更果断，有时显得强势。与你沟通最有效的方式：用数据 and 结果说话，给予足够的决策权，让你自主推进。",
 				section3Title: "核心成长方向",
 				section3Content:
 					"在追求速度和结果的同时，刻意练习耐心倾听——在提供解决方案之前先完整听完他人的顾虑。认可团队的情感需求，关注过程而非只看结果。细节是质量的基础，建立检查机制而非依赖记忆。",
@@ -40,18 +43,24 @@ export const professionalTheme: ThemeConfig = {
 				"在你面前没有问题，只有待解决的挑战",
 				"领导力是你天生的语言",
 			],
+			careerPaths: [
+				{ title: "企业高管", compatibility: "95%", icon: "corporate_fare" },
+				{ title: "创新创业者", compatibility: "90%", icon: "lightbulb" },
+				{ title: "销售总监", compatibility: "88%", icon: "monitoring" },
+				{ title: "危机公关专家", compatibility: "85%", icon: "military_tech" },
+			],
 		},
 		I: {
 			name: "影响型",
 			tagline: "感染力十足的沟通大师",
 			strengths: [
 				"沟通表达生动有力，擅长激励他人",
-				"创意思维活跃，带来新视角和可能性",
+				"创意思维活跃，带来新视角 and 可能性",
 				"乐观向上，是团队氛围的正向燃料",
 			],
 			growthAreas: [
 				"专注执行，把热情转化为持久行动",
-				"时间管理，减少拖延和跳跃",
+				"时间管理，减少拖延 and 跳跃",
 				"坚持收尾，不让好想法半途而废",
 			],
 			detailAnalysis: {
@@ -60,15 +69,21 @@ export const professionalTheme: ThemeConfig = {
 					"你是天生的团队激励者，擅长用热情感染团队，推动协作。你喜欢开放的讨论环境，享受创意碰撞。你让会议室里的气氛活跃，让新项目充满期待感——你的存在本身就是一种推动力。",
 				section2Title: "你的沟通方式",
 				section2Content:
-					"语言生动富有感染力，善于用故事和比喻传递想法，表达时充满肢体语言和面部表情。你喜欢互动和反馈，单向汇报让你感到乏味。最有效的与你合作方式：以友好轻松的方式建立联结，认可你的想法和热情，给你充分的发言空间。",
+					"语言生动富有感染力，善于用故事 and 比喻传递想法，表达时充满肢体语言 and 面部表情。你喜欢互动 and 反馈，单向汇报让你感到乏味。最有效的与你合作方式：以友好轻松的方式建立联结，认可你的想法 and 热情，给你充分的发言空间。",
 				section3Title: "核心成长方向",
 				section3Content:
-					"将热情转化为持久的行动力，从开始到收尾都保持投入。为创意和想法建立可执行的框架，让好点子真正落地。在分享之前先充分倾听，深入理解对方真正想表达的内容——深度倾听会让你的影响力再上一个台阶。",
+					"将热情转化为持久的行动力，从开始到收尾都保持投入。为创意 and 想法建立可执行的框架，让好点子真正落地。在分享之前先充分倾听，深入理解对方真正想表达的内容——深度倾听会让你的影响力再上一个台阶。",
 			},
 			shareQuotes: [
 				"走进房间，气氛就变了",
 				"你的热情是团队最好的燃料",
 				"影响力是你最强的超能力",
+			],
+			careerPaths: [
+				{ title: "创意总监", compatibility: "96%", icon: "palette" },
+				{ title: "公关经理", compatibility: "92%", icon: "campaign" },
+				{ title: "团队协调员", compatibility: "89%", icon: "groups" },
+				{ title: "活动策划", compatibility: "86%", icon: "event" },
 			],
 		},
 		S: {
@@ -76,11 +91,11 @@ export const professionalTheme: ThemeConfig = {
 			tagline: "团队中的可靠基石",
 			strengths: [
 				"耐心可靠，是同事最信任的伙伴",
-				"善于倾听和协调，消弭团队分歧",
+				"善于倾听 and 协调，消弭团队分歧",
 				"忠诚稳定，持续高质量地交付",
 			],
 			growthAreas: [
-				"主动表达需求和观点，让贡献被看见",
+				"主动表达需求 and 观点，让贡献被看见",
 				"勇于拥抱变化，把不确定性当成成长机会",
 				"快速决策，避免过度权衡带来的拖延",
 			],
@@ -93,12 +108,22 @@ export const professionalTheme: ThemeConfig = {
 					"表达温和有礼，措辞经过深思熟虑，避免冒犯他人。更擅长一对一的深度交流，在大型公开场合会感到不适。倾向于用「我们」而非「我」，强调集体而非个人。与你沟通最有效的方式：提前告知变化，给予适应时间，以真诚关怀的态度沟通。",
 				section3Title: "核心成长方向",
 				section3Content:
-					"勇于表达自己的需求和观点，不要总是把他人放在第一位——你的意见同样重要。将变化视为成长机会，培养在不确定环境中快速适应的能力。学会设定边界，说「不」不是自私，而是可持续地贡献的前提。",
+					"在追求速度 and 结果的同时，刻意练习耐心倾听——在提供解决方案之前先完整听完他人的顾虑。认可团队的情感需求，关注过程而非只看结果。细节是质量的基础，建立检查机制而非依赖记忆。",
 			},
 			shareQuotes: [
 				"稳定，是最高级的力量",
 				"你是团队真正的锚点",
 				"持续比爆发更有价值",
+			],
+			careerPaths: [
+				{ title: "人力资源总监", compatibility: "94%", icon: "diversity_3" },
+				{ title: "客户成功经理", compatibility: "91%", icon: "support_agent" },
+				{ title: "项目管理员", compatibility: "88%", icon: "assignment" },
+				{
+					title: "行政主管",
+					compatibility: "85%",
+					icon: "admin_panel_settings",
+				},
 			],
 		},
 		C: {
@@ -107,7 +132,7 @@ export const professionalTheme: ThemeConfig = {
 			strengths: [
 				"逻辑严谨，能分析复杂问题找到最优解",
 				"注重质量，确保输出符合高标准",
-				"系统思考，建立可靠的流程和规范",
+				"系统思考，建立可靠的流程 and 规范",
 			],
 			growthAreas: [
 				"接受不完美，快速行动而非等待完美条件",
@@ -117,18 +142,28 @@ export const professionalTheme: ThemeConfig = {
 			detailAnalysis: {
 				section1Title: "职场协作风格",
 				section1Content:
-					"你在团队中承担质量把关的角色，确保输出符合高标准。你偏好有明确规范和流程的协作环境。你最擅长的是在需要精确性的任务中找出别人忽视的问题——这是团队在关键节点最需要的能力。",
+					"你在团队中承担质量把关的角色，确保输出符合高标准。你偏好有明确规范 and 流程的协作环境。你最擅长的是在需要精确性的任务中找出别人忽视的问题——这是团队在关键节点最需要的能力。",
 				section2Title: "你的沟通方式",
 				section2Content:
 					"逻辑清晰，数据翔实，每个论点都有充分依据。表达谨慎，在确定之前不轻易作出承诺。书面沟通优于口头沟通，更擅长用文字梳理思路。与你沟通最有效的方式：提供充足背景信息，避免催促，直接提出具体问题。",
 				section3Title: "核心成长方向",
 				section3Content:
-					"在信息不完整时也能做出决策，接受「足够好」而非追求完美——商业环境里，70分的及时决策往往优于100分的迟到决策。主动关注团队成员的情感和需求，建立超越任务的联结。在规则之外留有弹性，有时打破常规才能找到更好的解决方案。",
+					"在信息不完整时也能做出决策，接受「足够好」而非追求完美——商业环境里，70分的及时决策往往优于100分的慢决策。主动关注团队成员的情感 and 需求，建立超越任务的联结。在规则之外留有弹性，有时打破常规才能找到更好的解决方案。",
 			},
 			shareQuotes: [
 				"细节里住着魔鬼，你比魔鬼更熟悉那里",
 				"数据不会说谎，你也不会",
 				"精确，是你给世界最好的礼物",
+			],
+			careerPaths: [
+				{
+					title: "首席技术官/架构师",
+					compatibility: "95%",
+					icon: "developer_mode",
+				},
+				{ title: "数据分析专家", compatibility: "93%", icon: "analytics" },
+				{ title: "财务审计", compatibility: "90%", icon: "account_balance" },
+				{ title: "质量控制经理", compatibility: "87%", icon: "verified" },
 			],
 		},
 	},

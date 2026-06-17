@@ -151,9 +151,16 @@ export default function Detail() {
 	const needed = unlockStatus?.needed ?? 2;
 
 	return (
-		<ScrollView className="detail-page" scrollY>
-			{/* Header */}
-			<View className="detail-header">
+		<View className="detail-page-container">
+			{/* Theme background mesh */}
+			<Image
+				className="detail-bg-mesh"
+				mode="aspectFill"
+				src={themeConfig.heroImage}
+			/>
+			<ScrollView className="detail-page" scrollY>
+				{/* Header */}
+				<View className="detail-header">
 				<View
 					className="type-icon"
 					style={{ backgroundColor: `${typeColor}15` }}
@@ -362,6 +369,7 @@ export default function Detail() {
 					</View>
 				</View>
 			)}
-		</ScrollView>
+			</ScrollView>
+		</View>
 	);
 }

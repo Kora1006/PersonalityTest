@@ -1,5 +1,5 @@
 import { themes } from "@PersonalityTest/api/data/themes/index";
-import { ScrollView, Text, View } from "@tarojs/components";
+import { Image, ScrollView, Text, View } from "@tarojs/components";
 import Taro, { useLoad } from "@tarojs/taro";
 import { useMemo, useState } from "react";
 import { Icon } from "../../components/icon";
@@ -131,6 +131,12 @@ export default function Quiz() {
 
 	return (
 		<View className="quiz-page">
+			{/* Theme background mesh */}
+			<Image
+				className="quiz-bg-mesh"
+				mode="aspectFill"
+				src={themes[themeId].heroImage}
+			/>
 			{/* Header */}
 			<View className="quiz-header">
 				<View className="header-left">

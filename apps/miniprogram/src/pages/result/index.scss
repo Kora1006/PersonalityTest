@@ -1,218 +1,1001 @@
-.result-page {
+.result-page-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
   background: #f9f9ff;
-  min-height: 100vh;
-  padding: 0 40rpx;
+  overflow: hidden;
+}
+
+.result-page {
+  background: transparent;
+  height: 100vh;
+  padding: 0 32rpx;
   box-sizing: border-box;
   overflow-x: hidden;
   width: 100%;
+  padding-bottom: 60rpx;
 }
 
-.result-header {
-  padding: 60rpx 0 40rpx;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-
-  .quick-badge {
-    background: rgba(0, 88, 190, 0.08);
-    border: 1rpx solid rgba(0, 88, 190, 0.2);
-    border-radius: 12rpx;
-    padding: 8rpx 24rpx;
-    margin-bottom: 24rpx;
-
-    .quick-badge-text {
-      font-size: 24rpx;
-      color: #0058be;
-      font-weight: 600;
-    }
+// Custom animations
+@keyframes heartBounce {
+  0%, 100% {
+    transform: scale(1);
   }
-
-  .header-subtitle {
-    display: block;
-    font-size: 22rpx;
-    font-weight: 700;
-    color: #727785;
-    letter-spacing: 4rpx;
-    text-transform: uppercase;
-    margin-bottom: 16rpx;
-    font-family: 'JetBrains Mono', monospace;
-  }
-
-  .header-title {
-    display: block;
-    font-size: 48rpx;
-    font-weight: 800;
-    color: #151c27;
-    margin-bottom: 24rpx;
-    font-family: 'Manrope', sans-serif;
-  }
-
-  .header-desc {
-    display: block;
-    font-size: 28rpx;
-    color: #424754;
-    line-height: 1.6;
-    max-width: 600rpx;
+  50% {
+    transform: scale(1.15);
   }
 }
 
-.radar-section {
-  display: flex;
-  justify-content: center;
-  padding: 20rpx 0 40rpx;
+.animate-bounce {
+  animation: heartBounce 1.8s infinite ease-in-out;
 }
 
-.scores-section {
-  padding: 20rpx 0 40rpx;
-  display: flex;
-  flex-direction: column;
-  gap: 28rpx;
-
-  .score-row-wrap {
-    display: flex;
-    flex-direction: column;
-    gap: 12rpx;
-
-    .score-header-flex {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .score-label {
-      font-size: 26rpx;
-      font-weight: 700;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .score-pct {
-      font-size: 26rpx;
-      font-weight: 700;
-      color: #727785;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .score-bar-bg {
-      height: 16rpx;
-      background: #e2e8f3;
-      border-radius: 999rpx;
-      overflow: hidden;
-
-      .score-bar-fill {
-        height: 100%;
-        border-radius: 999rpx;
-        transition: width 0.8s cubic-bezier(0.65, 0, 0.35, 1);
-      }
-    }
-  }
-}
-
-.section-container {
-  padding: 40rpx 0;
-
-  .section-title {
-    display: block;
-    font-size: 34rpx;
-    font-weight: 800;
-    color: #151c27;
-    margin-bottom: 24rpx;
-    font-family: 'Manrope', sans-serif;
-  }
-}
-
-/* Psychological Insights Bento Card */
-.insight-card {
-  background: rgba(255, 255, 255, 0.8);
-  border: 1rpx solid #e2e8f8;
+/* ----------------------------------------------------
+   General Bento Components
+   ---------------------------------------------------- */
+.bento-card-container {
+  background: #ffffff;
   border-radius: 32rpx;
+  border: 1rpx solid #e2e8f8;
   padding: 40rpx;
-  box-shadow: 0 8rpx 40rpx rgba(0, 0, 0, 0.04);
-  display: flex;
-  flex-direction: column;
-  gap: 36rpx;
-  overflow: hidden;
+  box-shadow: 0 8rpx 40rpx rgba(0, 0, 0, 0.03);
+  margin-bottom: 30rpx;
+  box-sizing: border-box;
+  width: 100%;
+}
 
-  .insight-top {
+.bento-card-title {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 800;
+  color: #151c27;
+  font-family: 'Manrope', sans-serif;
+  margin-bottom: 24rpx;
+}
+
+/* ----------------------------------------------------
+   Workplace Theme Style (professional)
+   ---------------------------------------------------- */
+.theme-layout-professional {
+  width: 100%;
+  box-sizing: border-box;
+
+  .professional-hero {
+    position: relative;
+    width: calc(100% + 64rpx);
+    margin-left: -32rpx;
+    height: 480rpx;
+    overflow: hidden;
     display: flex;
-    gap: 28rpx;
-    align-items: flex-start;
-  }
+    align-items: flex-end;
+    margin-bottom: 40rpx;
 
-  .insight-icon-wrap {
-    width: 112rpx;
-    height: 112rpx;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-
-  .insight-top-content {
-    flex: 1;
-
-    .insight-role {
-      display: block;
-      font-size: 32rpx;
-      font-weight: 800;
-      margin-bottom: 12rpx;
-      font-family: 'Manrope', sans-serif;
+    .hero-bg-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
     }
 
-    .insight-paragraph {
-      display: block;
-      font-size: 26rpx;
-      color: #424754;
-      line-height: 1.7;
+    .hero-gradient-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, #f9f9ff 12%, rgba(249, 249, 255, 0.35) 60%, rgba(249, 249, 255, 0) 100%);
+      z-index: 1;
     }
-  }
 
-  .insight-grid {
-    display: flex;
-    gap: 24rpx;
+    .hero-content-wrap {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      padding: 0 32rpx;
+      box-sizing: border-box;
+      bottom: 10rpx;
+    }
 
-    .insight-col {
-      flex: 1;
-      background: #f0f3ff;
-      border-radius: 20rpx;
-      padding: 24rpx 20rpx;
-      display: flex;
-      flex-direction: column;
-      gap: 16rpx;
+    .glass-blur-info-card {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(20rpx);
+      border-radius: 28rpx;
+      padding: 32rpx;
+      border: 1rpx solid rgba(226, 232, 240, 0.6);
+      box-shadow: 0 12rpx 36rpx rgba(21, 28, 39, 0.05);
+      width: 100%;
+      box-sizing: border-box;
 
-      .col-title {
-        display: block;
-        font-size: 24rpx;
-        font-weight: 700;
-        color: #727785;
-        letter-spacing: 2rpx;
-        text-transform: uppercase;
-        font-family: 'JetBrains Mono', monospace;
-      }
-
-      .col-item {
+      .info-card-flex {
         display: flex;
-        gap: 12rpx;
+        gap: 24rpx;
         align-items: center;
       }
 
-      .bullet-dot {
-        width: 10rpx;
-        height: 10rpx;
+      .dominant-type-bubble {
+        width: 112rpx;
+        height: 112rpx;
         border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        box-shadow: 0 6rpx 20rpx rgba(0, 0, 0, 0.15);
         flex-shrink: 0;
+
+        .bubble-letter {
+          font-size: 44rpx;
+          font-weight: 800;
+          font-family: 'JetBrains Mono', monospace;
+          line-height: 1.1;
+        }
+
+        .bubble-name {
+          font-size: 18rpx;
+          font-weight: 600;
+          opacity: 0.95;
+        }
       }
 
-      .item-text {
+      .info-card-texts {
+        flex: 1;
+        min-width: 0;
+
+        .core-personality-badge {
+          display: inline-flex;
+          background: rgba(186, 26, 26, 0.08);
+          border-radius: 999rpx;
+          padding: 4rpx 16rpx;
+          margin-bottom: 6rpx;
+
+          .badge-txt {
+            font-size: 20rpx;
+            color: #ba1a1a;
+            font-weight: 700;
+          }
+        }
+
+        .hero-tagline {
+          display: block;
+          font-size: 34rpx;
+          font-weight: 800;
+          color: #151c27;
+          margin-bottom: 8rpx;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .hero-summary {
+          display: block;
+          font-size: 22rpx;
+          color: #424754;
+          line-height: 1.6;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 2;
+          overflow: hidden;
+        }
+      }
+    }
+  }
+
+  /* Radar Legends inside card */
+  .radar-card {
+    .radar-canvas-wrap {
+      display: flex;
+      justify-content: center;
+      padding: 16rpx 0;
+    }
+
+    .radar-legend-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16rpx 20rpx;
+      margin-top: 24rpx;
+      border-t: 1rpx solid #f0f3ff;
+      padding-top: 24rpx;
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 12rpx;
+
+        .legend-dot {
+          width: 14rpx;
+          height: 14rpx;
+          border-radius: 50%;
+          flex-shrink: 0;
+        }
+
+        .legend-label {
+          font-size: 22rpx;
+          color: #727785;
+          font-weight: 600;
+          font-family: 'JetBrains Mono', monospace;
+        }
+      }
+    }
+  }
+
+  /* Strengths Bento */
+  .strengths-bento-section {
+    margin-bottom: 30rpx;
+
+    .strengths-cards-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20rpx;
+    }
+
+    .strength-block-card {
+      background: #ffffff;
+      border-radius: 24rpx;
+      border: 1rpx solid #e2e8f8;
+      border-left: 8rpx solid #ef4444;
+      padding: 24rpx 32rpx;
+      box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.02);
+
+      .strength-card-header {
+        display: flex;
+        align-items: center;
+        gap: 12rpx;
+        margin-bottom: 8rpx;
+
+        .strength-card-title {
+          font-size: 28rpx;
+          font-weight: 800;
+        }
+      }
+
+      .strength-card-desc {
         font-size: 24rpx;
+        color: #424754;
+        line-height: 1.6;
+      }
+    }
+  }
+
+  /* Advice Bento Card */
+  .professional-advice-card {
+    background: #151c27;
+    border-radius: 32rpx;
+    padding: 40rpx;
+    display: flex;
+    gap: 24rpx;
+    align-items: center;
+    margin-bottom: 30rpx;
+    box-shadow: 0 12rpx 36rpx rgba(21, 28, 39, 0.08);
+
+    .advice-left {
+      flex: 1;
+      min-width: 0;
+
+      .advice-title {
+        display: block;
+        font-size: 32rpx;
+        font-weight: 800;
+        color: #ffffff;
+        margin-bottom: 16rpx;
+      }
+
+      .advice-p {
+        display: block;
+        font-size: 24rpx;
+        color: #cbd5e1;
+        line-height: 1.7;
+        margin-bottom: 28rpx;
+      }
+
+      .advice-tags-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12rpx;
+
+        .advice-tag-chip {
+          background: rgba(255, 255, 255, 0.08);
+          border-radius: 999rpx;
+          padding: 6rpx 20rpx;
+          font-size: 20rpx;
+          color: #f1f5f9;
+          font-weight: 600;
+        }
+      }
+    }
+
+    .advice-right-image-wrap {
+      width: 140rpx;
+      height: 180rpx;
+      border-radius: 20rpx;
+      overflow: hidden;
+      flex-shrink: 0;
+      box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.2);
+
+      .advice-meeting-img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+
+  /* Career Paths Grid */
+  .career-paths-section {
+    margin-bottom: 30rpx;
+
+    .career-paths-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20rpx;
+    }
+
+    .career-path-item-card {
+      background: #ffffff;
+      border-radius: 28rpx;
+      border: 1rpx solid #e2e8f8;
+      padding: 36rpx 24rpx;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12rpx;
+      box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.02);
+      box-sizing: border-box;
+
+      &:active {
+        transform: scale(0.96);
+      }
+
+      .path-title {
+        font-size: 26rpx;
+        font-weight: 800;
         color: #151c27;
-        font-weight: 500;
+        text-align: center;
+      }
+
+      .path-match {
+        font-size: 20rpx;
+        color: #727785;
+        font-weight: 700;
+        font-family: 'JetBrains Mono', monospace;
       }
     }
   }
 }
 
+/* ----------------------------------------------------
+   Management Theme Style (leadership)
+   ---------------------------------------------------- */
+.theme-layout-leadership {
+  width: 100%;
+  box-sizing: border-box;
+
+  .leadership-hero {
+    position: relative;
+    width: calc(100% + 64rpx);
+    margin-left: -32rpx;
+    height: 380rpx;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 40rpx;
+
+    .hero-bg-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    .hero-gradient-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(124, 58, 237, 0.15) 0%, #f9f9ff 100%);
+      z-index: 1;
+    }
+
+    .hero-text-center {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .leadership-type-bubble {
+      width: 112rpx;
+      height: 112rpx;
+      border-radius: 50%;
+      border: 6rpx solid #ffffff;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10rpx 32rpx rgba(0, 0, 0, 0.08);
+      margin-bottom: 12rpx;
+
+      .bubble-letter {
+        font-size: 48rpx;
+        font-weight: 900;
+        font-family: 'JetBrains Mono', monospace;
+      }
+    }
+
+    .leadership-title {
+      font-size: 38rpx;
+      font-weight: 800;
+      color: #151c27;
+      margin-bottom: 4rpx;
+    }
+
+    .leadership-subtitle {
+      font-size: 22rpx;
+      color: #727785;
+      font-weight: 700;
+      letter-spacing: 2rpx;
+    }
+  }
+
+  /* Wheel Card */
+  .leadership-wheel-card {
+    .wheel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30rpx;
+
+      .header-mono-label {
+        font-size: 18rpx;
+        color: #727785;
+        font-weight: 700;
+        font-family: 'JetBrains Mono', monospace;
+        letter-spacing: 2rpx;
+      }
+    }
+
+    .wheel-visualization-row {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 36rpx;
+    }
+
+    .wheel-svg-container {
+      width: 480rpx;
+      height: 480rpx;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .wheel-svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      .rotate-45 {
+        transform: rotate(45deg);
+      }
+    }
+
+    .wheel-right-breakdown {
+      width: 100%;
+      box-sizing: border-box;
+
+      .breakdown-header-flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 12rpx;
+
+        .breakdown-label {
+          font-size: 28rpx;
+          font-weight: 800;
+        }
+
+        .breakdown-score {
+          font-size: 36rpx;
+          font-weight: 800;
+          font-family: 'JetBrains Mono', monospace;
+        }
+      }
+
+      .breakdown-progress-bg {
+        height: 12rpx;
+        background: #e2e8f8;
+        border-radius: 999rpx;
+        overflow: hidden;
+        margin-bottom: 20rpx;
+
+        .breakdown-progress-fill {
+          height: 100%;
+          border-radius: 999rpx;
+          transition: width 1s ease;
+        }
+      }
+
+      .breakdown-description {
+        display: block;
+        font-size: 24rpx;
+        color: #424754;
+        line-height: 1.7;
+      }
+    }
+  }
+
+  /* Bento cards */
+  .bento-cards-row {
+    display: flex;
+    flex-direction: column;
+    gap: 24rpx;
+    margin-bottom: 30rpx;
+
+    .bento-half-card {
+      background: #ffffff;
+      border-radius: 32rpx;
+      border: 1rpx solid #e2e8f8;
+      padding: 36rpx;
+      box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.03);
+      box-sizing: border-box;
+      width: 100%;
+
+      .bento-half-title {
+        display: block;
+        font-size: 28rpx;
+        font-weight: 800;
+        color: #151c27;
+        margin-bottom: 20rpx;
+      }
+    }
+
+    .strengths-checklist-card {
+      .check-items-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16rpx;
+      }
+
+      .check-item-row {
+        display: flex;
+        gap: 12rpx;
+        align-items: flex-start;
+
+        .check-item-text {
+          font-size: 24rpx;
+          color: #424754;
+          line-height: 1.6;
+          flex: 1;
+        }
+      }
+    }
+
+    .decision-style-card {
+      .decision-style-desc {
+        display: block;
+        font-size: 24rpx;
+        color: #424754;
+        line-height: 1.6;
+        margin-bottom: 24rpx;
+      }
+
+      .decision-style-advice-box {
+        background: rgba(124, 58, 237, 0.03);
+        border-radius: 16rpx;
+        border: 1rpx dashed rgba(124, 58, 237, 0.2);
+        padding: 20rpx 24rpx;
+
+        .box-title {
+          display: block;
+          font-size: 22rpx;
+          color: #7c3aed;
+          font-weight: 800;
+          margin-bottom: 6rpx;
+        }
+
+        .box-desc {
+          display: block;
+          font-size: 22rpx;
+          color: #424754;
+          line-height: 1.5;
+        }
+      }
+    }
+  }
+
+  /* Management Breakdown Card */
+  .management-breakdown-card {
+    .breakdown-title-row {
+      display: flex;
+      align-items: center;
+      gap: 12rpx;
+      margin-bottom: 36rpx;
+
+      .bento-card-title {
+        margin-bottom: 0;
+      }
+    }
+
+    .management-parameters-list {
+      display: flex;
+      flex-direction: column;
+      gap: 32rpx;
+    }
+
+    .management-param-item {
+      border-bottom: 1rpx solid #f1f5f9;
+      padding-bottom: 24rpx;
+
+      &:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+
+      .param-item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12rpx;
+
+        .param-item-left {
+          display: flex;
+          align-items: center;
+          gap: 12rpx;
+        }
+
+        .param-title {
+          font-size: 26rpx;
+          font-weight: 800;
+          color: #151c27;
+        }
+
+        .param-badge {
+          border-radius: 999rpx;
+          border: 1rpx solid;
+          padding: 2rpx 16rpx;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+
+          .param-badge-text {
+            font-size: 18rpx;
+            font-weight: 700;
+          }
+        }
+      }
+
+      .param-progress-wrap {
+        display: flex;
+        align-items: center;
+        gap: 16rpx;
+        margin-bottom: 12rpx;
+
+        .param-progress-bg {
+          flex: 1;
+          height: 8rpx;
+          background: #e2e8f8;
+          border-radius: 999rpx;
+          overflow: hidden;
+
+          .param-progress-fill {
+            height: 100%;
+            border-radius: 999rpx;
+          }
+        }
+
+        .param-pct-text {
+          font-size: 22rpx;
+          font-weight: 700;
+          color: #727785;
+          font-family: 'JetBrains Mono', monospace;
+          min-width: 50rpx;
+          text-align: right;
+        }
+      }
+
+      .param-desc {
+        display: block;
+        font-size: 22rpx;
+        color: #727785;
+        line-height: 1.5;
+      }
+    }
+  }
+}
+
+/* ----------------------------------------------------
+   Emotional Theme Style (relationship)
+   ---------------------------------------------------- */
+.theme-layout-relationship {
+  width: 100%;
+  box-sizing: border-box;
+
+  .relationship-artwork-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: -10;
+    opacity: 0.35;
+    pointer-events: none;
+  }
+
+  .relationship-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 60rpx 0 36rpx;
+
+    .heart-icon-badge-wrap {
+      width: 130rpx;
+      height: 130rpx;
+      border-radius: 50%;
+      background: rgba(16, 185, 129, 0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24rpx;
+      box-shadow: 0 8rpx 24rpx rgba(16, 185, 129, 0.1);
+    }
+
+    .relationship-hero-title {
+      font-size: 38rpx;
+      font-weight: 800;
+      color: #151c27;
+      margin-bottom: 12rpx;
+    }
+
+    .relationship-hero-subtitle {
+      font-size: 26rpx;
+      color: #727785;
+      max-width: 500rpx;
+      line-height: 1.6;
+    }
+  }
+
+  /* Grid Layout */
+  .relationship-visual-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 24rpx;
+    margin-bottom: 30rpx;
+  }
+
+  .soft-radar-card {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(12rpx);
+    border: 1rpx solid #e2e8f8;
+    padding: 40rpx;
+
+    .radar-canvas-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  .relationship-profile-card {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(12rpx);
+    border-radius: 32rpx;
+    border: 1rpx solid #e2e8f8;
+    border-left: 8rpx solid #10b981;
+    padding: 40rpx;
+    box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.02);
+
+    .profile-card-header {
+      display: flex;
+      align-items: center;
+      gap: 12rpx;
+      margin-bottom: 20rpx;
+
+      .profile-title {
+        font-size: 28rpx;
+        font-weight: 800;
+      }
+    }
+
+    .profile-body-p {
+      display: block;
+      font-size: 24rpx;
+      color: #424754;
+      line-height: 1.7;
+      margin-bottom: 32rpx;
+    }
+
+    .relationship-metrics-progress {
+      display: flex;
+      flex-direction: column;
+      gap: 24rpx;
+      border-t: 1rpx solid rgba(226, 232, 240, 0.6);
+      padding-top: 24rpx;
+
+      .metric-progress-item {
+        .metric-header-flex {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 8rpx;
+
+          .metric-label {
+            font-size: 22rpx;
+            color: #727785;
+            font-weight: 700;
+          }
+
+          .metric-pct {
+            font-size: 22rpx;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+          }
+        }
+
+        .metric-bar-bg {
+          height: 10rpx;
+          background: #e2e8f8;
+          border-radius: 999rpx;
+          overflow: hidden;
+
+          .metric-bar-fill {
+            height: 100%;
+            border-radius: 999rpx;
+          }
+        }
+      }
+    }
+  }
+
+  /* Double Column Insight Card */
+  .relationship-insight-card {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(12rpx);
+
+    .insight-card-header {
+      display: flex;
+      align-items: center;
+      gap: 16rpx;
+      margin-bottom: 36rpx;
+
+      .header-icon-box {
+        width: 72rpx;
+        height: 72rpx;
+        border-radius: 16rpx;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .bento-card-title {
+        margin-bottom: 0;
+      }
+    }
+
+    .insight-columns-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 36rpx;
+    }
+
+    .insight-left-column {
+      width: 100%;
+
+      .column-sub-title {
+        display: block;
+        font-size: 26rpx;
+        font-weight: 800;
+        color: #151c27;
+        margin-bottom: 16rpx;
+      }
+
+      .column-desc-p {
+        display: block;
+        font-size: 24rpx;
+        color: #424754;
+        line-height: 1.6;
+        margin-bottom: 20rpx;
+      }
+
+      .column-quote-box {
+        border-left: 6rpx solid #10b981;
+        border-radius: 0 16rpx 16rpx 0;
+        padding: 16rpx 20rpx;
+        margin-top: 12rpx;
+
+        .quote-text {
+          font-size: 22rpx;
+          font-style: italic;
+          font-weight: 700;
+        }
+      }
+    }
+
+    .insight-right-column {
+      width: 100%;
+
+      .column-sub-title {
+        display: block;
+        font-size: 26rpx;
+        font-weight: 800;
+        color: #151c27;
+        margin-bottom: 16rpx;
+      }
+
+      .preference-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16rpx;
+      }
+
+      .pref-item-row {
+        display: flex;
+        gap: 10rpx;
+        align-items: flex-start;
+
+        .pref-text {
+          font-size: 24rpx;
+          color: #424754;
+          line-height: 1.5;
+          flex: 1;
+        }
+      }
+    }
+  }
+
+  /* suggestions Bento section */
+  .relationship-suggestions-section {
+    margin-bottom: 30rpx;
+
+    .section-title-row {
+      display: flex;
+      align-items: center;
+      gap: 12rpx;
+      margin-bottom: 24rpx;
+
+      .bento-card-title {
+        margin-bottom: 0;
+      }
+    }
+
+    .suggestions-bento-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 20rpx;
+    }
+
+    .suggestion-bento-card {
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(12rpx);
+      border-radius: 28rpx;
+      border: 1rpx solid #e2e8f8;
+      padding: 36rpx;
+      display: flex;
+      flex-direction: column;
+      gap: 12rpx;
+      box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.02);
+      box-sizing: border-box;
+
+      .sug-card-title {
+        font-size: 28rpx;
+        font-weight: 800;
+        color: #151c27;
+      }
+
+      .sug-card-desc {
+        font-size: 24rpx;
+        color: #424754;
+        line-height: 1.6;
+      }
+    }
+  }
+}
+
+/* ----------------------------------------------------
+   Shared Page Bottom Elements
+   ---------------------------------------------------- */
 .viral-section {
   display: flex;
   gap: 20rpx;
@@ -237,21 +1020,19 @@
 
     .viral-btn-text {
       font-size: 28rpx;
-      font-weight: 700;
+      font-weight: 800;
     }
 
     .viral-btn-sub {
-      font-size: 22rpx;
+      font-size: 20rpx;
       color: #727785;
       text-align: center;
+      font-weight: 600;
     }
   }
 
   .share-btn {
     border: 2rpx solid #10b981;
-    .viral-btn-text {
-      color: #10b981;
-    }
   }
 
   .invite-btn {
@@ -374,12 +1155,10 @@
   padding: 20rpx 0 40rpx;
 
   .cta-primary {
-    background: #0058be;
     border-radius: 24rpx;
     padding: 36rpx 0;
     text-align: center;
     margin-bottom: 20rpx;
-    box-shadow: 0 16rpx 40rpx rgba(0, 88, 190, 0.2);
 
     &:active {
       transform: scale(0.98);
@@ -388,7 +1167,7 @@
 
     .cta-text {
       font-size: 32rpx;
-      font-weight: 600;
+      font-weight: 700;
       color: #ffffff;
     }
   }
@@ -414,7 +1193,7 @@
     .cta-text-muted {
       font-size: 28rpx;
       color: #424754;
-      font-weight: 500;
+      font-weight: 600;
     }
   }
 }
@@ -425,7 +1204,7 @@
   .section-title {
     display: block;
     font-size: 30rpx;
-    font-weight: 700;
+    font-weight: 800;
     color: #151c27;
     margin-bottom: 24rpx;
   }
@@ -448,7 +1227,7 @@
   .cross-theme-name {
     display: block;
     font-size: 26rpx;
-    font-weight: 700;
+    font-weight: 800;
     margin-bottom: 8rpx;
   }
 
@@ -457,6 +1236,7 @@
     font-size: 20rpx;
     color: #727785;
     line-height: 1.4;
+    font-weight: 500;
   }
 }
 

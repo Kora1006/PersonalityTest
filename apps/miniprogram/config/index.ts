@@ -1,4 +1,5 @@
 import type { UserConfigExport } from "@tarojs/cli";
+import path from "path";
 
 const config: UserConfigExport = {
 	projectName: "disc-personality-test",
@@ -13,26 +14,18 @@ const config: UserConfigExport = {
 	outputRoot: "dist",
 	plugins: ["@tarojs/plugin-framework-react"],
 	alias: {
-		// biome-ignore lint/correctness/noGlobalDirnameFilename: CommonJS
-		"@": require("path").resolve(__dirname, "..", "src"),
-		// biome-ignore lint/correctness/noGlobalDirnameFilename: CommonJS
-		"react/jsx-runtime": require("path").resolve(
-			__dirname,
-			"..",
+		"@": path.resolve("src"),
+		"react/jsx-runtime": path.resolve(
 			"node_modules",
 			"react",
 			"jsx-runtime.js"
 		),
-		// biome-ignore lint/correctness/noGlobalDirnameFilename: CommonJS
-		"react/jsx-dev-runtime": require("path").resolve(
-			__dirname,
-			"..",
+		"react/jsx-dev-runtime": path.resolve(
 			"node_modules",
 			"react",
 			"jsx-dev-runtime.js"
 		),
-		// biome-ignore lint/correctness/noGlobalDirnameFilename: CommonJS
-		react: require("path").resolve(__dirname, "..", "node_modules", "react"),
+		react: path.resolve("node_modules", "react"),
 		"react-dom": "@tarojs/react",
 	},
 	defineConstants: {
@@ -59,16 +52,12 @@ const config: UserConfigExport = {
 	},
 	mini: {
 		compile: {
-			include: [
-				// biome-ignore lint/correctness/noGlobalDirnameFilename: CommonJS
-				require("path").resolve(__dirname, "..", "..", "..", "packages", "api"),
-			],
+			include: [path.resolve("..", "..", "packages", "api")],
 		},
 		webpackChain(chain) {
-			chain.module.rule("script").include.add(
-				// biome-ignore lint/correctness/noGlobalDirnameFilename: CommonJS
-				require("path").resolve(__dirname, "..", "..", "..", "packages", "api")
-			);
+			chain.module
+				.rule("script")
+				.include.add(path.resolve("..", "..", "packages", "api"));
 		},
 		postcss: {
 			pxtransform: {

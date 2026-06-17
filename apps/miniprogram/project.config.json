@@ -2,7 +2,7 @@
   "miniprogramRoot": "dist/",
   "projectname": "disc-personality-test",
   "description": "DISC 职业性格测评",
-  "appid": "wxa089da62b300c9a1",
+  "appid": "wx2cff8a05b9eac7e8",
   "setting": {
     "urlCheck": true,
     "es6": false,

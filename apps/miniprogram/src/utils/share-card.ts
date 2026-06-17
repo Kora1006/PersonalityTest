@@ -8,6 +8,7 @@ const W = 750;
 const H = 1334;
 
 interface ShareCardInput {
+	backgroundImage?: string;
 	cardTheme?: { primaryColor: string; backgroundGradient: [string, string] };
 	dominantType: DiscType;
 	qrcodeBase64?: string;
@@ -168,16 +169,29 @@ function wrapText(
 	}
 }
 
+async function getLocalImagePath(src: string): Promise<string> {
+	if (src.startsWith("data:") || !src.startsWith("http")) {
+		return src;
+	}
+	try {
+		const res = await Taro.getImageInfo({ src });
+		return res.path;
+	} catch (err) {
+		console.error("Failed to get local image path:", err);
+		return src;
+	}
+}
+
 export async function generateShareCard(
 	input: ShareCardInput
 ): Promise<string> {
-	const { dominantType, scores, qrcodeBase64, cardTheme } = input;
+	const { dominantType, scores, qrcodeBase64, cardTheme, backgroundImage } =
+		input;
 	const typeColor = cardTheme?.primaryColor ?? DISC_COLORS[dominantType].hex;
 	const quote = getRandomQuote(dominantType);
 	const typeLabel = DISC_COLORS[dominantType].label;
 
 	// Create offscreen canvas
-	// biome-ignore lint/correctness/noUndeclaredVariables: wx is global in WeChat Mini Programs
 	// biome-ignore lint/suspicious/noExplicitAny: OffscreenCanvas is untyped
 	const canvas: any = wx.createOffscreenCanvas({
 		type: "2d",
@@ -186,15 +200,30 @@ export async function generateShareCard(
 	});
 	const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
-	// 1. Background gradient (Light Theme)
-	const gradient = ctx.createLinearGradient(0, 0, 0, H);
-	gradient.addColorStop(0, "#f3f5f9");
-	gradient.addColorStop(1, "#e7ebf4");
-	ctx.fillStyle = gradient;
-	ctx.fillRect(0, 0, W, H);
+	// 1. Background (draw theme background image if available, else fallback to gradient)
+	if (backgroundImage) {
+		try {
+			const localBgPath = await getLocalImagePath(backgroundImage);
+			const bgImg = await loadImage(canvas, localBgPath);
+			ctx.drawImage(bgImg as unknown as CanvasImageSource, 0, 0, W, H);
+		} catch (err) {
+			console.error("Failed to load background image in share card:", err);
+			const gradient = ctx.createLinearGradient(0, 0, 0, H);
+			gradient.addColorStop(0, "#f3f5f9");
+			gradient.addColorStop(1, "#e7ebf4");
+			ctx.fillStyle = gradient;
+			ctx.fillRect(0, 0, W, H);
+		}
+	} else {
+		const gradient = ctx.createLinearGradient(0, 0, 0, H);
+		gradient.addColorStop(0, "#f3f5f9");
+		gradient.addColorStop(1, "#e7ebf4");
+		ctx.fillStyle = gradient;
+		ctx.fillRect(0, 0, W, H);
+	}
 
-	// 2. White Card container in the center
-	ctx.fillStyle = "#ffffff";
+	// 2. White Card container in the center (translucent glassmorphic overlay)
+	ctx.fillStyle = "rgba(255, 255, 255, 0.88)";
 	ctx.beginPath();
 	if (ctx.roundRect) {
 		ctx.roundRect(40, 40, 670, 1254, [24]);
@@ -304,7 +333,6 @@ export async function generateShareCard(
 
 	// Export to temp file
 	return new Promise((resolve, reject) => {
-		// biome-ignore lint/correctness/noUndeclaredVariables: wx is global in WeChat Mini Programs
 		wx.canvasToTempFilePath({
 			canvas,
 			fileType: "png",
