@@ -9,7 +9,7 @@ import type { QuizResult } from "../../utils/quiz-store";
 import { quizStore } from "../../utils/quiz-store";
 import { fetchMiniQrcode, saveShareCardToAlbum } from "../../utils/share-card";
 import { storage } from "../../utils/storage";
-import { getThemeHeroImage, CDN_IMAGES } from "../../utils/theme-images";
+import { CDN_IMAGES, getThemeHeroImage } from "../../utils/theme-images";
 import { syncLocalHistoryToServer, trpc } from "../../utils/trpc";
 import "./index.scss";
 

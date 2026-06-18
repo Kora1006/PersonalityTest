@@ -1,4 +1,5 @@
-const CDN_BASE = "https://7072-prod-d1gj2nkrx05fb1c16-1444533815.tcb.qcloud.la/static-images";
+const CDN_BASE =
+	"https://7072-prod-d1gj2nkrx05fb1c16-1444533815.tcb.qcloud.la/static-images";
 
 export const CDN_IMAGES = {
 	benefits: `${CDN_BASE}/benefits.png`,

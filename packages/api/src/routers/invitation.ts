@@ -3,6 +3,7 @@ import { assessments } from "@PersonalityTest/db/schema/assessments";
 import { user as userTable } from "@PersonalityTest/db/schema/auth";
 import { invitations } from "@PersonalityTest/db/schema/invitations";
 import { env } from "@PersonalityTest/env/server";
+import crypto from "node:crypto";
 import { and, eq, ne } from "drizzle-orm";
 import { z } from "zod";
 

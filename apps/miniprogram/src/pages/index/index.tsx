@@ -1,12 +1,12 @@
 import { themes } from "@PersonalityTest/api/data/themes/index";
 import { Image, ScrollView, Text, View } from "@tarojs/components";
 import Taro, { useLoad } from "@tarojs/taro";
-import { CDN_IMAGES } from "../../utils/theme-images";
 import { Icon } from "../../components/icon";
 import { DISC_COLORS } from "../../data/disc-colors";
 import type { ThemeId } from "../../utils/quiz-store";
 import { quizStore } from "../../utils/quiz-store";
 import { storage } from "../../utils/storage";
+import { CDN_IMAGES } from "../../utils/theme-images";
 import "./index.scss";
 
 const DISC_CARDS = [

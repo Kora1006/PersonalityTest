@@ -1,6 +1,7 @@
 import { createDb } from "@PersonalityTest/db";
 import { assessments } from "@PersonalityTest/db/schema/assessments";
 import { orders } from "@PersonalityTest/db/schema/orders";
+import crypto from "node:crypto";
 import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 
