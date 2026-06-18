@@ -774,7 +774,7 @@ export default function Result() {
 				{mode === "quick" && (
 					<View className="upgrade-banner">
 						<Text className="upgrade-text">
-							完成完整版 24 题，获得更精准的职业性格报告
+							完成完整版 40 题，获得更精准的职业性格报告
 						</Text>
 						<View
 							className="upgrade-btn"
