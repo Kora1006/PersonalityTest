@@ -24,7 +24,6 @@ export default function Detail() {
 	const [unlockStatus, setUnlockStatus] = useState<UnlockStatus | null>(null);
 	const [showInviteModal, setShowInviteModal] = useState(false);
 	const [inviteLoading, setInviteLoading] = useState(false);
-	const [downloading, setDownloading] = useState(false);
 	const [auditMode, setAuditMode] = useState(false);
 	const [currentInvitation, setCurrentInvitation] = useState<{
 		invitationId: string;
@@ -166,76 +165,6 @@ export default function Detail() {
 		}
 	};
 
-	const handleDownloadPDF = async () => {
-		const token = storage.getToken();
-		if (!token) {
-			Taro.showToast({ title: "请先登录后再下载", icon: "none" });
-			return;
-		}
-
-		setDownloading(true);
-		Taro.showLoading({ title: "正在下载 PDF..." });
-
-		const baseUrl = process.env.TARO_APP_SERVER_URL ?? "http://localhost:3000";
-		const downloadUrl = `${baseUrl}/report/download/${result.id}`;
-
-		try {
-			const res = await Taro.downloadFile({
-				url: downloadUrl,
-				header: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
-
-			Taro.hideLoading();
-
-			if (res.statusCode === 200) {
-				Taro.showLoading({ title: "正在打开 PDF..." });
-				await Taro.openDocument({
-					filePath: res.tempFilePath,
-					fileType: "pdf",
-					showMenu: true,
-					success: () => {
-						Taro.hideLoading();
-					},
-					fail: (err) => {
-						Taro.hideLoading();
-						console.error("Open PDF fail:", err);
-						Taro.showModal({
-							title: "无法打开 PDF",
-							content:
-								"已成功下载，但无法在您的设备上打开预览。您可以复制下载链接到浏览器下载。",
-							confirmText: "复制链接",
-							success: (confirmRes) => {
-								if (confirmRes.confirm) {
-									Taro.setClipboardData({ data: downloadUrl });
-								}
-							},
-						});
-					},
-				});
-			} else {
-				throw new Error(`HTTP Status ${res.statusCode}`);
-			}
-		} catch (err) {
-			Taro.hideLoading();
-			console.error("Download PDF error:", err);
-			Taro.showModal({
-				title: "下载失败",
-				content:
-					"请确保报告已付费或已通过分享解锁，或者您可以尝试复制链接到浏览器中访问。",
-				confirmText: "复制链接",
-				success: (confirmRes) => {
-					if (confirmRes.confirm) {
-						Taro.setClipboardData({ data: downloadUrl });
-					}
-				},
-			});
-		} finally {
-			setDownloading(false);
-		}
-	};
-
 	const isUnlocked =
 		process.env.NODE_ENV === "development" ||
 		auditMode ||
@@ -306,106 +235,100 @@ export default function Detail() {
 					</View>
 				</View>
 
-				{/* Deep Analysis — 3 themed sections */}
-				<View className="section">
-					<View className="section-header-flex">
-						<Icon
-							color={typeColor}
-							name="corporate_fare"
-							size={36}
-							style={{ marginRight: "12rpx" }}
-						/>
-						<Text className="section-title">
-							{typeContent.detailAnalysis.section1Title}
-						</Text>
-					</View>
-					<View className="info-card">
-						<Text className="info-text">
-							{typeContent.detailAnalysis.section1Content}
-						</Text>
-					</View>
-				</View>
-
-				<View className="section">
-					<View className="section-header-flex">
-						<Icon
-							color={typeColor}
-							name="forum"
-							size={36}
-							style={{ marginRight: "12rpx" }}
-						/>
-						<Text className="section-title">
-							{typeContent.detailAnalysis.section2Title}
-						</Text>
-					</View>
-					<View className="info-card">
-						<Text className="info-text">
-							{typeContent.detailAnalysis.section2Content}
-						</Text>
-					</View>
-				</View>
-
-				<View className="section">
-					<View className="section-header-flex">
-						<Icon
-							color={typeColor}
-							name="psychology"
-							size={36}
-							style={{ marginRight: "12rpx" }}
-						/>
-						<Text className="section-title">
-							{typeContent.detailAnalysis.section3Title}
-						</Text>
-					</View>
-					<View className="info-card">
-						<Text className="info-text">
-							{typeContent.detailAnalysis.section3Content}
-						</Text>
-					</View>
-				</View>
-
-				{/* Growth Areas */}
-				<View className="section">
-					<View className="section-header-flex">
-						<Icon
-							color={typeColor}
-							name="trending_up"
-							size={36}
-							style={{ marginRight: "12rpx" }}
-						/>
-						<Text className="section-title">成长机会</Text>
-					</View>
-					<View className="growth-grid">
-						{typeContent.growthAreas.map((area, idx) => (
-							<View className="habit-card" key={area}>
-								<Text className="habit-title" style={{ color: typeColor }}>
-									SUGGESTION {idx + 1}
+				{isUnlocked && (
+					<>
+						{/* Deep Analysis — 3 themed sections */}
+						<View className="section">
+							<View className="section-header-flex">
+								<Icon
+									color={typeColor}
+									name="corporate_fare"
+									size={36}
+									style={{ marginRight: "12rpx" }}
+								/>
+								<Text className="section-title">
+									{typeContent.detailAnalysis.section1Title}
 								</Text>
-								<Text className="habit-desc">{area}</Text>
 							</View>
-						))}
-					</View>
-				</View>
+							<View className="info-card">
+								<Text className="info-text">
+									{typeContent.detailAnalysis.section1Content}
+								</Text>
+							</View>
+						</View>
 
-				{/* Report Download CTA */}
+						<View className="section">
+							<View className="section-header-flex">
+								<Icon
+									color={typeColor}
+									name="forum"
+									size={36}
+									style={{ marginRight: "12rpx" }}
+								/>
+								<Text className="section-title">
+									{typeContent.detailAnalysis.section2Title}
+								</Text>
+							</View>
+							<View className="info-card">
+								<Text className="info-text">
+									{typeContent.detailAnalysis.section2Content}
+								</Text>
+							</View>
+						</View>
+
+						<View className="section">
+							<View className="section-header-flex">
+								<Icon
+									color={typeColor}
+									name="psychology"
+									size={36}
+									style={{ marginRight: "12rpx" }}
+								/>
+								<Text className="section-title">
+									{typeContent.detailAnalysis.section3Title}
+								</Text>
+							</View>
+							<View className="info-card">
+								<Text className="info-text">
+									{typeContent.detailAnalysis.section3Content}
+								</Text>
+							</View>
+						</View>
+
+						{/* Growth Areas */}
+						<View className="section">
+							<View className="section-header-flex">
+								<Icon
+									color={typeColor}
+									name="trending_up"
+									size={36}
+									style={{ marginRight: "12rpx" }}
+								/>
+								<Text className="section-title">成长机会</Text>
+							</View>
+							<View className="growth-grid">
+								{typeContent.growthAreas.map((area, idx) => (
+									<View className="habit-card" key={area}>
+										<Text className="habit-title" style={{ color: typeColor }}>
+											SUGGESTION {idx + 1}
+										</Text>
+										<Text className="habit-desc">{area}</Text>
+									</View>
+								))}
+							</View>
+						</View>
+					</>
+				)}
+
+				{/* Report Unlock CTA */}
 				<View className="report-section">
-					<Text className="report-title">解锁完整档案</Text>
+					<Text className="report-title">解锁深度行为分析报告</Text>
 					<Text className="report-desc">
-						获取完整的 30 页 PDF 分析，包括盲点和团队动态。
+						解锁后可查看：各维度的详细协作表现、针对性沟通偏好建议与核心成长机会矩阵。
 					</Text>
 					{isUnlocked ? (
-						<View className="unlocked-container">
-							<View className="unlocked-badge">
-								<Text className="unlocked-text">报告已解锁 ✓</Text>
-							</View>
-							<View
-								className="download-pdf-btn"
-								onClick={downloading ? undefined : handleDownloadPDF}
-							>
-								<Text className="download-text">
-									{downloading ? "正在生成..." : "下载并打开完整 PDF 报告"}
-								</Text>
-							</View>
+						<View className="unlocked-badge">
+							<Text className="unlocked-text">报告已解锁 ✓</Text>
 						</View>
 					) : (
 						<View
