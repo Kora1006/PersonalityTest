@@ -4,6 +4,17 @@
   height: 100vh;
   background: #f9f9ff;
   overflow: hidden;
+
+  .relationship-artwork-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    opacity: 0.35;
+    pointer-events: none;
+  }
 }
 
 .result-page {
@@ -711,17 +722,6 @@
 .theme-layout-relationship {
   width: 100%;
   box-sizing: border-box;
-
-  .relationship-artwork-bg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    z-index: -10;
-    opacity: 0.35;
-    pointer-events: none;
-  }
 
   .relationship-hero {
     display: flex;

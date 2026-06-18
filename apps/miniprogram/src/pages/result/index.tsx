@@ -569,13 +569,6 @@ export default function Result() {
 		const insight = typeContent.relationshipInsight;
 		return (
 			<View className="theme-layout-relationship">
-				{/* Watercolor background image */}
-				<Image
-					className="relationship-artwork-bg"
-					mode="aspectFill"
-					src={getThemeHeroImage(result.theme)}
-				/>
-
 				{/* Hero Header */}
 				<View className="relationship-hero">
 					<View className="heart-icon-badge-wrap animate-bounce">
@@ -729,6 +722,13 @@ export default function Result() {
 
 	return (
 		<View className="result-page-container">
+			{result.theme === "relationship" && (
+				<Image
+					className="relationship-artwork-bg"
+					mode="aspectFill"
+					src={getThemeHeroImage(result.theme)}
+				/>
+			)}
 			<ScrollView
 				className={`result-page result-theme-${result.theme ?? "professional"}`}
 				scrollY
