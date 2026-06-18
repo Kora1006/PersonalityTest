@@ -8,32 +8,7 @@ import { and, eq, ne } from "drizzle-orm";
 import { z } from "zod";
 
 import { protectedProcedure, publicProcedure, router } from "../index";
-
-let cachedMpToken: { token: string; expiresAt: number } | null = null;
-
-async function getMpAccessToken(): Promise<string | null> {
-	if (cachedMpToken && Date.now() < cachedMpToken.expiresAt) {
-		return cachedMpToken.token;
-	}
-	if (!(env.WECHAT_APP_ID && env.WECHAT_APP_SECRET)) {
-		return null;
-	}
-	const res = await fetch(
-		`https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${env.WECHAT_APP_ID}&secret=${env.WECHAT_APP_SECRET}`
-	);
-	const data = (await res.json()) as {
-		access_token?: string;
-		expires_in?: number;
-	};
-	if (!data.access_token) {
-		return null;
-	}
-	cachedMpToken = {
-		token: data.access_token,
-		expiresAt: Date.now() + (data.expires_in ?? 7200) * 1000 - 5 * 60 * 1000,
-	};
-	return data.access_token;
-}
+import { getMpAccessToken } from "../utils/wechat";
 
 async function sendUnlockSubscribeMessage(
 	inviterOpenId: string
@@ -234,6 +209,55 @@ export const invitationRouter = router({
 				isUnlocked: result.isUnlocked ?? false,
 				inviteCount: uniqueInvitees.size,
 				needed: UNLOCK_THRESHOLD,
+			};
+		}),
+
+	getInvitationPreview: publicProcedure
+		.input(z.object({ invitationId: z.string() }))
+		.query(async ({ input }) => {
+			const db = createDb();
+
+			const invitation = await db
+				.select()
+				.from(invitations)
+				.where(eq(invitations.id, input.invitationId))
+				.then((rows) => rows[0] ?? null);
+
+			if (!invitation) {
+				throw new Error("Invitation not found");
+			}
+
+			const [assessment, inviterUser] = await Promise.all([
+				db
+					.select()
+					.from(assessments)
+					.where(eq(assessments.id, invitation.inviterResultId))
+					.then((rows) => rows[0] ?? null),
+				db
+					.select({ name: userTable.name })
+					.from(userTable)
+					.where(eq(userTable.id, invitation.inviterId))
+					.then((rows) => rows[0] ?? null),
+			]);
+
+			if (!assessment) {
+				throw new Error("Assessment not found");
+			}
+
+			const scores = {
+				D: assessment.scoreD,
+				I: assessment.scoreI,
+				S: assessment.scoreS,
+				C: assessment.scoreC,
+			};
+			const sorted = (["D", "I", "S", "C"] as const)
+				.slice()
+				.sort((a, b) => scores[b] - scores[a]);
+			const compositeType = `${sorted[0]}${sorted[1]}`;
+
+			return {
+				inviterName: inviterUser?.name ?? "用户",
+				compositeType,
 			};
 		}),
 });

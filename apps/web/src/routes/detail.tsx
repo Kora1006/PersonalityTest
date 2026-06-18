@@ -1,3 +1,4 @@
+import { COMPOSITE_PROFILES } from "@PersonalityTest/api/data/themes/index";
 import { env } from "@PersonalityTest/env/web";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -8,9 +9,11 @@ import { useQuiz } from "@/contexts/quiz-context";
 import type { DiscType } from "@/data/disc-colors";
 import { DISC_COLORS } from "@/data/disc-colors";
 import { DISC_PROFILES } from "@/data/disc-profiles";
+import { useWechatShare } from "@/hooks/use-wechat-share";
 import { authClient } from "@/lib/auth-client";
 import { getHistory } from "@/lib/history";
-import { trpc } from "@/utils/trpc";
+import { getCompositeType, getShareThumbnail } from "@/utils/disc";
+import { trpc, trpcClient } from "@/utils/trpc";
 import type { Route } from "./+types/detail";
 
 export async function clientLoader({ request }: { request: Request }) {
@@ -39,6 +42,7 @@ export default function Detail() {
 	const { data: session } = authClient.useSession();
 	const [showPayment, setShowPayment] = useState(false);
 	const [isPaidUnlocked, setIsPaidUnlocked] = useState(false);
+	const [inviteLink, setInviteLink] = useState<string | undefined>(undefined);
 
 	const historyId = searchParams.get("id");
 
@@ -78,6 +82,35 @@ export default function Detail() {
 			}
 		}
 	}, [serverHistory, historyId]);
+
+	// Pre-create invitation link so it's ready when the user taps share
+	useEffect(() => {
+		if (!(session && historyId)) {
+			return;
+		}
+		trpcClient.invitation.createInvitation
+			.mutate({ resultId: historyId })
+			.then(({ invitationId }) => {
+				setInviteLink(`${location.origin}/invite/${invitationId}`);
+			})
+			.catch(() => {
+				// Silent — share link will fall back to current URL
+			});
+	}, [session, historyId]);
+
+	const shareScores = activeRecord?.scores ?? { D: 0, I: 0, S: 0, C: 0 };
+	const shareDominantType = activeRecord?.dominantType ?? "D";
+	const shareCompositeType = getCompositeType(shareScores);
+	const shareCompositeName =
+		COMPOSITE_PROFILES[shareCompositeType]?.name ??
+		DISC_PROFILES[shareDominantType].name;
+
+	useWechatShare({
+		title: "来测测你的DISC职场性格，看看我们的配对分析",
+		desc: `「${shareCompositeName}」职场表现·沟通风格·成长机会`,
+		imgUrl: getShareThumbnail(shareCompositeType),
+		link: inviteLink,
+	});
 
 	if (!activeRecord) {
 		return null;

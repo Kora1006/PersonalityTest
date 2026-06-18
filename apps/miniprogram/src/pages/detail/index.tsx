@@ -132,7 +132,7 @@ export default function Detail() {
 				confirmText: "去登录",
 				success: (res) => {
 					if (res.confirm) {
-						Taro.navigateTo({ url: "/pages/auth/index" });
+						Taro.switchTab({ url: "/pages/auth/index" });
 					}
 				},
 			});

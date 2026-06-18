@@ -1,6 +1,7 @@
+import { COMPOSITE_PROFILES } from "@PersonalityTest/api/data/themes/index";
 import { env } from "@PersonalityTest/env/web";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router";
 
 import { RadarChart } from "@/components/radar-chart";
@@ -8,9 +9,11 @@ import { useQuiz } from "@/contexts/quiz-context";
 import type { DiscType } from "@/data/disc-colors";
 import { DISC_COLORS } from "@/data/disc-colors";
 import { DISC_PROFILES } from "@/data/disc-profiles";
+import { useWechatShare } from "@/hooks/use-wechat-share";
 import { authClient } from "@/lib/auth-client";
 import { getHistory } from "@/lib/history";
-import { trpc } from "@/utils/trpc";
+import { getCompositeType, getShareThumbnail } from "@/utils/disc";
+import { trpc, trpcClient } from "@/utils/trpc";
 import type { Route } from "./+types/result";
 
 export function meta(_: Route.MetaArgs) {
@@ -24,6 +27,10 @@ export default function Result() {
 	const [searchParams] = useSearchParams();
 	const { dominantType: contextType, scores: contextScores, reset } = useQuiz();
 	const { data: session } = authClient.useSession();
+	const [comparisonReady, setComparisonReady] = useState<{
+		invitationId: string;
+		myResultId: string;
+	} | null>(null);
 
 	const historyId = searchParams.get("id");
 
@@ -55,11 +62,48 @@ export default function Result() {
 		enabled: !!session && !!historyId,
 	});
 
+	// Complete pending invitation after quiz + cloud sync
+	useEffect(() => {
+		const pendingId = sessionStorage.getItem("pendingInvitationId");
+		if (!(pendingId && session && historyId) || historyId === null) {
+			return;
+		}
+		sessionStorage.removeItem("pendingInvitationId");
+		trpcClient.invitation.completeInvitation
+			.mutate({
+				invitationId: pendingId,
+				inviteeId: session.user.id,
+				inviteeResultId: historyId,
+			})
+			.then((result) => {
+				if (!result.alreadyCompleted) {
+					setComparisonReady({
+						invitationId: pendingId,
+						myResultId: historyId,
+					});
+				}
+			})
+			.catch(() => {
+				// Silent — non-critical
+			});
+	}, [session, historyId]);
+
+	const scores = activeRecord?.scores ?? { D: 0, I: 0, S: 0, C: 0 };
+	const dominantType = activeRecord?.dominantType ?? "D";
+	const compositeType = getCompositeType(scores);
+	const compositeName =
+		COMPOSITE_PROFILES[compositeType]?.name ?? DISC_PROFILES[dominantType].name;
+
+	useWechatShare({
+		title: `我的DISC类型是「${compositeName}」，测测你是哪种？`,
+		desc: `D: ${scores.D}% · I: ${scores.I}% · S: ${scores.S}% · C: ${scores.C}% | DISC 职业性格测评`,
+		imgUrl: getShareThumbnail(compositeType),
+	});
+
 	if (!activeRecord) {
 		return null;
 	}
 
-	const { dominantType, scores } = activeRecord;
 	const profile = DISC_PROFILES[dominantType];
 	const color = DISC_COLORS[dominantType];
 
@@ -234,6 +278,20 @@ export default function Result() {
 
 				{/* CTA Buttons */}
 				<div className="flex flex-col gap-3">
+					{comparisonReady && (
+						<button
+							className="flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-500 py-3.5 font-semibold text-white shadow-[0_8px_16px_rgba(16,185,129,0.2)] transition-opacity hover:opacity-90"
+							onClick={() =>
+								navigate(
+									`/comparison?myId=${comparisonReady.myResultId}&friendId=${comparisonReady.invitationId}`
+								)
+							}
+							type="button"
+						>
+							<span className="material-symbols-outlined text-xl">people</span>
+							查看与好友的配对分析
+						</button>
+					)}
 					<Link
 						className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3.5 font-semibold text-white shadow-[0_8px_16px_rgba(0,88,190,0.2)] transition-opacity hover:opacity-90"
 						to={historyId ? `/detail?id=${historyId}` : "/detail"}

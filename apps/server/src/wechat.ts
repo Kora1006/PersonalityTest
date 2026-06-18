@@ -1,7 +1,9 @@
+import { getMpAccessToken } from "@PersonalityTest/api/utils/wechat";
 import { auth } from "@PersonalityTest/auth";
 import { createDb } from "@PersonalityTest/db";
 import { user as userTable } from "@PersonalityTest/db/schema/auth";
 import { env } from "@PersonalityTest/env/server";
+import { createHash } from "node:crypto";
 import { eq } from "drizzle-orm";
 import { Hono } from "hono";
 import { setCookie } from "hono/cookie";
@@ -155,31 +157,33 @@ wechatRouter.get("/poll/:state", (c) => {
 	return c.json({ status: record.status });
 });
 
-// Access token cache (valid ~2h, refresh at 1.5h)
-let cachedAccessToken: { token: string; expiresAt: number } | null = null;
+// jsapi_ticket cache (valid ~2h, refresh at 1.5h)
+let cachedJsapiTicket: { ticket: string; expiresAt: number } | null = null;
 
-async function getMpAccessToken(): Promise<string | null> {
-	if (cachedAccessToken && Date.now() < cachedAccessToken.expiresAt) {
-		return cachedAccessToken.token;
+async function getJsapiTicket(): Promise<string | null> {
+	if (cachedJsapiTicket && Date.now() < cachedJsapiTicket.expiresAt) {
+		return cachedJsapiTicket.ticket;
 	}
-	if (!(env.WECHAT_APP_ID && env.WECHAT_APP_SECRET)) {
+	const accessToken = await getMpAccessToken();
+	if (!accessToken) {
 		return null;
 	}
 	const res = await fetch(
-		`https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${env.WECHAT_APP_ID}&secret=${env.WECHAT_APP_SECRET}`
+		`https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=${accessToken}&type=jsapi`
 	);
 	const data = (await res.json()) as {
-		access_token?: string;
+		ticket?: string;
 		expires_in?: number;
+		errcode?: number;
 	};
-	if (!data.access_token) {
+	if (!data.ticket) {
 		return null;
 	}
-	cachedAccessToken = {
-		token: data.access_token,
+	cachedJsapiTicket = {
+		ticket: data.ticket,
 		expiresAt: Date.now() + (data.expires_in ?? 7200) * 1000 - 5 * 60 * 1000,
 	};
-	return data.access_token;
+	return data.ticket;
 }
 
 // GET /api/auth/wechat/mini-qrcode?scene=xxx&page=xxx
@@ -321,4 +325,39 @@ wechatRouter.post("/miniprogram-login", async (c) => {
 			500
 		);
 	}
+});
+
+// GET /api/auth/wechat/jssdk-signature?url=<encoded_page_url>
+// Returns JSSDK config params for wx.config() on the given page URL.
+wechatRouter.get("/jssdk-signature", async (c) => {
+	const url = c.req.query("url");
+	if (!url) {
+		return c.json({ error: "Missing url parameter" }, 400);
+	}
+
+	if (!env.WECHAT_APP_ID) {
+		return c.json({
+			appId: "mock",
+			timestamp: 0,
+			nonceStr: "mock",
+			signature: "mock",
+		});
+	}
+
+	const jsapiTicket = await getJsapiTicket();
+	if (!jsapiTicket) {
+		return c.json({ error: "Failed to get jsapi ticket" }, 503);
+	}
+
+	const timestamp = Math.floor(Date.now() / 1000);
+	const nonceStr = crypto.randomUUID().replace(/-/g, "").slice(0, 16);
+	const signStr = `jsapi_ticket=${jsapiTicket}&noncestr=${nonceStr}&timestamp=${timestamp}&url=${url}`;
+	const signature = createHash("sha1").update(signStr).digest("hex");
+
+	return c.json({
+		appId: env.WECHAT_APP_ID,
+		timestamp,
+		nonceStr,
+		signature,
+	});
 });

@@ -117,7 +117,7 @@ export default function Result() {
 		return <View className="result-page" />;
 	}
 
-	const themeConfig = themes[result.theme ?? "professional"];
+	const themeConfig = themes[result.theme] ?? themes.professional;
 	const primaryType = (result.dominantType.charAt(0) || "D") as
 		| "D"
 		| "I"
@@ -172,7 +172,7 @@ export default function Result() {
 				confirmText: "去登录",
 				success: (res) => {
 					if (res.confirm) {
-						Taro.navigateTo({ url: "/pages/auth/index" });
+						Taro.switchTab({ url: "/pages/auth/index" });
 					}
 				},
 			});
