@@ -178,7 +178,10 @@ export default function Detail() {
 		}
 	};
 
-	const isUnlocked = auditMode || (unlockStatus?.isUnlocked ?? false);
+	const isUnlocked =
+		process.env.NODE_ENV === "development" ||
+		auditMode ||
+		(unlockStatus?.isUnlocked ?? false);
 	const inviteCount = unlockStatus?.inviteCount ?? 0;
 	const needed = unlockStatus?.needed ?? 2;
 
