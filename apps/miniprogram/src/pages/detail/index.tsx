@@ -14,13 +14,6 @@ import { getThemeHeroImage } from "../../utils/theme-images";
 import { trpc } from "../../utils/trpc";
 import "./index.scss";
 
-const TYPE_COLORS: Record<string, string> = {
-	D: "#ef4444",
-	I: "#f59e0b",
-	S: "#10b981",
-	C: "#3b82f6",
-};
-
 interface UnlockStatus {
 	inviteCount: number;
 	isUnlocked: boolean;
@@ -31,6 +24,7 @@ export default function Detail() {
 	const [unlockStatus, setUnlockStatus] = useState<UnlockStatus | null>(null);
 	const [showInviteModal, setShowInviteModal] = useState(false);
 	const [inviteLoading, setInviteLoading] = useState(false);
+	const [downloading, setDownloading] = useState(false);
 	const [auditMode, setAuditMode] = useState(false);
 	const [currentInvitation, setCurrentInvitation] = useState<{
 		invitationId: string;
@@ -63,16 +57,14 @@ export default function Detail() {
 			.catch(() => null);
 
 		const user = storage.getUser();
-		if (!user) {
-			return;
+		if (user) {
+			trpc
+				.query<UnlockStatus>("invitation.getUnlockStatus", {
+					resultId: result.id,
+				})
+				.then(setUnlockStatus)
+				.catch(() => null);
 		}
-
-		trpc
-			.query<UnlockStatus>("invitation.getUnlockStatus", {
-				resultId: result.id,
-			})
-			.then(setUnlockStatus)
-			.catch(() => null);
 	});
 
 	useShareAppMessage((res) => {
@@ -90,38 +82,34 @@ export default function Detail() {
 	});
 
 	useEffect(() => {
-		if (!(showInviteModal && result)) {
-			return;
-		}
+		if (showInviteModal && result) {
+			const user = storage.getUser();
+			if (user) {
+				pollRef.current = setInterval(() => {
+					trpc
+						.query<UnlockStatus>("invitation.getUnlockStatus", {
+							resultId: result.id,
+						})
+						.then((status) => {
+							setUnlockStatus(status);
+							if (status.isUnlocked) {
+								if (pollRef.current) {
+									clearInterval(pollRef.current);
+								}
+								setShowInviteModal(false);
+								Taro.showToast({ title: "报告已解锁！", icon: "success" });
+							}
+						})
+						.catch(() => null);
+				}, 5000);
 
-		const user = storage.getUser();
-		if (!user) {
-			return;
-		}
-
-		pollRef.current = setInterval(() => {
-			trpc
-				.query<UnlockStatus>("invitation.getUnlockStatus", {
-					resultId: result.id,
-				})
-				.then((status) => {
-					setUnlockStatus(status);
-					if (status.isUnlocked) {
-						if (pollRef.current !== null) {
-							clearInterval(pollRef.current);
-						}
-						setShowInviteModal(false);
-						Taro.showToast({ title: "报告已解锁！", icon: "success" });
+				return () => {
+					if (pollRef.current) {
+						clearInterval(pollRef.current);
 					}
-				})
-				.catch(() => null);
-		}, 5000);
-
-		return () => {
-			if (pollRef.current) {
-				clearInterval(pollRef.current);
+				};
 			}
-		};
+		}
 	}, [showInviteModal, result]);
 
 	if (!result) {
@@ -132,11 +120,11 @@ export default function Detail() {
 		themes[result.theme ?? "professional"] ?? themes.professional;
 	const primaryType = (result.dominantType.charAt(0) || "D") as DiscType;
 	const typeContent = themeConfig.types[primaryType];
-	const typeColor = TYPE_COLORS[primaryType];
-	const score = result.scores[primaryType];
-	const user = storage.getUser();
+	const typeColor = DISC_COLORS[primaryType]?.hex || "#0058be";
+	const score = result.scores[primaryType] || 0;
 
 	const handleUnlock = async () => {
+		const user = storage.getUser();
 		if (!user) {
 			Taro.showModal({
 				title: "需要登录",
@@ -175,6 +163,76 @@ export default function Detail() {
 			Taro.showToast({ title: "生成邀请失败", icon: "none" });
 		} finally {
 			setInviteLoading(false);
+		}
+	};
+
+	const handleDownloadPDF = async () => {
+		const token = storage.getToken();
+		if (!token) {
+			Taro.showToast({ title: "请先登录后再下载", icon: "none" });
+			return;
+		}
+
+		setDownloading(true);
+		Taro.showLoading({ title: "正在下载 PDF..." });
+
+		const baseUrl = process.env.TARO_APP_SERVER_URL ?? "http://localhost:3000";
+		const downloadUrl = `${baseUrl}/report/download/${result.id}`;
+
+		try {
+			const res = await Taro.downloadFile({
+				url: downloadUrl,
+				header: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+
+			Taro.hideLoading();
+
+			if (res.statusCode === 200) {
+				Taro.showLoading({ title: "正在打开 PDF..." });
+				await Taro.openDocument({
+					filePath: res.tempFilePath,
+					fileType: "pdf",
+					showMenu: true,
+					success: () => {
+						Taro.hideLoading();
+					},
+					fail: (err) => {
+						Taro.hideLoading();
+						console.error("Open PDF fail:", err);
+						Taro.showModal({
+							title: "无法打开 PDF",
+							content:
+								"已成功下载，但无法在您的设备上打开预览。您可以复制下载链接到浏览器下载。",
+							confirmText: "复制链接",
+							success: (confirmRes) => {
+								if (confirmRes.confirm) {
+									Taro.setClipboardData({ data: downloadUrl });
+								}
+							},
+						});
+					},
+				});
+			} else {
+				throw new Error(`HTTP Status ${res.statusCode}`);
+			}
+		} catch (err) {
+			Taro.hideLoading();
+			console.error("Download PDF error:", err);
+			Taro.showModal({
+				title: "下载失败",
+				content:
+					"请确保报告已付费或已通过分享解锁，或者您可以尝试复制链接到浏览器中访问。",
+				confirmText: "复制链接",
+				success: (confirmRes) => {
+					if (confirmRes.confirm) {
+						Taro.setClipboardData({ data: downloadUrl });
+					}
+				},
+			});
+		} finally {
+			setDownloading(false);
 		}
 	};
 
@@ -336,8 +394,18 @@ export default function Detail() {
 						获取完整的 30 页 PDF 分析，包括盲点和团队动态。
 					</Text>
 					{isUnlocked ? (
-						<View className="unlocked-badge">
-							<Text className="unlocked-text">报告已解锁 ✓</Text>
+						<View className="unlocked-container">
+							<View className="unlocked-badge">
+								<Text className="unlocked-text">报告已解锁 ✓</Text>
+							</View>
+							<View
+								className="download-pdf-btn"
+								onClick={downloading ? undefined : handleDownloadPDF}
+							>
+								<Text className="download-text">
+									{downloading ? "正在生成..." : "下载并打开完整 PDF 报告"}
+								</Text>
+							</View>
 						</View>
 					) : (
 						<View

@@ -5,7 +5,7 @@ import { createDb } from "@PersonalityTest/db";
 import { assessments } from "@PersonalityTest/db/schema/assessments";
 import { env } from "@PersonalityTest/env/server";
 import { trpcServer } from "@hono/trpc-server";
-import { and, eq } from "drizzle-orm";
+import { and, eq, or } from "drizzle-orm";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
@@ -54,7 +54,7 @@ app.get("/report/download/:assessmentId", async (c) => {
 			and(
 				eq(assessments.id, assessmentId),
 				eq(assessments.userId, session.user.id),
-				eq(assessments.isPaid, true)
+				or(eq(assessments.isPaid, true), eq(assessments.isUnlocked, true))
 			)
 		)
 		.then((rows) => rows[0] ?? null);

@@ -246,6 +246,31 @@
       color: #10b981;
     }
   }
+
+  .unlocked-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20rpx;
+  }
+
+  .download-pdf-btn {
+    background: #0058be;
+    border-radius: 20rpx;
+    padding: 36rpx 0;
+    text-align: center;
+    box-shadow: 0 12rpx 32rpx rgba(0, 88, 190, 0.2);
+
+    &:active {
+      transform: scale(0.98);
+      opacity: 0.95;
+    }
+
+    .download-text {
+      font-size: 28rpx;
+      font-weight: 600;
+      color: #ffffff;
+    }
+  }
 }
 
 .modal-overlay {

@@ -141,10 +141,15 @@ export default function Result() {
 				backgroundImage: themeConfig.heroImage,
 			});
 			Taro.showToast({ title: "已保存到相册", icon: "success" });
-		} catch (err: any) {
+		} catch (err) {
+			const errMsg = err instanceof Error ? err.message : String(err);
+			const wechatErr =
+				err && typeof err === "object" && "errMsg" in err
+					? String((err as Record<string, unknown>).errMsg)
+					: undefined;
 			console.error("Save share card error:", err);
 			Taro.showToast({
-				title: `保存失败: ${err?.errMsg || err?.message || "未知错误"}`,
+				title: `保存失败: ${wechatErr || errMsg || "未知错误"}`,
 				icon: "none",
 			});
 		} finally {
@@ -189,8 +194,12 @@ export default function Result() {
 
 	const goDetail = () => Taro.navigateTo({ url: "/pages/detail/index" });
 	const retakeQuiz = () => {
-		quizStore.reset();
-		Taro.redirectTo({ url: "/pages/quiz/index" });
+		const currentTheme = result.theme ?? "professional";
+		const currentMode = quizStore.getMode() ?? "full";
+		quizStore.reset(currentMode, currentTheme);
+		Taro.redirectTo({
+			url: `/pages/quiz/index?theme=${currentTheme}&mode=${currentMode}`,
+		});
 	};
 	const goHistory = () => Taro.switchTab({ url: "/pages/history/index" });
 
@@ -364,6 +373,8 @@ export default function Result() {
 					return "rgba(16, 185, 129, 0.12)";
 				case "C":
 					return "rgba(59, 130, 246, 0.12)";
+				default:
+					return "rgba(0, 88, 190, 0.12)";
 			}
 		};
 
@@ -706,7 +717,7 @@ export default function Result() {
 		);
 	};
 
-	let themeContent;
+	let themeContent: React.ReactNode = null;
 	if (result.theme === "professional") {
 		themeContent = renderProfessional();
 	} else if (result.theme === "leadership") {
