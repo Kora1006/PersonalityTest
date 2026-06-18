@@ -1,10 +1,13 @@
-import { themes } from "@PersonalityTest/api/data/themes/index";
+import {
+	getPersonalityContent,
+	themes,
+} from "@PersonalityTest/api/data/themes/index";
 import { Button, Image, ScrollView, Text, View } from "@tarojs/components";
 import Taro, { useLoad, useShareAppMessage } from "@tarojs/taro";
 import { useState } from "react";
 import { Icon, toBase64 } from "../../components/icon";
 import { RadarCanvas } from "../../components/radar-canvas";
-import { DISC_COLORS, getDominantLabel } from "../../data/disc-colors";
+import { getDominantLabel } from "../../data/disc-colors";
 import type { QuizResult } from "../../utils/quiz-store";
 import { quizStore } from "../../utils/quiz-store";
 import { fetchMiniQrcode, saveShareCardToAlbum } from "../../utils/share-card";
@@ -120,7 +123,10 @@ export default function Result() {
 		| "I"
 		| "S"
 		| "C";
-	const typeContent = themeConfig.types[primaryType];
+	const typeContent = getPersonalityContent(
+		result.theme ?? "professional",
+		result.dominantType
+	);
 	const typeColor = TYPE_COLORS[primaryType];
 	const otherThemes = Object.values(themes).filter(
 		(t) => t.id !== themeConfig.id
@@ -224,9 +230,7 @@ export default function Result() {
 								>
 									<Text className="bubble-letter">{result.dominantType}</Text>
 									<Text className="bubble-name">
-										{result.dominantType.length === 2
-											? `${DISC_COLORS[result.dominantType.charAt(0) as "D" | "I" | "S" | "C"].label.slice(0, 2)}/${DISC_COLORS[result.dominantType.charAt(1) as "D" | "I" | "S" | "C"].label.slice(0, 2)}`
-											: typeContent.name.slice(0, 2)}
+										{typeContent.name.split(" ")[0]}
 									</Text>
 								</View>
 								<View className="info-card-texts">

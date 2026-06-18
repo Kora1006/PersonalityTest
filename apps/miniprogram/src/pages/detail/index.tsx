@@ -1,4 +1,4 @@
-import { themes } from "@PersonalityTest/api/data/themes/index";
+import { getPersonalityContent } from "@PersonalityTest/api/data/themes/index";
 import { Button, Image, ScrollView, Text, View } from "@tarojs/components";
 import Taro, { useDidShow, useLoad, useShareAppMessage } from "@tarojs/taro";
 import { useEffect, useRef, useState } from "react";
@@ -115,10 +115,11 @@ export default function Detail() {
 		return <View className="detail-page" />;
 	}
 
-	const themeConfig =
-		themes[result.theme ?? "professional"] ?? themes.professional;
 	const primaryType = (result.dominantType.charAt(0) || "D") as DiscType;
-	const typeContent = themeConfig.types[primaryType];
+	const typeContent = getPersonalityContent(
+		result.theme ?? "professional",
+		result.dominantType
+	);
 	const typeColor = DISC_COLORS[primaryType]?.hex || "#0058be";
 	const score = result.scores[primaryType] || 0;
 
@@ -192,11 +193,7 @@ export default function Detail() {
 						</Text>
 					</View>
 					<View className="type-info">
-						<Text className="type-name">
-							{result.dominantType.length === 2
-								? `${DISC_COLORS[result.dominantType.charAt(0) as DiscType].label}/${DISC_COLORS[result.dominantType.charAt(1) as DiscType].label} 复合型`
-								: typeContent.name}
-						</Text>
+						<Text className="type-name">{typeContent.name}</Text>
 						<Text className="type-fullname">
 							主要类型：{getDominantLabel(result.dominantType)}
 						</Text>

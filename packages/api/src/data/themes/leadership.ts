@@ -1,4 +1,3 @@
-import heroImg from "./assets/leadership.png";
 import type { ThemeConfig } from "./index";
 
 export const leadershipTheme: ThemeConfig = {
@@ -11,7 +10,7 @@ export const leadershipTheme: ThemeConfig = {
 		primaryColor: "#7c3aed",
 		backgroundGradient: ["#0d0a1a", "#1a1030"],
 	},
-	heroImage: heroImg,
+	heroImage: "https://7072-prod-d1gj2nkrx05fb1c16-1444533815.tcb.qcloud.la/static-images/theme-leadership.png",
 	themeIcon: "psychology",
 	types: {
 		D: {

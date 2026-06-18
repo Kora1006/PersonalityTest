@@ -1,4 +1,3 @@
-import heroImg from "./assets/relationship.png";
 import type { ThemeConfig } from "./index";
 
 export const relationshipTheme: ThemeConfig = {
@@ -11,7 +10,7 @@ export const relationshipTheme: ThemeConfig = {
 		primaryColor: "#e11d48",
 		backgroundGradient: ["#1a0a10", "#2d1420"],
 	},
-	heroImage: heroImg,
+	heroImage: "https://7072-prod-d1gj2nkrx05fb1c16-1444533815.tcb.qcloud.la/static-images/theme-relationship.png",
 	themeIcon: "favorite",
 	types: {
 		D: {

@@ -55,3 +55,6 @@ temp
 
 # AWS SSH Keys
 aws/*.pem
+
+# Local image backups
+image_backup/
