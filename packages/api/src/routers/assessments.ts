@@ -1,9 +1,11 @@
 import { createDb } from "@PersonalityTest/db";
 import { assessments } from "@PersonalityTest/db/schema/assessments";
-import { and, desc, eq } from "drizzle-orm";
+import { and, desc, eq, inArray } from "drizzle-orm";
 import { z } from "zod";
 
 import { protectedProcedure, router } from "../index";
+
+const DOMINANT_TYPE_REGEX = /^[DISC]{1,2}$/;
 
 const historyRecordSchema = z.object({
 	id: z
@@ -20,7 +22,7 @@ const historyRecordSchema = z.object({
 		),
 	dominantType: z.any().transform((v) => {
 		const s = String(v).toUpperCase();
-		if (/^[DISC]{1,2}$/.test(s)) {
+		if (DOMINANT_TYPE_REGEX.test(s)) {
 			return s;
 		}
 		return "D";
@@ -53,16 +55,32 @@ export const assessmentsRouter = router({
 	syncHistory: protectedProcedure
 		.input(z.array(historyRecordSchema))
 		.mutation(async ({ ctx, input }) => {
+			if (input.length === 0) {
+				return { synced: 0 };
+			}
+
 			const db = createDb();
 			const userId = ctx.session.user.id;
 
+			// Deduplicate input records by ID first
+			const uniqueInput: typeof input = [];
+			const seenInputIds = new Set<string>();
+			for (const r of input) {
+				if (!seenInputIds.has(r.id)) {
+					seenInputIds.add(r.id);
+					uniqueInput.push(r);
+				}
+			}
+
+			// Query globally if any of the target IDs already exist in the database
+			const inputIds = uniqueInput.map((r) => r.id);
 			const existing = await db
 				.select({ id: assessments.id })
 				.from(assessments)
-				.where(eq(assessments.userId, userId));
+				.where(inArray(assessments.id, inputIds));
 
 			const existingIds = new Set(existing.map((r) => r.id));
-			const newRecords = input.filter((r) => !existingIds.has(r.id));
+			const newRecords = uniqueInput.filter((r) => !existingIds.has(r.id));
 
 			if (newRecords.length > 0) {
 				await db.insert(assessments).values(
