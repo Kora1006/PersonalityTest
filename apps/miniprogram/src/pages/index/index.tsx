@@ -1,7 +1,7 @@
 import { themes } from "@PersonalityTest/api/data/themes/index";
 import { Image, ScrollView, Text, View } from "@tarojs/components";
 import Taro, { useLoad } from "@tarojs/taro";
-import benefitsImg from "../../assets/images/benefits.png";
+import { CDN_IMAGES } from "../../utils/theme-images";
 import { Icon } from "../../components/icon";
 import { DISC_COLORS } from "../../data/disc-colors";
 import type { ThemeId } from "../../utils/quiz-store";
@@ -176,7 +176,7 @@ export default function Index() {
 						<Image
 							className="benefits-image"
 							mode="aspectFill"
-							src={benefitsImg}
+							src={CDN_IMAGES.benefits}
 						/>
 					</View>
 					<View className="benefits-list">

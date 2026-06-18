@@ -2,9 +2,6 @@ import { themes } from "@PersonalityTest/api/data/themes/index";
 import { Button, Image, ScrollView, Text, View } from "@tarojs/components";
 import Taro, { useLoad, useShareAppMessage } from "@tarojs/taro";
 import { useState } from "react";
-import adviceMeetingImg from "../../assets/images/advice-meeting.png";
-import imageryLeftImg from "../../assets/images/imagery-left.png";
-import imageryRightImg from "../../assets/images/imagery-right.png";
 import { Icon, toBase64 } from "../../components/icon";
 import { RadarCanvas } from "../../components/radar-canvas";
 import { DISC_COLORS, getDominantLabel } from "../../data/disc-colors";
@@ -12,7 +9,7 @@ import type { QuizResult } from "../../utils/quiz-store";
 import { quizStore } from "../../utils/quiz-store";
 import { fetchMiniQrcode, saveShareCardToAlbum } from "../../utils/share-card";
 import { storage } from "../../utils/storage";
-import { getThemeHeroImage } from "../../utils/theme-images";
+import { getThemeHeroImage, CDN_IMAGES } from "../../utils/theme-images";
 import { syncLocalHistoryToServer, trpc } from "../../utils/trpc";
 import "./index.scss";
 
@@ -324,7 +321,7 @@ export default function Result() {
 						<Image
 							className="advice-meeting-img"
 							mode="aspectFill"
-							src={adviceMeetingImg}
+							src={CDN_IMAGES.adviceMeeting}
 						/>
 					</View>
 				</View>
@@ -831,14 +828,14 @@ export default function Result() {
 							<Image
 								className="imagery-img"
 								mode="aspectFill"
-								src={imageryLeftImg}
+								src={CDN_IMAGES.imageryLeft}
 							/>
 						</View>
 						<View className="image-wrap-right">
 							<Image
 								className="imagery-img"
 								mode="aspectFill"
-								src={imageryRightImg}
+								src={CDN_IMAGES.imageryRight}
 							/>
 						</View>
 					</View>

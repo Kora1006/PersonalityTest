@@ -1,16 +1,24 @@
-import leadershipHero from "../assets/images/theme-leadership.png";
-import professionalHero from "../assets/images/theme-professional.png";
-import relationshipHero from "../assets/images/theme-relationship.png";
+const CDN_BASE = "https://7072-prod-d1gj2nkrx05fb1c16-1444533815.tcb.qcloud.la/static-images";
 
-export function getThemeHeroImage(themeId: string): string {
+export const CDN_IMAGES = {
+	benefits: `${CDN_BASE}/benefits.png`,
+	adviceMeeting: `${CDN_BASE}/advice-meeting.png`,
+	imageryLeft: `${CDN_BASE}/imagery-left.png`,
+	imageryRight: `${CDN_BASE}/imagery-right.png`,
+	themeLeadership: `${CDN_BASE}/theme-leadership.png`,
+	themeProfessional: `${CDN_BASE}/theme-professional.png`,
+	themeRelationship: `${CDN_BASE}/theme-relationship.png`,
+};
+
+export function getThemeHeroImage(themeId: string | undefined): string {
 	switch (themeId) {
 		case "professional":
-			return professionalHero;
+			return CDN_IMAGES.themeProfessional;
 		case "relationship":
-			return relationshipHero;
+			return CDN_IMAGES.themeRelationship;
 		case "leadership":
-			return leadershipHero;
+			return CDN_IMAGES.themeLeadership;
 		default:
-			return professionalHero;
+			return CDN_IMAGES.themeProfessional;
 	}
 }
