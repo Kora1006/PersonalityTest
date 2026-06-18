@@ -4,7 +4,7 @@ export type ThemeId = "professional" | "relationship" | "leadership";
 
 export interface QuizResult {
 	date: string;
-	dominantType: DiscType;
+	dominantType: string;
 	id: string;
 	note: string;
 	scores: { D: number; I: number; S: number; C: number };
@@ -87,10 +87,22 @@ export const quizStore = {
 		I: number;
 		S: number;
 		C: number;
-	}): DiscType {
-		return (["D", "I", "S", "C"] as const).reduce((a, b) =>
-			scores[a] >= scores[b] ? a : b
-		);
+	}): string {
+		const sorted = (["D", "I", "S", "C"] as const)
+			.map((type) => ({ type, score: scores[type] }))
+			.sort((a, b) => b.score - a.score);
+
+		const first = sorted[0];
+		const second = sorted[1];
+		if (!(first && second)) {
+			return "D";
+		}
+
+		// If the difference between top two scores is <= 5%, return dual type
+		if (first.score - second.score <= 5) {
+			return `${first.type}${second.type}`;
+		}
+		return first.type;
 	},
 
 	buildResult(): QuizResult {

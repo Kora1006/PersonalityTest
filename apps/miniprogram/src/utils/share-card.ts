@@ -1,5 +1,9 @@
 import Taro from "@tarojs/taro";
-import { DISC_COLORS, type DiscType } from "../data/disc-colors";
+import {
+	DISC_COLORS,
+	type DiscType,
+	getDominantLabel,
+} from "../data/disc-colors";
 import { getRandomQuote } from "../data/type-quotes";
 
 declare const wx: any;
@@ -10,7 +14,7 @@ const H = 1334;
 interface ShareCardInput {
 	backgroundImage?: string;
 	cardTheme?: { primaryColor: string; backgroundGradient: [string, string] };
-	dominantType: DiscType;
+	dominantType: string;
 	qrcodeBase64?: string;
 	scores: { D: number; I: number; S: number; C: number };
 }
@@ -187,9 +191,10 @@ export async function generateShareCard(
 ): Promise<string> {
 	const { dominantType, scores, qrcodeBase64, cardTheme, backgroundImage } =
 		input;
-	const typeColor = cardTheme?.primaryColor ?? DISC_COLORS[dominantType].hex;
-	const quote = getRandomQuote(dominantType);
-	const typeLabel = DISC_COLORS[dominantType].label;
+	const primaryType = (dominantType.charAt(0) || "D") as DiscType;
+	const typeColor = cardTheme?.primaryColor ?? DISC_COLORS[primaryType].hex;
+	const quote = getRandomQuote(primaryType);
+	const typeLabel = getDominantLabel(dominantType);
 
 	// Create offscreen canvas
 	// biome-ignore lint/suspicious/noExplicitAny: OffscreenCanvas is untyped

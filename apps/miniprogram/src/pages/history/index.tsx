@@ -3,7 +3,7 @@ import { Input, ScrollView, Text, View } from "@tarojs/components";
 import Taro, { useDidShow, useLoad } from "@tarojs/taro";
 import { useCallback, useState } from "react";
 import { Icon } from "../../components/icon";
-import { DISC_COLORS } from "../../data/disc-colors";
+import { DISC_COLORS, getDominantLabel } from "../../data/disc-colors";
 import type { ThemeId } from "../../utils/quiz-store";
 import { quizStore } from "../../utils/quiz-store";
 import type { HistoryRecord } from "../../utils/storage";
@@ -42,7 +42,8 @@ export default function History() {
 			return true;
 		}
 		const q = search.toLowerCase();
-		const color = DISC_COLORS[r.dominantType];
+		const primaryType = r.dominantType.charAt(0) as "D" | "I" | "S" | "C";
+		const color = DISC_COLORS[primaryType];
 		if (!color) {
 			return false;
 		}
@@ -130,11 +131,11 @@ export default function History() {
 					</View>
 				) : (
 					filtered.map((record: HistoryRecord) => {
-						const color = record.dominantType
-							? DISC_COLORS[record.dominantType]
-							: null;
+						const primaryType = record.dominantType
+							? (record.dominantType.charAt(0) as "D" | "I" | "S" | "C")
+							: "D";
 						const typeColor = record.dominantType
-							? TYPE_COLORS[record.dominantType]
+							? TYPE_COLORS[primaryType]
 							: "#0058be";
 						return (
 							<View className="record-card" key={record.id}>
@@ -149,8 +150,8 @@ export default function History() {
 									</View>
 									<View className="record-meta">
 										<Text className="record-type-name">
-											{color
-												? `${color.label} (${record.dominantType})`
+											{record.dominantType
+												? `${getDominantLabel(record.dominantType)} (${record.dominantType})`
 												: "未知类型"}
 										</Text>
 										<Text className="record-date">{record.date}</Text>

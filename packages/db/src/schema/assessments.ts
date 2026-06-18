@@ -17,7 +17,7 @@ export const assessments = mysqlTable("assessments", {
 		.notNull()
 		.references(() => user.id, { onDelete: "cascade" }),
 	date: date("date").notNull(),
-	dominantType: varchar("dominant_type", { length: 1 }).notNull(),
+	dominantType: varchar("dominant_type", { length: 10 }).notNull(),
 	scoreD: int("score_d").notNull(),
 	scoreI: int("score_i").notNull(),
 	scoreS: int("score_s").notNull(),

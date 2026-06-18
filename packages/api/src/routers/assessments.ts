@@ -20,7 +20,7 @@ const historyRecordSchema = z.object({
 		),
 	dominantType: z.any().transform((v) => {
 		const s = String(v).toUpperCase();
-		if (s === "D" || s === "I" || s === "S" || s === "C") {
+		if (/^[DISC]{1,2}$/.test(s)) {
 			return s;
 		}
 		return "D";
@@ -99,7 +99,7 @@ export const assessmentsRouter = router({
 				r.date instanceof Date
 					? r.date.toISOString().slice(0, 10)
 					: String(r.date),
-			dominantType: r.dominantType as "D" | "I" | "S" | "C",
+			dominantType: r.dominantType as string,
 			id: r.id,
 			scores: {
 				D: r.scoreD,

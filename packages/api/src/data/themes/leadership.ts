@@ -5,7 +5,7 @@ export const leadershipTheme: ThemeConfig = {
 	id: "leadership",
 	name: "管理版",
 	entryTitle: "你是哪种 Leader",
-	entrySubtitle: "24 题解析你的领导力风格",
+	entrySubtitle: "全面解析您的管理与领导风格",
 	questionPrefix: "在管理团队时，当",
 	cardTheme: {
 		primaryColor: "#7c3aed",

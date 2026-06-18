@@ -5,7 +5,7 @@ export const professionalTheme: ThemeConfig = {
 	id: "professional",
 	name: "职场版",
 	entryTitle: "解码你的职场行为特质",
-	entrySubtitle: "24 题深度分析你的工作风格",
+	entrySubtitle: "深度分析您的工作与行为风格",
 	questionPrefix: "在工作场景中，当",
 	cardTheme: {
 		primaryColor: "#3b82f6",

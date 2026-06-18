@@ -5,7 +5,7 @@ export const relationshipTheme: ThemeConfig = {
 	id: "relationship",
 	name: "情感版",
 	entryTitle: "你在亲密关系中是哪种人",
-	entrySubtitle: "12 维度解析你的恋爱风格",
+	entrySubtitle: "多维度深层解析您的恋爱风格",
 	questionPrefix: "在感情生活中，当",
 	cardTheme: {
 		primaryColor: "#e11d48",

@@ -30,7 +30,8 @@ const config: UserConfigExport = {
 	},
 	defineConstants: {
 		"process.env.TARO_APP_SERVER_URL": JSON.stringify(
-			process.env.TARO_APP_SERVER_URL ?? "https://disc-server-271756-8-1444533815.sh.run.tcloudbase.com"
+			process.env.TARO_APP_SERVER_URL ??
+				"https://disc-server-271756-8-1444533815.sh.run.tcloudbase.com"
 		),
 		"process.env.TARO_APP_SUBSCRIBE_TEMPLATE_ID": JSON.stringify(
 			process.env.TARO_APP_SUBSCRIBE_TEMPLATE_ID ?? ""

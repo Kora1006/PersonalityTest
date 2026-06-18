@@ -417,7 +417,9 @@ export default function Auth() {
 				className="terms-checkbox-wrap"
 				onClick={() => setAgreedToTerms(!agreedToTerms)}
 			>
-				<View className={`checkbox-box ${agreedToTerms ? "checkbox-checked" : ""}`}>
+				<View
+					className={`checkbox-box ${agreedToTerms ? "checkbox-checked" : ""}`}
+				>
 					{agreedToTerms && <Text className="checkbox-checkmark">✓</Text>}
 				</View>
 				<Text className="terms-checkbox-text">

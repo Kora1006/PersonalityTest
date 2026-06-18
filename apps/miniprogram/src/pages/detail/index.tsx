@@ -3,9 +3,12 @@ import { Button, Image, ScrollView, Text, View } from "@tarojs/components";
 import Taro, { useDidShow, useLoad, useShareAppMessage } from "@tarojs/taro";
 import { useEffect, useRef, useState } from "react";
 import { Icon } from "../../components/icon";
-import { DISC_COLORS } from "../../data/disc-colors";
+import {
+	DISC_COLORS,
+	type DiscType,
+	getDominantLabel,
+} from "../../data/disc-colors";
 import { quizStore } from "../../utils/quiz-store";
-import { fetchMiniQrcode } from "../../utils/share-card";
 import { storage } from "../../utils/storage";
 import { getThemeHeroImage } from "../../utils/theme-images";
 import { trpc } from "../../utils/trpc";
@@ -27,7 +30,6 @@ interface UnlockStatus {
 export default function Detail() {
 	const [unlockStatus, setUnlockStatus] = useState<UnlockStatus | null>(null);
 	const [showInviteModal, setShowInviteModal] = useState(false);
-	const [inviteQrcode, setInviteQrcode] = useState<string | null>(null);
 	const [inviteLoading, setInviteLoading] = useState(false);
 	const [auditMode, setAuditMode] = useState(false);
 	const [currentInvitation, setCurrentInvitation] = useState<{
@@ -78,12 +80,12 @@ export default function Detail() {
 			return {
 				title: "帮我点一下，测测你的 DISC 性格，即可免费解锁性格画像！",
 				path: `/pages/index/index?inv=${currentInvitation.invitationId}&rid=${currentInvitation.inviterResultId}`,
-				imageUrl: getThemeHeroImage(result?.theme) || "",
+				imageUrl: getThemeHeroImage(result?.theme || "professional") || "",
 			};
 		}
 		return {
-			title: `想知道你的 DISC 性格画像吗？快来测测吧！`,
-			path: `/pages/index/index`,
+			title: "想知道你的 DISC 性格画像吗？快来测测吧！",
+			path: "/pages/index/index",
 		};
 	});
 
@@ -126,11 +128,12 @@ export default function Detail() {
 		return <View className="detail-page" />;
 	}
 
-	const themeConfig = themes[result.theme ?? "professional"];
-	const typeContent = themeConfig.types[result.dominantType];
-	const color = DISC_COLORS[result.dominantType];
-	const typeColor = TYPE_COLORS[result.dominantType];
-	const score = result.scores[result.dominantType];
+	const themeConfig =
+		themes[result.theme ?? "professional"] ?? themes.professional;
+	const primaryType = (result.dominantType.charAt(0) || "D") as DiscType;
+	const typeContent = themeConfig.types[primaryType];
+	const typeColor = TYPE_COLORS[primaryType];
+	const score = result.scores[primaryType];
 	const user = storage.getUser();
 
 	const handleUnlock = async () => {
@@ -190,214 +193,218 @@ export default function Detail() {
 			<ScrollView className="detail-page" scrollY>
 				{/* Header */}
 				<View className="detail-header">
-				<View
-					className="type-icon"
-					style={{ backgroundColor: `${typeColor}15` }}
-				>
-					<Text className="type-letter" style={{ color: typeColor }}>
-						{result.dominantType}
-					</Text>
-				</View>
-				<View className="type-info">
-					<Text className="type-name">{typeContent.name}</Text>
-					<Text className="type-fullname">
-						主要类型：{color.label} ({result.dominantType})
-					</Text>
-				</View>
-				<View className="score-badge">
-					<Text className="score-value">{score}%</Text>
-				</View>
-			</View>
-
-			<View className="dominant-bar-wrap">
-				<View className="dominant-bar-bg">
 					<View
-						className="dominant-bar-fill"
-						style={{ width: `${score}%`, backgroundColor: typeColor }}
-					/>
-				</View>
-			</View>
-
-			{/* Core Strengths */}
-			<View className="section">
-				<View className="section-header-flex">
-					<Icon
-						color={typeColor}
-						name="workspace_premium"
-						size={36}
-						style={{ marginRight: "12rpx" }}
-					/>
-					<Text className="section-title">核心优势</Text>
-				</View>
-				<View className="strengths-list">
-					{typeContent.strengths.map((s) => (
-						<View className="strength-chip" key={s}>
-							<Text className="chip-text">{s}</Text>
-						</View>
-					))}
-				</View>
-			</View>
-
-			{/* Deep Analysis — 3 themed sections */}
-			<View className="section">
-				<View className="section-header-flex">
-					<Icon
-						color={typeColor}
-						name="corporate_fare"
-						size={36}
-						style={{ marginRight: "12rpx" }}
-					/>
-					<Text className="section-title">
-						{typeContent.detailAnalysis.section1Title}
-					</Text>
-				</View>
-				<View className="info-card">
-					<Text className="info-text">
-						{typeContent.detailAnalysis.section1Content}
-					</Text>
-				</View>
-			</View>
-
-			<View className="section">
-				<View className="section-header-flex">
-					<Icon
-						color={typeColor}
-						name="forum"
-						size={36}
-						style={{ marginRight: "12rpx" }}
-					/>
-					<Text className="section-title">
-						{typeContent.detailAnalysis.section2Title}
-					</Text>
-				</View>
-				<View className="info-card">
-					<Text className="info-text">
-						{typeContent.detailAnalysis.section2Content}
-					</Text>
-				</View>
-			</View>
-
-			<View className="section">
-				<View className="section-header-flex">
-					<Icon
-						color={typeColor}
-						name="psychology"
-						size={36}
-						style={{ marginRight: "12rpx" }}
-					/>
-					<Text className="section-title">
-						{typeContent.detailAnalysis.section3Title}
-					</Text>
-				</View>
-				<View className="info-card">
-					<Text className="info-text">
-						{typeContent.detailAnalysis.section3Content}
-					</Text>
-				</View>
-			</View>
-
-			{/* Growth Areas */}
-			<View className="section">
-				<View className="section-header-flex">
-					<Icon
-						color={typeColor}
-						name="trending_up"
-						size={36}
-						style={{ marginRight: "12rpx" }}
-					/>
-					<Text className="section-title">成长机会</Text>
-				</View>
-				<View className="growth-grid">
-					{typeContent.growthAreas.map((area, idx) => (
-						<View className="habit-card" key={area}>
-							<Text className="habit-title" style={{ color: typeColor }}>
-								SUGGESTION {idx + 1}
-							</Text>
-							<Text className="habit-desc">{area}</Text>
-						</View>
-					))}
-				</View>
-			</View>
-
-			{/* Report Download CTA */}
-			<View className="report-section">
-				<Text className="report-title">解锁完整档案</Text>
-				<Text className="report-desc">
-					获取完整的 30 页 PDF 分析，包括盲点和团队动态。
-				</Text>
-				{isUnlocked ? (
-					<View className="unlocked-badge">
-						<Text className="unlocked-text">报告已解锁 ✓</Text>
-					</View>
-				) : (
-					<View
-						className="invite-unlock-btn"
-						onClick={inviteLoading ? undefined : handleUnlock}
+						className="type-icon"
+						style={{ backgroundColor: `${typeColor}15` }}
 					>
-						{unlockStatus && inviteCount > 0 ? (
-							<Text className="invite-text">
-								已有 {inviteCount}/{needed} 位好友完成 · 再邀请{" "}
-								{needed - inviteCount} 位解锁
-							</Text>
-						) : (
-							<Text className="invite-text">
-								{inviteLoading
-									? "生成邀请中..."
-									: "邀请 2 位好友完成测评，免费解锁报告"}
-							</Text>
-						)}
+						<Text className="type-letter" style={{ color: typeColor }}>
+							{result.dominantType}
+						</Text>
 					</View>
-				)}
-			</View>
+					<View className="type-info">
+						<Text className="type-name">
+							{result.dominantType.length === 2
+								? `${DISC_COLORS[result.dominantType.charAt(0) as DiscType].label}/${DISC_COLORS[result.dominantType.charAt(1) as DiscType].label} 复合型`
+								: typeContent.name}
+						</Text>
+						<Text className="type-fullname">
+							主要类型：{getDominantLabel(result.dominantType)}
+						</Text>
+					</View>
+					<View className="score-badge">
+						<Text className="score-value">{score}%</Text>
+					</View>
+				</View>
 
-			<View style={{ height: "80rpx" }} />
+				<View className="dominant-bar-wrap">
+					<View className="dominant-bar-bg">
+						<View
+							className="dominant-bar-fill"
+							style={{ width: `${score}%`, backgroundColor: typeColor }}
+						/>
+					</View>
+				</View>
 
-			{/* Invite Unlock Modal */}
-			{showInviteModal && (
-				<View
-					className="modal-overlay"
-					onClick={() => setShowInviteModal(false)}
-				>
-					<View className="modal-card" onClick={(e) => e.stopPropagation()}>
-						<Text className="modal-title">邀请好友解锁报告</Text>
+				{/* Core Strengths */}
+				<View className="section">
+					<View className="section-header-flex">
+						<Icon
+							color={typeColor}
+							name="workspace_premium"
+							size={36}
+							style={{ marginRight: "12rpx" }}
+						/>
+						<Text className="section-title">核心优势</Text>
+					</View>
+					<View className="strengths-list">
+						{typeContent.strengths.map((s) => (
+							<View className="strength-chip" key={s}>
+								<Text className="chip-text">{s}</Text>
+							</View>
+						))}
+					</View>
+				</View>
 
-						<View className="progress-track">
-							{Array.from({ length: needed }, (_, i) => i).map((i) => (
-								<View
-									className={`progress-dot ${i < inviteCount ? "progress-dot-done" : ""}`}
-									key={`dot-${i}`}
-								/>
-							))}
+				{/* Deep Analysis — 3 themed sections */}
+				<View className="section">
+					<View className="section-header-flex">
+						<Icon
+							color={typeColor}
+							name="corporate_fare"
+							size={36}
+							style={{ marginRight: "12rpx" }}
+						/>
+						<Text className="section-title">
+							{typeContent.detailAnalysis.section1Title}
+						</Text>
+					</View>
+					<View className="info-card">
+						<Text className="info-text">
+							{typeContent.detailAnalysis.section1Content}
+						</Text>
+					</View>
+				</View>
+
+				<View className="section">
+					<View className="section-header-flex">
+						<Icon
+							color={typeColor}
+							name="forum"
+							size={36}
+							style={{ marginRight: "12rpx" }}
+						/>
+						<Text className="section-title">
+							{typeContent.detailAnalysis.section2Title}
+						</Text>
+					</View>
+					<View className="info-card">
+						<Text className="info-text">
+							{typeContent.detailAnalysis.section2Content}
+						</Text>
+					</View>
+				</View>
+
+				<View className="section">
+					<View className="section-header-flex">
+						<Icon
+							color={typeColor}
+							name="psychology"
+							size={36}
+							style={{ marginRight: "12rpx" }}
+						/>
+						<Text className="section-title">
+							{typeContent.detailAnalysis.section3Title}
+						</Text>
+					</View>
+					<View className="info-card">
+						<Text className="info-text">
+							{typeContent.detailAnalysis.section3Content}
+						</Text>
+					</View>
+				</View>
+
+				{/* Growth Areas */}
+				<View className="section">
+					<View className="section-header-flex">
+						<Icon
+							color={typeColor}
+							name="trending_up"
+							size={36}
+							style={{ marginRight: "12rpx" }}
+						/>
+						<Text className="section-title">成长机会</Text>
+					</View>
+					<View className="growth-grid">
+						{typeContent.growthAreas.map((area, idx) => (
+							<View className="habit-card" key={area}>
+								<Text className="habit-title" style={{ color: typeColor }}>
+									SUGGESTION {idx + 1}
+								</Text>
+								<Text className="habit-desc">{area}</Text>
+							</View>
+						))}
+					</View>
+				</View>
+
+				{/* Report Download CTA */}
+				<View className="report-section">
+					<Text className="report-title">解锁完整档案</Text>
+					<Text className="report-desc">
+						获取完整的 30 页 PDF 分析，包括盲点和团队动态。
+					</Text>
+					{isUnlocked ? (
+						<View className="unlocked-badge">
+							<Text className="unlocked-text">报告已解锁 ✓</Text>
 						</View>
-						<Text className="progress-label">
-							{inviteCount}/{needed} 位好友已完成测评
-						</Text>
+					) : (
+						<View
+							className="invite-unlock-btn"
+							onClick={inviteLoading ? undefined : handleUnlock}
+						>
+							{unlockStatus && inviteCount > 0 ? (
+								<Text className="invite-text">
+									已有 {inviteCount}/{needed} 位好友完成 · 再邀请{" "}
+									{needed - inviteCount} 位解锁
+								</Text>
+							) : (
+								<Text className="invite-text">
+									{inviteLoading
+										? "生成邀请中..."
+										: "邀请 2 位好友完成测评，免费解锁报告"}
+								</Text>
+							)}
+						</View>
+					)}
+				</View>
 
-						<Text className="modal-desc">
-							直接发送给微信好友，好友点击完成测评即可为您增加进度。
-						</Text>
+				<View style={{ height: "80rpx" }} />
 
-						{currentInvitation && (
-							<Button
-								openType="share"
-								className="modal-share-btn"
+				{/* Invite Unlock Modal */}
+				{showInviteModal && (
+					<View
+						className="modal-overlay"
+						onClick={() => setShowInviteModal(false)}
+					>
+						<View className="modal-card" onClick={(e) => e.stopPropagation()}>
+							<Text className="modal-title">邀请好友解锁报告</Text>
+
+							<View className="progress-track">
+								{Array.from({ length: needed }, (_, i) => i).map((i) => (
+									<View
+										className={`progress-dot ${i < inviteCount ? "progress-dot-done" : ""}`}
+										key={`dot-${i}`}
+									/>
+								))}
+							</View>
+							<Text className="progress-label">
+								{inviteCount}/{needed} 位好友已完成测评
+							</Text>
+
+							<Text className="modal-desc">
+								直接发送给微信好友，好友点击完成测评即可为您增加进度。
+							</Text>
+
+							{currentInvitation && (
+								<Button
+									className="modal-share-btn"
+									onClick={() => setShowInviteModal(false)}
+									openType="share"
+								>
+									发送给微信好友
+								</Button>
+							)}
+
+							<Text className="polling-hint">页面每 5 秒自动刷新进度</Text>
+
+							<View
+								className="modal-close-btn"
 								onClick={() => setShowInviteModal(false)}
 							>
-								发送给微信好友
-							</Button>
-						)}
-
-						<Text className="polling-hint">页面每 5 秒自动刷新进度</Text>
-
-						<View
-							className="modal-close-btn"
-							onClick={() => setShowInviteModal(false)}
-						>
-							<Text className="modal-close-text">关闭</Text>
+								<Text className="modal-close-text">关闭</Text>
+							</View>
 						</View>
 					</View>
-				</View>
-			)}
+				)}
 			</ScrollView>
 		</View>
 	);

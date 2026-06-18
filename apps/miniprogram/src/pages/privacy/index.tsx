@@ -33,7 +33,8 @@ export default function Privacy() {
 
 				<Text className="policy-section-title">三、第三方 SDK</Text>
 				<Text className="policy-text">
-					本小程序仅使用以下第三方服务：{"\n"}• 微信登录 SDK（腾讯）：用于微信一键登录和基础用户认证。{"\n"}
+					本小程序仅使用以下第三方服务：{"\n"}• 微信登录
+					SDK（腾讯）：用于微信一键登录和基础用户认证。{"\n"}
 					我们不包含任何其他第三方广告追踪、营销推送或支付类 SDK。
 				</Text>
 

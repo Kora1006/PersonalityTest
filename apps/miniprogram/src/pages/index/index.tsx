@@ -35,32 +35,34 @@ const STATS = [
 ];
 
 export default function Index() {
-	useLoad((options: { scene?: string; inv?: string; rid?: string } | undefined) => {
-		Taro.setNavigationBarTitle({ title: "DISC 职业性格测评" });
+	useLoad(
+		(options: { scene?: string; inv?: string; rid?: string } | undefined) => {
+			Taro.setNavigationBarTitle({ title: "DISC 职业性格测评" });
 
-		if (options?.inv && options?.rid) {
-			storage.setPendingInvitation({
-				invitationId: options.inv,
-				inviterResultId: options.rid,
-			});
-		} else if (options?.scene) {
-			try {
-				const params = Object.fromEntries(
-					decodeURIComponent(options.scene)
-						.split("&")
-						.map((p) => p.split("=") as [string, string])
-				);
-				if (params.inv && params.rid) {
-					storage.setPendingInvitation({
-						invitationId: params.inv,
-						inviterResultId: params.rid,
-					});
+			if (options?.inv && options?.rid) {
+				storage.setPendingInvitation({
+					invitationId: options.inv,
+					inviterResultId: options.rid,
+				});
+			} else if (options?.scene) {
+				try {
+					const params = Object.fromEntries(
+						decodeURIComponent(options.scene)
+							.split("&")
+							.map((p) => p.split("=") as [string, string])
+					);
+					if (params.inv && params.rid) {
+						storage.setPendingInvitation({
+							invitationId: params.inv,
+							inviterResultId: params.rid,
+						});
+					}
+				} catch {
+					// ignore
 				}
-			} catch {
-				// ignore
 			}
 		}
-	});
+	);
 
 	const startQuiz = (
 		mode: "full" | "quick" = "full",
@@ -97,7 +99,7 @@ export default function Index() {
 				<Text className="hero-title">解码行为特质，{"\n"}放大职场影响力。</Text>
 				<Text className="hero-desc">
 					DISC
-					测评是了解职业性格倾向的强大工具。识别您在支配型、影响型、稳健型和服从型四个维度中的独特组合。
+					测评是全球广泛应用的性格与行为风格分析工具。通过对掌控度（D）、影响度（I）、稳健度（S）和谨慎度（C）四个维度的深入剖析，帮助您清晰发现自己的核心优势与盲点。
 				</Text>
 
 				<View className="btn-group">
@@ -113,7 +115,6 @@ export default function Index() {
 			{/* Theme Selector */}
 			<View className="section">
 				<Text className="section-title">选择你的测评视角</Text>
-				<Text className="section-subtitle">同样的算法，不同的场景解读</Text>
 				<View className="theme-cards">
 					{Object.values(themes).map((theme) => (
 						<View

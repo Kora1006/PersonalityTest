@@ -7,6 +7,7 @@ import imageryLeftImg from "../../assets/images/imagery-left.png";
 import imageryRightImg from "../../assets/images/imagery-right.png";
 import { Icon, toBase64 } from "../../components/icon";
 import { RadarCanvas } from "../../components/radar-canvas";
+import { DISC_COLORS, getDominantLabel } from "../../data/disc-colors";
 import type { QuizResult } from "../../utils/quiz-store";
 import { quizStore } from "../../utils/quiz-store";
 import { fetchMiniQrcode, saveShareCardToAlbum } from "../../utils/share-card";
@@ -62,7 +63,6 @@ export default function Result() {
 	const [result, setResult] = useState<QuizResult | null>(null);
 	const [shareLoading, setShareLoading] = useState(false);
 	const [inviteLoading, setInviteLoading] = useState(false);
-	const [inviteQrcode, setInviteQrcode] = useState<string | null>(null);
 	const [inviteModal, setInviteModal] = useState(false);
 	const [currentInvitation, setCurrentInvitation] = useState<{
 		invitationId: string;
@@ -109,7 +109,7 @@ export default function Result() {
 		}
 		return {
 			title: `我的 DISC 性格测评结果是【${result?.dominantType}】，快来测测你的！`,
-			path: `/pages/index/index`,
+			path: "/pages/index/index",
 		};
 	});
 
@@ -118,8 +118,13 @@ export default function Result() {
 	}
 
 	const themeConfig = themes[result.theme ?? "professional"];
-	const typeContent = themeConfig.types[result.dominantType];
-	const typeColor = TYPE_COLORS[result.dominantType];
+	const primaryType = (result.dominantType.charAt(0) || "D") as
+		| "D"
+		| "I"
+		| "S"
+		| "C";
+	const typeContent = themeConfig.types[primaryType];
+	const typeColor = TYPE_COLORS[primaryType];
 	const otherThemes = Object.values(themes).filter(
 		(t) => t.id !== themeConfig.id
 	);
@@ -213,13 +218,15 @@ export default function Result() {
 								>
 									<Text className="bubble-letter">{result.dominantType}</Text>
 									<Text className="bubble-name">
-										{typeContent.name.slice(0, 2)}
+										{result.dominantType.length === 2
+											? `${DISC_COLORS[result.dominantType.charAt(0) as "D" | "I" | "S" | "C"].label.slice(0, 2)}/${DISC_COLORS[result.dominantType.charAt(1) as "D" | "I" | "S" | "C"].label.slice(0, 2)}`
+											: typeContent.name.slice(0, 2)}
 									</Text>
 								</View>
 								<View className="info-card-texts">
 									<View className="core-personality-badge">
 										<Text className="badge-txt">
-											核心人格：{typeContent.name}
+											核心人格：{getDominantLabel(result.dominantType)}
 										</Text>
 									</View>
 									<Text className="hero-tagline">{typeContent.tagline}</Text>
@@ -300,7 +307,11 @@ export default function Result() {
 					<View className="advice-left">
 						<Text className="advice-title">职场竞争力建议</Text>
 						<Text className="advice-p">
-							作为高{result.dominantType}型人才，您的{typeContent.name}
+							作为高
+							{result.dominantType.length === 2
+								? `${result.dominantType.charAt(0)}/${result.dominantType.charAt(1)}`
+								: result.dominantType}
+							型人才，您的{typeContent.name}
 							特质非常明显。在职业发展中，
 							{typeContent.detailAnalysis.section3Content}
 						</Text>
@@ -340,43 +351,52 @@ export default function Result() {
 	};
 
 	const renderLeadership = () => {
-		const decision = DECISION_STYLES[result.dominantType] || DECISION_STYLES.D;
-		const activePathFill =
-			result.dominantType === "D"
-				? "rgba(239, 68, 68, 0.12)"
-				: result.dominantType === "I"
-					? "rgba(245, 158, 11, 0.12)"
-					: result.dominantType === "S"
-						? "rgba(16, 185, 129, 0.12)"
-						: "rgba(59, 130, 246, 0.12)";
+		const decision = DECISION_STYLES[primaryType] || DECISION_STYLES.D;
+		const isDActive = result.dominantType.includes("D");
+		const isIActive = result.dominantType.includes("I");
+		const isSActive = result.dominantType.includes("S");
+		const isCActive = result.dominantType.includes("C");
 
-		const dFill = result.dominantType === "D" ? activePathFill : "#F3F4F6";
-		const dStroke = result.dominantType === "D" ? typeColor : "#E5E7EB";
-		const dStrokeWidth = result.dominantType === "D" ? 2 : 1;
+		const activeFill = (type: "D" | "I" | "S" | "C") => {
+			switch (type) {
+				case "D":
+					return "rgba(239, 68, 68, 0.12)";
+				case "I":
+					return "rgba(245, 158, 11, 0.12)";
+				case "S":
+					return "rgba(16, 185, 129, 0.12)";
+				case "C":
+					return "rgba(59, 130, 246, 0.12)";
+			}
+		};
 
-		const iFill = result.dominantType === "I" ? activePathFill : "#F3F4F6";
-		const iStroke = result.dominantType === "I" ? typeColor : "#E5E7EB";
-		const iStrokeWidth = result.dominantType === "I" ? 2 : 1;
+		const dFill = isDActive ? activeFill("D") : "#F3F4F6";
+		const dStroke = isDActive ? TYPE_COLORS.D : "#E5E7EB";
+		const dStrokeWidth = isDActive ? 2 : 1;
 
-		const sFill = result.dominantType === "S" ? activePathFill : "#F3F4F6";
-		const sStroke = result.dominantType === "S" ? typeColor : "#E5E7EB";
-		const sStrokeWidth = result.dominantType === "S" ? 2 : 1;
+		const iFill = isIActive ? activeFill("I") : "#F3F4F6";
+		const iStroke = isIActive ? TYPE_COLORS.I : "#E5E7EB";
+		const iStrokeWidth = isIActive ? 2 : 1;
 
-		const cFill = result.dominantType === "C" ? activePathFill : "#F3F4F6";
-		const cStroke = result.dominantType === "C" ? typeColor : "#E5E7EB";
-		const cStrokeWidth = result.dominantType === "C" ? 2 : 1;
+		const sFill = isSActive ? activeFill("S") : "#F3F4F6";
+		const sStroke = isSActive ? TYPE_COLORS.S : "#E5E7EB";
+		const sStrokeWidth = isSActive ? 2 : 1;
 
-		const dTextFill = result.dominantType === "D" ? typeColor : "#727785";
-		const dTextWeight = result.dominantType === "D" ? "bold" : "normal";
+		const cFill = isCActive ? activeFill("C") : "#F3F4F6";
+		const cStroke = isCActive ? TYPE_COLORS.C : "#E5E7EB";
+		const cStrokeWidth = isCActive ? 2 : 1;
 
-		const iTextFill = result.dominantType === "I" ? typeColor : "#727785";
-		const iTextWeight = result.dominantType === "I" ? "bold" : "normal";
+		const dTextFill = isDActive ? TYPE_COLORS.D : "#727785";
+		const dTextWeight = isDActive ? "bold" : "normal";
 
-		const sTextFill = result.dominantType === "S" ? typeColor : "#727785";
-		const sTextWeight = result.dominantType === "S" ? "bold" : "normal";
+		const iTextFill = isIActive ? TYPE_COLORS.I : "#727785";
+		const iTextWeight = isIActive ? "bold" : "normal";
 
-		const cTextFill = result.dominantType === "C" ? typeColor : "#727785";
-		const cTextWeight = result.dominantType === "C" ? "bold" : "normal";
+		const sTextFill = isSActive ? TYPE_COLORS.S : "#727785";
+		const sTextWeight = isSActive ? "bold" : "normal";
+
+		const cTextFill = isCActive ? TYPE_COLORS.C : "#727785";
+		const cTextWeight = isCActive ? "bold" : "normal";
 
 		const wheelSvgString = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
 			<path d="M 50 50 L 50 5 A 45 45 0 0 1 95 50 Z" fill="${dFill}" stroke="${dStroke}" stroke-width="${dStrokeWidth}" />
@@ -432,18 +452,18 @@ export default function Result() {
 						<View className="wheel-right-breakdown">
 							<View className="breakdown-header-flex">
 								<Text className="breakdown-label" style={{ color: typeColor }}>
-									{LEGEND_NAMES[result.dominantType].split(" ")[0]} (
+									{LEGEND_NAMES[primaryType].split(" ")[0]} (
 									{result.dominantType})
 								</Text>
 								<Text className="breakdown-score" style={{ color: typeColor }}>
-									{result.scores[result.dominantType]}%
+									{result.scores[primaryType]}%
 								</Text>
 							</View>
 							<View className="breakdown-progress-bg">
 								<View
 									className="breakdown-progress-fill"
 									style={{
-										width: `${result.scores[result.dominantType]}%`,
+										width: `${result.scores[primaryType]}%`,
 										backgroundColor: typeColor,
 									}}
 								/>
@@ -586,8 +606,8 @@ export default function Result() {
 						<View className="profile-card-header">
 							<Icon color={typeColor} name="psychology" size={40} />
 							<Text className="profile-title" style={{ color: typeColor }}>
-								{LEGEND_NAMES[result.dominantType].split(" ")[0]} (
-								{result.dominantType})
+								{LEGEND_NAMES[primaryType].split(" ")[0]} ({result.dominantType}
+								)
 							</Text>
 						</View>
 						<Text className="profile-body-p">
@@ -715,143 +735,144 @@ export default function Result() {
 			>
 				{themeContent}
 
-			{/* Viral Actions */}
-			<View className="viral-section">
-				<View
-					className="viral-btn share-btn"
-					onClick={shareLoading ? undefined : handleShareCard}
-					style={{ borderColor: typeColor }}
-				>
-					<Text className="viral-btn-text" style={{ color: typeColor }}>
-						{shareLoading ? "生成中..." : "生成专属卡片"}
-					</Text>
-					<Text className="viral-btn-sub">保存精美测评海报到相册</Text>
-				</View>
-				<View
-					className="viral-btn invite-btn"
-					onClick={inviteLoading ? undefined : handleInviteFriend}
-				>
-					<Text className="viral-btn-text">
-						{inviteLoading ? "生成中..." : "邀请好友对比"}
-					</Text>
-					<Text className="viral-btn-sub">看看你们的 DISC 有何不同</Text>
-				</View>
-			</View>
-
-			{/* Upgrade banner for quick mode */}
-			{mode === "quick" && (
-				<View className="upgrade-banner">
-					<Text className="upgrade-text">
-						完成完整版 24 题，获得更精准的职业性格报告
-					</Text>
+				{/* Viral Actions */}
+				<View className="viral-section">
 					<View
-						className="upgrade-btn"
-						onClick={() => {
-							quizStore.reset("full");
-							Taro.redirectTo({ url: "/pages/quiz/index" });
+						className="viral-btn share-btn"
+						onClick={shareLoading ? undefined : handleShareCard}
+						style={{ borderColor: typeColor }}
+					>
+						<Text className="viral-btn-text" style={{ color: typeColor }}>
+							{shareLoading ? "生成中..." : "生成专属卡片"}
+						</Text>
+						<Text className="viral-btn-sub">保存精美测评海报到相册</Text>
+					</View>
+					<View
+						className="viral-btn invite-btn"
+						onClick={inviteLoading ? undefined : handleInviteFriend}
+					>
+						<Text className="viral-btn-text">
+							{inviteLoading ? "生成中..." : "邀请好友对比"}
+						</Text>
+						<Text className="viral-btn-sub">看看你们的 DISC 有何不同</Text>
+					</View>
+				</View>
+
+				{/* Upgrade banner for quick mode */}
+				{mode === "quick" && (
+					<View className="upgrade-banner">
+						<Text className="upgrade-text">
+							完成完整版 24 题，获得更精准的职业性格报告
+						</Text>
+						<View
+							className="upgrade-btn"
+							onClick={() => {
+								quizStore.reset("full");
+								Taro.redirectTo({ url: "/pages/quiz/index" });
+							}}
+						>
+							<Text className="upgrade-btn-text">立即完成完整版 →</Text>
+						</View>
+					</View>
+				)}
+
+				{/* Cross Theme recommendations */}
+				<View className="cross-theme-section">
+					<Text className="section-title">查看你在其他场景的风格</Text>
+					<View className="cross-theme-cards">
+						{otherThemes.map((t) => (
+							<View
+								className="cross-theme-card"
+								key={t.id}
+								onClick={() => {
+									quizStore.reset("full", t.id);
+									Taro.redirectTo({ url: `/pages/quiz/index?theme=${t.id}` });
+								}}
+								style={{ borderColor: `${t.cardTheme.primaryColor}40` }}
+							>
+								<Text
+									className="cross-theme-name"
+									style={{ color: t.cardTheme.primaryColor }}
+								>
+									{t.name}
+								</Text>
+								<Text className="cross-theme-subtitle">{t.entryTitle}</Text>
+							</View>
+						))}
+					</View>
+				</View>
+
+				{/* CTAs */}
+				<View className="cta-section">
+					<View
+						className="cta-primary"
+						onClick={goDetail}
+						style={{
+							backgroundColor: typeColor,
+							boxShadow: `0 16rpx 40rpx ${typeColor}30`,
 						}}
 					>
-						<Text className="upgrade-btn-text">立即完成完整版 →</Text>
+						<Text className="cta-text">查看深度解析</Text>
 					</View>
-				</View>
-			)}
-
-			{/* Cross Theme recommendations */}
-			<View className="cross-theme-section">
-				<Text className="section-title">查看你在其他场景的风格</Text>
-				<View className="cross-theme-cards">
-					{otherThemes.map((t) => (
-						<View
-							className="cross-theme-card"
-							key={t.id}
-							onClick={() => {
-								quizStore.reset("full", t.id);
-								Taro.redirectTo({ url: `/pages/quiz/index?theme=${t.id}` });
-							}}
-							style={{ borderColor: `${t.cardTheme.primaryColor}40` }}
-						>
-							<Text
-								className="cross-theme-name"
-								style={{ color: t.cardTheme.primaryColor }}
-							>
-								{t.name}
-							</Text>
-							<Text className="cross-theme-subtitle">{t.entryTitle}</Text>
+					<View className="cta-row">
+						<View className="cta-secondary" onClick={retakeQuiz}>
+							<Text className="cta-text-muted">重新测试</Text>
 						</View>
-					))}
-				</View>
-			</View>
-
-			{/* CTAs */}
-			<View className="cta-section">
-				<View
-					className="cta-primary"
-					onClick={goDetail}
-					style={{
-						backgroundColor: typeColor,
-						boxShadow: `0 16rpx 40rpx ${typeColor}30`,
-					}}
-				>
-					<Text className="cta-text">查看深度解析</Text>
-				</View>
-				<View className="cta-row">
-					<View className="cta-secondary" onClick={retakeQuiz}>
-						<Text className="cta-text-muted">重新测试</Text>
-					</View>
-					<View className="cta-secondary" onClick={goHistory}>
-						<Text className="cta-text-muted">历史记录</Text>
+						<View className="cta-secondary" onClick={goHistory}>
+							<Text className="cta-text-muted">历史记录</Text>
+						</View>
 					</View>
 				</View>
-			</View>
 
-			{/* Asymmetric Imagery Section */}
-			{result.theme === "professional" && (
-				<View className="imagery-section">
-					<View className="image-wrap-left">
-						<Image
-							className="imagery-img"
-							mode="aspectFill"
-							src={imageryLeftImg}
-						/>
+				{/* Asymmetric Imagery Section */}
+				{result.theme === "professional" && (
+					<View className="imagery-section">
+						<View className="image-wrap-left">
+							<Image
+								className="imagery-img"
+								mode="aspectFill"
+								src={imageryLeftImg}
+							/>
+						</View>
+						<View className="image-wrap-right">
+							<Image
+								className="imagery-img"
+								mode="aspectFill"
+								src={imageryRightImg}
+							/>
+						</View>
 					</View>
-					<View className="image-wrap-right">
-						<Image
-							className="imagery-img"
-							mode="aspectFill"
-							src={imageryRightImg}
-						/>
-					</View>
-				</View>
-			)}
+				)}
 
-			<View style={{ height: "80rpx" }} />
+				<View style={{ height: "80rpx" }} />
 
-			{/* Invite Friend Modal */}
-			{inviteModal && (
-				<View className="modal-overlay" onClick={() => setInviteModal(false)}>
-					<View className="modal-card" onClick={(e) => e.stopPropagation()}>
-						<Text className="modal-title">邀请好友对比 DISC</Text>
-						<Text className="modal-desc">
-							直接发送给微信好友，当好友完成测评后，即可查看双方的 DISC 对比报告。
-						</Text>
-						{currentInvitation && (
-							<Button
-								openType="share"
-								className="modal-share-btn"
+				{/* Invite Friend Modal */}
+				{inviteModal && (
+					<View className="modal-overlay" onClick={() => setInviteModal(false)}>
+						<View className="modal-card" onClick={(e) => e.stopPropagation()}>
+							<Text className="modal-title">邀请好友对比 DISC</Text>
+							<Text className="modal-desc">
+								直接发送给微信好友，当好友完成测评后，即可查看双方的 DISC
+								对比报告。
+							</Text>
+							{currentInvitation && (
+								<Button
+									className="modal-share-btn"
+									onClick={() => setInviteModal(false)}
+									openType="share"
+								>
+									发送给微信好友
+								</Button>
+							)}
+							<View
+								className="modal-close-btn"
 								onClick={() => setInviteModal(false)}
 							>
-								发送给微信好友
-							</Button>
-						)}
-						<View
-							className="modal-close-btn"
-							onClick={() => setInviteModal(false)}
-						>
-							<Text className="modal-close-text">关闭</Text>
+								<Text className="modal-close-text">关闭</Text>
+							</View>
 						</View>
 					</View>
-				</View>
-			)}
+				)}
 			</ScrollView>
 		</View>
 	);

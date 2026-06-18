@@ -10,11 +10,9 @@ export const appRouter = router({
 	assessments: assessmentsRouter,
 	comparison: comparisonRouter,
 	healthCheck: publicProcedure.query(() => "OK"),
-	getSettings: publicProcedure.query(() => {
-		return {
-			auditMode: env.WECHAT_AUDIT_MODE === "true",
-		};
-	}),
+	getSettings: publicProcedure.query(() => ({
+		auditMode: env.WECHAT_AUDIT_MODE === "true",
+	})),
 	invitation: invitationRouter,
 	payment: paymentRouter,
 });

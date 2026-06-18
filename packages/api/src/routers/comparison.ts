@@ -69,17 +69,18 @@ export const comparisonRouter = router({
 			return {
 				my: {
 					resultId: myResult.id,
-					dominantType: myResult.dominantType as DiscType,
+					dominantType: (myResult.dominantType.charAt(0) || "D") as DiscType,
 					scores: myScores,
 				},
 				friend: {
 					resultId: friendResult.id,
-					dominantType: friendResult.dominantType as DiscType,
+					dominantType: (friendResult.dominantType.charAt(0) ||
+						"D") as DiscType,
 					scores: friendScores,
 				},
 				insight: getInsight(
-					myResult.dominantType as DiscType,
-					friendResult.dominantType as DiscType
+					(myResult.dominantType.charAt(0) || "D") as DiscType,
+					(friendResult.dominantType.charAt(0) || "D") as DiscType
 				),
 			};
 		}),

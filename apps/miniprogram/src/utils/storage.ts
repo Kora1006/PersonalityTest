@@ -7,7 +7,7 @@ const INVITATION_KEY = "pending_invitation";
 
 export interface HistoryRecord {
 	date: string;
-	dominantType: "D" | "I" | "S" | "C";
+	dominantType: string;
 	id: string;
 	note: string;
 	scores: { D: number; I: number; S: number; C: number };

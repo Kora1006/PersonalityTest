@@ -38,3 +38,18 @@ export const DISC_COLORS = {
 } as const;
 
 export type DiscType = keyof typeof DISC_COLORS;
+
+export function getDominantLabel(type: string): string {
+	if (!type) {
+		return "未知类型";
+	}
+	if (type.length === 2) {
+		const first = type.charAt(0) as DiscType;
+		const second = type.charAt(1) as DiscType;
+		const label1 = DISC_COLORS[first]?.label || "";
+		const label2 = DISC_COLORS[second]?.label || "";
+		return `${label1}/${label2} 复合型`;
+	}
+	const t = type as DiscType;
+	return DISC_COLORS[t]?.label || "未知类型";
+}
