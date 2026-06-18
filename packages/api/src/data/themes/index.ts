@@ -68,6 +68,7 @@ export const themes: Record<ThemeId, ThemeConfig> = {
 };
 
 import { COMPOSITE_PROFILES } from "./composite-profiles";
+export { COMPOSITE_PROFILES };
 
 export function getPersonalityContent(
 	themeId: ThemeId,
@@ -108,13 +109,13 @@ export function getPersonalityContent(
 		} else if (themeId === "relationship") {
 			// Construct communication preferences text
 			const prefsText = comp.relationship.communicationPreference
-				.map((p) => `· ${p}`)
+				.map((p: string) => `· ${p}`)
 				.join("\n");
 			const sec2Content = `${comp.relationship.intimacy}\n\n你的沟通偏好：\n${prefsText}`;
 
 			// Construct growth suggestion text
 			const sugText = comp.relationship.relationshipSuggestions
-				.map((s, idx) => `${idx + 1}. 【${s.title}】${s.description}`)
+				.map((s: { title: string; icon: string; description: string }, idx: number) => `${idx + 1}. 【${s.title}】${s.description}`)
 				.join("\n");
 			const sec3Content = `在亲密关系发展中，以下成长建议对你至关重要：\n\n${sugText}`;
 

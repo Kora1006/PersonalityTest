@@ -39,7 +39,7 @@ export const DISC_COLORS = {
 
 export type DiscType = keyof typeof DISC_COLORS;
 
-import { COMPOSITE_PROFILES } from "@PersonalityTest/api/data/themes/composite-profiles";
+import { COMPOSITE_PROFILES } from "@PersonalityTest/api/data/themes/index";
 
 export function getDominantLabel(type: string): string {
 	if (!type) {
