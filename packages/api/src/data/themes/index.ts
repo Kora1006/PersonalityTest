@@ -68,6 +68,7 @@ export const themes: Record<ThemeId, ThemeConfig> = {
 };
 
 import { COMPOSITE_PROFILES } from "./composite-profiles";
+
 export { COMPOSITE_PROFILES };
 
 export function getPersonalityContent(
@@ -115,7 +116,12 @@ export function getPersonalityContent(
 
 			// Construct growth suggestion text
 			const sugText = comp.relationship.relationshipSuggestions
-				.map((s: { title: string; icon: string; description: string }, idx: number) => `${idx + 1}. 【${s.title}】${s.description}`)
+				.map(
+					(
+						s: { title: string; icon: string; description: string },
+						idx: number
+					) => `${idx + 1}. 【${s.title}】${s.description}`
+				)
 				.join("\n");
 			const sec3Content = `在亲密关系发展中，以下成长建议对你至关重要：\n\n${sugText}`;
 

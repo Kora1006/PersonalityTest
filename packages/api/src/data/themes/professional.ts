@@ -10,7 +10,8 @@ export const professionalTheme: ThemeConfig = {
 		primaryColor: "#3b82f6",
 		backgroundGradient: ["#0f172a", "#1e293b"],
 	},
-	heroImage: "https://7072-prod-d1gj2nkrx05fb1c16-1444533815.tcb.qcloud.la/static-images/theme-professional.png",
+	heroImage:
+		"https://7072-prod-d1gj2nkrx05fb1c16-1444533815.tcb.qcloud.la/static-images/theme-professional.png",
 	themeIcon: "corporate_fare",
 	types: {
 		D: {

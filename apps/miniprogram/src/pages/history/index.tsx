@@ -151,7 +151,11 @@ export default function History() {
 									<View className="record-meta">
 										<Text className="record-type-name">
 											{record.dominantType
-												? `${getDominantLabel(record.dominantType)} (${record.dominantType})`
+												? getDominantLabel(record.dominantType).includes(
+														`(${record.dominantType})`
+													)
+													? getDominantLabel(record.dominantType)
+													: `${getDominantLabel(record.dominantType)} (${record.dominantType})`
 												: "未知类型"}
 										</Text>
 										<Text className="record-date">{record.date}</Text>
