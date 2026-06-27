@@ -3,7 +3,7 @@ import { auth } from "@PersonalityTest/auth";
 import { createDb } from "@PersonalityTest/db";
 import { user as userTable } from "@PersonalityTest/db/schema/auth";
 import { env } from "@PersonalityTest/env/server";
-import { createHash } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { eq } from "drizzle-orm";
 import { Hono } from "hono";
 import { setCookie } from "hono/cookie";
@@ -28,7 +28,7 @@ function pruneExpiredStates() {
 }
 
 function generateState(): string {
-	return crypto.randomUUID();
+	return randomUUID();
 }
 
 export const wechatRouter = new Hono();
@@ -99,7 +99,7 @@ wechatRouter.get("/callback", async (c) => {
 		.then((rows) => rows[0] ?? null);
 
 	if (!dbUser) {
-		const userId = crypto.randomUUID();
+		const userId = randomUUID();
 		const now = new Date();
 		await db.insert(userTable).values({
 			id: userId,
@@ -279,7 +279,7 @@ wechatRouter.post("/miniprogram-login", async (c) => {
 			.then((rows) => rows[0] ?? null);
 
 		if (!dbUser) {
-			const userId = crypto.randomUUID();
+			const userId = randomUUID();
 			const now = new Date();
 			await db.insert(userTable).values({
 				id: userId,
@@ -350,7 +350,7 @@ wechatRouter.get("/jssdk-signature", async (c) => {
 	}
 
 	const timestamp = Math.floor(Date.now() / 1000);
-	const nonceStr = crypto.randomUUID().replace(/-/g, "").slice(0, 16);
+	const nonceStr = randomUUID().replace(/-/g, "").slice(0, 16);
 	const signStr = `jsapi_ticket=${jsapiTicket}&noncestr=${nonceStr}&timestamp=${timestamp}&url=${url}`;
 	const signature = createHash("sha1").update(signStr).digest("hex");
 

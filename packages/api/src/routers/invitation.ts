@@ -58,7 +58,7 @@ export const invitationRouter = router({
 					await db.insert(assessments).values({
 						id: "debug-balanced",
 						userId: inviterId,
-						date: new Date().toISOString().split("T")[0] || "2026-06-26",
+						date: new Date(),
 						dominantType: "D",
 						scoreD: 25,
 						scoreI: 25,
