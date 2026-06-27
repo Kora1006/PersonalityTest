@@ -75,7 +75,7 @@
     position: relative;
     width: calc(100% + 64rpx);
     margin-left: -32rpx;
-    height: 480rpx;
+    min-height: 520rpx;
     overflow: hidden;
     display: flex;
     align-items: flex-end;
@@ -116,10 +116,10 @@
       width: 100%;
       box-sizing: border-box;
 
-      .info-card-flex {
+       .info-card-flex {
         display: flex;
         gap: 24rpx;
-        align-items: center;
+        align-items: flex-start;
       }
 
       .dominant-type-bubble {
@@ -133,6 +133,7 @@
         color: #ffffff;
         box-shadow: 0 6rpx 20rpx rgba(0, 0, 0, 0.15);
         flex-shrink: 0;
+        margin-top: 6rpx;
 
         .bubble-letter {
           font-size: 44rpx;
@@ -172,9 +173,8 @@
           font-weight: 800;
           color: #151c27;
           margin-bottom: 8rpx;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
+          line-height: 1.4;
+          word-break: break-all;
         }
 
         .hero-summary {
@@ -182,10 +182,6 @@
           font-size: 22rpx;
           color: #424754;
           line-height: 1.6;
-          display: -webkit-box;
-          -webkit-box-orient: vertical;
-          -webkit-line-clamp: 2;
-          overflow: hidden;
         }
       }
     }
