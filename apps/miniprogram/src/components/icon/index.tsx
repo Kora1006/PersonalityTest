@@ -12,17 +12,48 @@ interface IconProps {
 }
 
 export function toBase64(str: string): string {
-	const utf8Str = unescape(encodeURIComponent(str));
+	const bytes: number[] = [];
+	for (let i = 0; i < str.length; i++) {
+		let charcode = str.charCodeAt(i);
+		if (charcode < 0x80) {
+			bytes.push(charcode);
+		} else if (charcode < 0x8_00) {
+			bytes.push(0xc0 | (charcode >> 6), 0x80 | (charcode & 0x3f));
+		} else if (charcode < 0xd8_00 || charcode >= 0xe0_00) {
+			bytes.push(
+				0xe0 | (charcode >> 12),
+				0x80 | ((charcode >> 6) & 0x3f),
+				0x80 | (charcode & 0x3f)
+			);
+		} else {
+			i++;
+			charcode =
+				0x1_00_00 +
+				(((charcode & 0x3_ff) << 10) | (str.charCodeAt(i) & 0x3_ff));
+			bytes.push(
+				0xf0 | (charcode >> 18),
+				0x80 | ((charcode >> 12) & 0x3f),
+				0x80 | ((charcode >> 6) & 0x3f),
+				0x80 | (charcode & 0x3f)
+			);
+		}
+	}
+
+	const wxObj = (globalThis as any).wx;
+	if (wxObj && typeof wxObj.arrayBufferToBase64 === "function") {
+		const u8 = new Uint8Array(bytes);
+		return wxObj.arrayBufferToBase64(u8.buffer);
+	}
+
 	const chars =
 		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 	let result = "";
 	let i = 0;
-	while (i < utf8Str.length) {
-		const byte1 = utf8Str.charCodeAt(i++) & 0xff;
-		const byte2 =
-			i < utf8Str.length ? utf8Str.charCodeAt(i++) & 0xff : Number.NaN;
-		const byte3 =
-			i < utf8Str.length ? utf8Str.charCodeAt(i++) & 0xff : Number.NaN;
+	const len = bytes.length;
+	while (i < len) {
+		const byte1 = bytes[i++] ?? 0;
+		const byte2 = i < len ? (bytes[i++] ?? 0) : Number.NaN;
+		const byte3 = i < len ? (bytes[i++] ?? 0) : Number.NaN;
 
 		const enc1 = byte1 >> 2;
 		const enc2 = ((byte1 & 3) << 4) | (Number.isNaN(byte2) ? 0 : byte2 >> 4);
