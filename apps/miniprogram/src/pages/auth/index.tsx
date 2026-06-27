@@ -157,9 +157,15 @@ export default function Auth() {
 			});
 			return;
 		}
+		console.log("[Auth Page] Starting WeChat login...");
 		Taro.login({
 			success: async (loginRes) => {
+				console.log("[Auth Page] Taro.login success:", loginRes);
 				if (!loginRes.code) {
+					Taro.showToast({
+						title: "微信登录失败：未获取到 code",
+						icon: "none",
+					});
 					return;
 				}
 				setLoading(true);
@@ -172,16 +178,26 @@ export default function Auth() {
 						{ code: loginRes.code },
 						false
 					);
+					console.log("[Auth Page] WeChat login API response:", res);
 					storage.setToken(res.token);
 					storage.setUser(res.user);
 					setUser(res.user);
 					syncLocalHistoryToServer().catch(() => null);
 					Taro.showToast({ title: "微信登录成功", icon: "success" });
-				} catch {
-					Taro.showToast({ title: "微信登录失败", icon: "none" });
+				} catch (err: any) {
+					console.error("[Auth Page] WeChat login API failed:", err);
+					const msg = err?.message || "网络请求失败";
+					Taro.showToast({ title: `微信登录失败: ${msg}`, icon: "none" });
 				} finally {
 					setLoading(false);
 				}
+			},
+			fail: (err) => {
+				console.error("[Auth Page] Taro.login API failed:", err);
+				Taro.showToast({
+					title: `调用微信登录失败: ${err.errMsg || "未知错误"}`,
+					icon: "none",
+				});
 			},
 		});
 	};
