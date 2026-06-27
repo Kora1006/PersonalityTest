@@ -210,20 +210,74 @@ function wrapText(
 	}
 }
 
+async function base64ToTempFile(base64Data: string): Promise<string> {
+	const fsm = wx.getFileSystemManager();
+	const [, format, bodyData] =
+		/data:image\/(\w+);base64,(.*)/.exec(base64Data) || [];
+	if (!(format && bodyData)) {
+		throw new Error("Invalid base64 data");
+	}
+	const filename = `temp_share_img_${Date.now()}_${Math.floor(Math.random() * 1000)}.${format}`;
+	const filePath = `${wx.env.USER_DATA_PATH}/${filename}`;
+	return new Promise((resolve, reject) => {
+		fsm.writeFile({
+			filePath,
+			data: bodyData,
+			encoding: "base64",
+			success: () => resolve(filePath),
+			fail: (err: any) => reject(err),
+		});
+	});
+}
+
 async function getLocalImagePath(src: string): Promise<string> {
 	if (src.startsWith("data:")) {
-		return src;
+		return base64ToTempFile(src);
 	}
-	let path = src;
-	if (!(path.startsWith("http") || path.startsWith("/"))) {
-		path = `/${path}`;
+
+	if (src.startsWith("http")) {
+		try {
+			const res = await Taro.getImageInfo({ src });
+			return res.path;
+		} catch (err) {
+			console.error("Failed to get local path for network image:", src, err);
+			throw err;
+		}
 	}
+
+	// For local package files (like qrcodeImg)
 	try {
-		const res = await Taro.getImageInfo({ src: path });
-		return res.path;
+		const fsm = wx.getFileSystemManager();
+		let cleanPath = src;
+		if (cleanPath.startsWith("/")) {
+			cleanPath = cleanPath.slice(1);
+		}
+		// Read local package file as base64
+		const base64 = fsm.readFileSync(cleanPath, "base64");
+		const mimeType =
+			cleanPath.endsWith(".jpg") || cleanPath.endsWith(".jpeg")
+				? "image/jpeg"
+				: "image/png";
+		const dataUri = `data:${mimeType};base64,${base64}`;
+		return await base64ToTempFile(dataUri);
 	} catch (err) {
-		console.error("Failed to get local image path for:", path, err);
-		return path;
+		console.error(
+			"Failed to read local package file as temp file for:",
+			src,
+			err
+		);
+		// Fallback to getImageInfo
+		try {
+			let path = src;
+			if (!(path.startsWith("http") || path.startsWith("/"))) {
+				path = `/${path}`;
+			}
+			const res = await Taro.getImageInfo({ src: path });
+			return res.path;
+		} catch (fallbackErr) {
+			console.error("Taro.getImageInfo fallback failed for:", src, fallbackErr);
+			return src;
+		}
 	}
 }
 
@@ -337,7 +391,8 @@ export async function generateShareCard(
 
 	// 8. Mini QR code (bottom right)
 	try {
-		const localQrPath = await getLocalImagePath(qrcodeImg);
+		const qrSrc = input.qrcodeBase64 || qrcodeImg;
+		const localQrPath = await getLocalImagePath(qrSrc);
 		const qrImg = await loadImage(canvas, localQrPath);
 		ctx.drawImage(qrImg as unknown as CanvasImageSource, 540, 1110, 130, 130);
 		ctx.font = "20px sans-serif";
