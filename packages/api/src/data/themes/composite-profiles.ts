@@ -1,6 +1,8 @@
 export interface CompositeProfile {
 	growthAreas: string[];
 	leadership: {
+		name: string;
+		tagline: string;
 		section1Content: string;
 		section2Content: string;
 		section3Content: string;
@@ -11,14 +13,19 @@ export interface CompositeProfile {
 			description: string;
 		}>;
 	};
+	/** Generic fallback name (used for display when no theme context) */
 	name: string;
 	professional: {
+		name: string;
+		tagline: string;
 		section1Content: string;
 		section2Content: string;
 		section3Content: string;
 		careerPaths: Array<{ title: string; compatibility: string; icon: string }>;
 	};
 	relationship: {
+		name: string;
+		tagline: string;
 		section1Content: string;
 		intimacy: string;
 		communicationPreference: string[];
@@ -30,6 +37,7 @@ export interface CompositeProfile {
 	};
 	shareQuotes: string[];
 	strengths: string[];
+	/** Generic fallback tagline */
 	tagline: string;
 }
 
@@ -53,6 +61,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			"最好的领导，是带领团队看到更远的风景",
 		],
 		professional: {
+			name: "开拓型 (DI)",
+			tagline: "以执行力破局，用感染力聚人，你是职场中充满激情的开拓者",
 			section1Content:
 				"你在职场中是一位极具张力的开拓者。你喜欢领导新项目，用直觉和速度打破僵局。你的沟通富有感召力，能迅速凝聚人心，但有时可能会因为推进过快而给他人带来步骤上的压力。",
 			section2Content:
@@ -67,6 +77,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			],
 		},
 		relationship: {
+			name: "热烈型伴侣 (DI)",
+			tagline: "你带着火焰走进关系，让每段感情都燃得耀眼夺目",
 			section1Content:
 				"在人际交往中，你热情、主动，擅长调动社交气氛。你习惯直接表达关怀，带给对方满满的能量与安全感，是关系中令人瞩目的主导力量。",
 			intimacy:
@@ -90,6 +102,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			],
 		},
 		leadership: {
+			name: "开拓型领导 (DI)",
+			tagline: "推动业务破局，激发团队主观能动性，你是有远见的主动推动者",
 			section1Content:
 				"作为领导，你是一位极具感召力的实干派。你不仅能指明方向、快速决断，更能用澎湃的热情点燃团队斗志。你最擅长带领团队打硬仗、抢占新市场。",
 			section2Content:
@@ -137,6 +151,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			"冷静的判断优于盲目的热情",
 		],
 		professional: {
+			name: "战略型 (DC)",
+			tagline: "用理性解构复杂问题，用决断直击目标，你是冷静的职场破局者",
 			section1Content:
 				"你在职场中是一位非常冷静、理智的策略家。你做事条理分明，极具决断力，同时又极其注重专业和准确性。在解决高难度、需要严密论证的问题上，你是不可或缺的定海神针。",
 			section2Content:
@@ -155,6 +171,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			],
 		},
 		relationship: {
+			name: "理智型伴侣 (DC)",
+			tagline: "你用深度与原则守护感情，爱得克制而坚定",
 			section1Content:
 				"在人际交往中，你表现得理智、克制。相比起甜言蜜语，你更倾向于用切实可靠的实际行动、解决问题的方式以及对未来的长远规划来表达爱意。",
 			intimacy:
@@ -180,6 +198,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			],
 		},
 		leadership: {
+			name: "决策型领导 (DC)",
+			tagline: "战略清晰、分析严密，以高度专业化的决策指引团队方向",
 			section1Content:
 				"作为领导，你是一位极具权威感的‘高标型’掌舵人。你坚守高原则，严控输出质量，凡事以事实为依托，能带领团队在复杂战局中始终锚定正确方向。",
 			section2Content:
@@ -229,6 +249,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			"最坚实的承诺，从不需要喧嚣",
 		],
 		professional: {
+			name: "执着型 (DS)",
+			tagline: "既有清晰目标感，又有极强耐力，你在职场中默默成就卓越",
 			section1Content:
 				"你在职场中是一位极具韧性的执行者。你不仅有完成目标的决心，更有持久推进的耐力。你工作扎实可靠，擅长在庞杂的工作中找到清晰的落实主线，深得团队信赖。",
 			section2Content:
@@ -243,6 +265,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			],
 		},
 		relationship: {
+			name: "长情型伴侣 (DS)",
+			tagline: "你是关系里最扎实的那个人，用守护代替诺言",
 			section1Content:
 				"在人际交往中，你厚重、真诚，习惯扮演长期支持者的角色。你不喜欢变动频繁的社交，但对认定的关系极尽守护，是极其长情、令人安心的伴侣。",
 			intimacy:
@@ -268,6 +292,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			],
 		},
 		leadership: {
+			name: "坚守型领导 (DS)",
+			tagline: "你用稳健的节奏带领团队，把长远承诺刻进每一次执行里",
 			section1Content:
 				"作为领导，你是一位稳健的小憩赋能者。你既有清晰的任务目标，又极度关心员工的稳定性与培养。你的团队流失率通常极低，大家在你的羽翼下极有安全感。",
 			section2Content:
@@ -318,6 +344,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			"人生就是一场不断开拓的冒险",
 		],
 		professional: {
+			name: "激励型 (ID)",
+			tagline: "用热情点燃创意，用速度追逐梦想，你是职场中魅力非凡的推动者",
 			section1Content:
 				"你在职场中是一位活力四射的创意推动者。你拥有出众的个人魅力和极强的表达欲，擅长在关键时刻调动资源、发表精彩演说来感召团队，是天生的资源整合者。",
 			section2Content:
@@ -332,6 +360,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			],
 		},
 		relationship: {
+			name: "浪漫型伴侣 (ID)",
+			tagline: "你把感情活成了一部精彩的冒险剧，每天都是新剧情",
 			section1Content:
 				"在关系中，你是一个热烈、浪漫、富有激情的人。你乐于向伴侣展示你精彩纷呈的一面，经常给感情生活带来惊喜和令人向往的亮色。",
 			intimacy:
@@ -357,6 +387,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			],
 		},
 		leadership: {
+			name: "感召型领导 (ID)",
+			tagline: "你让每个人相信：我们能做到——热情与行动力的双引擎",
 			section1Content:
 				"作为领导，你是一位天生的精神领袖。你的感召力无以伦比，最擅长在团队迷茫或处于低谷时重建信心，给团队画出宏伟的蓝图并指引方向。",
 			section2Content:
@@ -405,6 +437,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			"帮助他人成长，是自我成长的最佳路径",
 		],
 		professional: {
+			name: "顾问型 (IS)",
+			tagline: "散发温暖与善意，用同理心粘合团队，你是职场中天生的沟通纽带",
 			section1Content:
 				"你在职场中是公认的‘团队润滑剂’。你非常关注人与人之间的关系，沟通充满温度和建设性。你极其擅长在跨部门协作或内部矛盾重重时，担当沟通桥梁，以柔克刚解决分歧。",
 			section2Content:
@@ -419,6 +453,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			],
 		},
 		relationship: {
+			name: "体贴型伴侣 (IS)",
+			tagline: "用温润的情感共鸣与包容，为伴侣筑起最安稳的避风港",
 			section1Content:
 				"在关系中，你极具亲和力与包容心。你总是能敏锐地察觉到伴侣的情绪波动，并在第一时间送上安慰，是所有人向往的温暖伴侣。",
 			intimacy:
@@ -444,6 +480,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			],
 		},
 		leadership: {
+			name: "培育型领导 (IS)",
+			tagline: "你让团队每个人都感到被看见、被支持——温暖即是力量",
 			section1Content:
 				"作为领导，你是一位共情力顶尖的‘教练型’带路人。你擅长创造心理安全感极高的团队环境，特别善于发现并挖掘下属的个人潜能，通过包容与信任帮助他人达成目标。",
 			section2Content:
@@ -494,6 +532,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			"有深度地说服，是对专业最大的尊重",
 		],
 		professional: {
+			name: "评估型 (IC)",
+			tagline: "以热情出发，以严谨落地，你把创意与质量完美结合",
 			section1Content:
 				"你在职场中是一个非常独特的复合体。你既有‘I’的活跃发散、擅长表达沟通，又有‘C’的谨慎细致、关注事实数据。你提出的点子往往不仅引人入胜，更具备切实的可行性，是极佳的方案撰写者与评估者。",
 			section2Content:
@@ -512,6 +552,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			],
 		},
 		relationship: {
+			name: "细腻型伴侣 (IC)",
+			tagline: "你爱得有温度也有深度，让感情兼具美感与真实",
 			section1Content:
 				"在人际交往中，你表现得既风趣幽默，又注重交流的内容深度。你乐于在感情中分享各种有趣的见闻，同时也是一个非常可靠的心灵倾听与出谋划策者。",
 			intimacy:
@@ -537,6 +579,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			],
 		},
 		leadership: {
+			name: "精益型领导 (IC)",
+			tagline: "你把美好的愿景和严密的标准缝合在一起，带领团队追求卓越",
 			section1Content:
 				"作为领导，你是一位理智而富有亲和力的‘评估型’管理者。你不会用生硬的行政命令强压团队，而是习惯用周密的事实数据和生动的道理去‘说服’下属。",
 			section2Content:
@@ -587,6 +631,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			"最令人安心的合作，是事事有回音，件件有着落",
 		],
 		professional: {
+			name: "稳健推动者 (SD)",
+			tagline: "以稳固的根基承接冲劲，你在职场中是最可靠的执行核心",
 			section1Content:
 				"你在职场中是一位极其扎实的‘靠山型’专家。你话不多但做事绝无纰漏。你极其擅长接手庞杂的日常事务，建立起清晰可执行的流程并日复一日地高标准推行，是业务的基石。",
 			section2Content:
@@ -601,6 +647,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			],
 		},
 		relationship: {
+			name: "守护型伴侣 (SD)",
+			tagline: "你在关系里是那个定海神针，稳而有力，从不轻易放手",
 			section1Content:
 				"在关系中，你极度忠诚、务实且愿意付出。你可能不太会制造轰轰烈烈的浪漫，但绝对会为家庭的正常运转和伴侣的生活起居遮风挡雨，是无可替代的港湾。",
 			intimacy:
@@ -626,6 +674,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			],
 		},
 		leadership: {
+			name: "锚定型领导 (SD)",
+			tagline: "你给团队方向，也给团队底气——目标与稳定缺一不可",
 			section1Content:
 				"作为领导，你是一位默默为团队遮风挡雨的‘守护型’带头人。你注重执行的扎实度，强调团队内部的稳定性与归属感，总是能够耐心地指导新人在长跑中成长。",
 			section2Content:
@@ -675,6 +725,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			"细水长流的真诚，能融化最坚固的壁垒",
 		],
 		professional: {
+			name: "协调型 (SI)",
+			tagline: "以稳定为基，以温情为桥，你是职场中凝聚人心的无形纽带",
 			section1Content:
 				"你在职场中是一位亲和力拉满的‘协作天使’。你推崇和谐的合作理念，永远以热心和耐心的态度对待同事。你在跨部门沟通、售后支持或客服流程设计中，能够发挥出无与伦比的粘合价值。",
 			section2Content:
@@ -693,6 +745,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			],
 		},
 		relationship: {
+			name: "包容型伴侣 (SI)",
+			tagline: "你的爱是一片安全的港湾，宽广、温柔、从不评判",
 			section1Content:
 				"在关系中，你极度体贴、包容，是一个几乎从不主动挑起矛盾的情感黏合剂。你随时准备着照顾伴侣的生活和情绪，能够为双方的爱意提供极度润泽的养分。",
 			intimacy:
@@ -718,6 +772,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			],
 		},
 		leadership: {
+			name: "凝聚型领导 (SI)",
+			tagline: "你让团队成为家，每个人都在你的包容里找到最好的自己",
 			section1Content:
 				"作为领导，你是一位温和的‘管家协调型’导师。你提倡团队和谐，致力于通过温情关怀来驱动凝聚力。你的管理动作往往偏向温和授权与默默支持。",
 			section2Content:
@@ -767,6 +823,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			"流程不仅是标准，更是信任的基石",
 		],
 		professional: {
+			name: "精密合作者 (SC)",
+			tagline: "以细腻的心感知他人，以严谨的手推进质量，你是职场中的隐形精英",
 			section1Content:
 				"你在职场中是公认的‘稳定压舱石’。你做事讲求流程、讲求章法，对于交给你的日常任务会用极高的精确度按部就班地落实，绝不容许半点瑕疵，极度让上级放心。",
 			section2Content:
@@ -789,6 +847,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			],
 		},
 		relationship: {
+			name: "默契型伴侣 (SC)",
+			tagline: "追求心灵契合与默默守护，在无声中展现深厚与稳定的爱",
 			section1Content:
 				"在人际交往中，你低调、含蓄、追求安稳。你习惯用细致入微的照顾和对生活细节的打理来表达感情，是家庭生活中最令人放心的稳健内核。",
 			intimacy:
@@ -814,6 +874,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			],
 		},
 		leadership: {
+			name: "精工型领导 (SC)",
+			tagline: "你在沉默中塑造标准，在细节里构建卓越的团队文化",
 			section1Content:
 				"作为领导，你是一位极其注重流程与规范的‘体系建设者’。你擅长制定科学的管理条例，倡导以标准化的工作流去规避生产中的人为误差，推动团队长期可靠地运转。",
 			section2Content:
@@ -864,6 +926,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			"数据优于直觉，事实胜于雄辩",
 		],
 		professional: {
+			name: "系统型 (CD)",
+			tagline: "以逻辑构建框架，以效率驱动结果，你是职场中精密的系统架构师",
 			section1Content:
 				"你在职场中是一位极富穿透力的‘系统分析家’。你极具‘C’的深邃洞察与科学追求，同时又兼具‘D’的决断和结果导向。你不允许任何形式的低效或蒙混过关，是团队中最严厉也最可靠的质量法官。",
 			section2Content:
@@ -882,6 +946,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			],
 		},
 		relationship: {
+			name: "理性型伴侣 (CD)",
+			tagline: "你用计划经营感情，用规则守护边界，爱你的人懂你的深情",
 			section1Content:
 				"在人际交往中，你表现得理智、慢热且深沉。你对感情抱着极其负责且严密的思考，不轻易许下承诺，但一旦确定关系，你会用强大的安全感和终身长情来守护伴侣。",
 			intimacy:
@@ -907,6 +973,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			],
 		},
 		leadership: {
+			name: "战术型领导 (CD)",
+			tagline: "你把混乱变成秩序，让每一步决策都建立在铁一般的逻辑之上",
 			section1Content:
 				"作为领导，你是一位铁腕高标的‘理性掌舵者’。你对团队输出的质量与时效有着极致的坚守，眼里揉不得半点沙子。你善于通过强大的数据逻辑和铁律制度，把团队打造成高精密的执行战车。",
 			section2Content:
@@ -957,6 +1025,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			"好的方案，不仅要有理有据，更要动人心弦",
 		],
 		professional: {
+			name: "精致评估者 (CI)",
+			tagline: "以严谨分析为底、以温暖感知为翼，你在职场中追求极致的品质",
 			section1Content:
 				"你在职场中是一位非常完美的‘方案评估家’。你极富‘C’的系统化思维和对事实的追索，同时又拥有‘I’的亲和表达，这使你在汇报方案、沟通项目进程时表现得极为清晰、有逻辑且令人信服。",
 			section2Content:
@@ -971,6 +1041,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			],
 		},
 		relationship: {
+			name: "品质型伴侣 (CI)",
+			tagline: "对感情与生活品质有独到追求，尊重彼此独立的内心世界",
 			section1Content:
 				"在交往中，你既拥有温和得体的社交礼仪，又有非常严肃理性的相处态度。你喜欢在关系中与伴侣探讨各种有思考深度的社会话题，是一个不可多得的心智伴侣。",
 			intimacy:
@@ -996,6 +1068,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			],
 		},
 		leadership: {
+			name: "品质型领导 (CI)",
+			tagline: "你的团队不只追求结果，更追求让人骄傲的方式和过程",
 			section1Content:
 				"作为领导，你是一位理智温和的‘说服型’领导者。你不倾向于用职务权力强压团队，而是极度擅长召集会议，通过清晰的事实论据、利弊分析去说服并引导团队达成共识。",
 			section2Content:
@@ -1046,6 +1120,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			"好的习惯，能让一切混乱变成秩序的乐章",
 		],
 		professional: {
+			name: "完美主义者 (CS)",
+			tagline: "精益求精、一丝不苟，你是职场中最值得托付的品质守门人",
 			section1Content:
 				"你在职场中是典型的‘隐秘大师’。你极具‘C’的系统化思维和对事实的求索，同时又拥有‘S’的安稳与奉献精神。你习惯在自己的专业领域中深耕，默默无闻地交付出零差错的工作结果，极其受领导器重。",
 			section2Content:
@@ -1064,6 +1140,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			],
 		},
 		relationship: {
+			name: "专一型伴侣 (CS)",
+			tagline: "你对感情从不将就，认定了就用一生去守护和完善",
 			section1Content:
 				"在交往中，你是一个极其务实、体贴且情绪稳定的避风港。你习惯把爱意深藏于对日常生活的细心照顾和对家庭约定的信守中，是长跑型感情中无可替代的坚实基石。",
 			intimacy:
@@ -1089,6 +1167,8 @@ export const COMPOSITE_PROFILES: Record<string, CompositeProfile> = {
 			],
 		},
 		leadership: {
+			name: "精准型领导 (CS)",
+			tagline: "你让每一个流程都严丝合缝，带领团队在细节中抵达卓越",
 			section1Content:
 				"作为领导，你是一位极富耐心的‘系统协调者’。你提倡以严密的制度和可靠的工作流程为下属引航，不提倡高风险的盲目冒险，强调在稳步推进中保障成果产出。",
 			section2Content:

@@ -73,5 +73,13 @@ export async function syncLocalHistoryToServer(): Promise<void> {
 		await trpc.mutate("assessments.syncHistory", local);
 	} catch (err) {
 		console.error("Failed to sync history to server:", err);
+		const errMsg = err instanceof Error ? err.message : String(err);
+		if (
+			errMsg.includes("401") ||
+			errMsg.toLowerCase().includes("unauthorized") ||
+			errMsg.toLowerCase().includes("unauthenticated")
+		) {
+			storage.clearToken();
+		}
 	}
 }

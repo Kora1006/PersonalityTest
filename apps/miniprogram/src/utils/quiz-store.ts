@@ -74,11 +74,13 @@ export const quizStore = {
 		for (const choice of Object.values(state.answers)) {
 			raw[choice]++;
 		}
+		const baseline = 1;
+		const denominator = total + 4 * baseline;
 		return {
-			D: Math.round((raw.D / total) * 100),
-			I: Math.round((raw.I / total) * 100),
-			S: Math.round((raw.S / total) * 100),
-			C: Math.round((raw.C / total) * 100),
+			D: Math.round(((raw.D + baseline) / denominator) * 100),
+			I: Math.round(((raw.I + baseline) / denominator) * 100),
+			S: Math.round(((raw.S + baseline) / denominator) * 100),
+			C: Math.round(((raw.C + baseline) / denominator) * 100),
 		};
 	},
 

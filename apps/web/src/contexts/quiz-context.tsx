@@ -42,11 +42,13 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
 		for (const choice of Object.values(answers)) {
 			s[choice]++;
 		}
+		const baseline = 1;
+		const denominator = 24 + 4 * baseline;
 		return {
-			D: Math.round((s.D / 24) * 100),
-			I: Math.round((s.I / 24) * 100),
-			S: Math.round((s.S / 24) * 100),
-			C: Math.round((s.C / 24) * 100),
+			D: Math.round(((s.D + baseline) / denominator) * 100),
+			I: Math.round(((s.I + baseline) / denominator) * 100),
+			S: Math.round(((s.S + baseline) / denominator) * 100),
+			C: Math.round(((s.C + baseline) / denominator) * 100),
 		};
 	}, [answers]);
 
@@ -78,11 +80,13 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
 		for (const choice of Object.values(answers)) {
 			finalScores[choice]++;
 		}
+		const baseline = 1;
+		const denominator = 24 + 4 * baseline;
 		const percentages = {
-			D: Math.round((finalScores.D / 24) * 100),
-			I: Math.round((finalScores.I / 24) * 100),
-			S: Math.round((finalScores.S / 24) * 100),
-			C: Math.round((finalScores.C / 24) * 100),
+			D: Math.round(((finalScores.D + baseline) / denominator) * 100),
+			I: Math.round(((finalScores.I + baseline) / denominator) * 100),
+			S: Math.round(((finalScores.S + baseline) / denominator) * 100),
+			C: Math.round(((finalScores.C + baseline) / denominator) * 100),
 		};
 		const dominant = (["D", "I", "S", "C"] as const).reduce((a, b) =>
 			percentages[a] >= percentages[b] ? a : b

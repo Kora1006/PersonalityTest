@@ -47,20 +47,45 @@ export const invitationRouter = router({
 			const db = createDb();
 			const inviterId = ctx.session.user.id;
 
-			// Verify the result belongs to this user
-			const result = await db
-				.select({ id: assessments.id, isUnlocked: assessments.isUnlocked })
-				.from(assessments)
-				.where(
-					and(
-						eq(assessments.id, input.resultId),
-						eq(assessments.userId, inviterId)
-					)
-				)
-				.then((rows) => rows[0] ?? null);
+			if (input.resultId === "debug-balanced") {
+				const existing = await db
+					.select()
+					.from(assessments)
+					.where(eq(assessments.id, "debug-balanced"))
+					.then((rows) => rows[0] ?? null);
 
-			if (!result) {
-				throw new Error("Result not found");
+				if (!existing) {
+					await db.insert(assessments).values({
+						id: "debug-balanced",
+						userId: inviterId,
+						date: new Date().toISOString().split("T")[0] || "2026-06-26",
+						dominantType: "D",
+						scoreD: 25,
+						scoreI: 25,
+						scoreS: 25,
+						scoreC: 25,
+						note: "全能适配者调试模式",
+						theme: "professional",
+						mode: "full",
+						isUnlocked: true,
+					});
+				}
+			} else {
+				// Verify the result belongs to this user
+				const result = await db
+					.select({ id: assessments.id, isUnlocked: assessments.isUnlocked })
+					.from(assessments)
+					.where(
+						and(
+							eq(assessments.id, input.resultId),
+							eq(assessments.userId, inviterId)
+						)
+					)
+					.then((rows) => rows[0] ?? null);
+
+				if (!result) {
+					throw new Error("Result not found");
+				}
 			}
 
 			const id = crypto.randomUUID();

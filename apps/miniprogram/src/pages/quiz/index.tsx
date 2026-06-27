@@ -164,10 +164,12 @@ export default function Quiz() {
 			{/* Question content */}
 			<ScrollView className="quiz-content" scrollY>
 				<View className="question-wrap">
-					<Text className="question-text">
-						{themes[themeId].questionPrefix}
-						{question.scenario}
-					</Text>
+					<View className="question-text-container">
+						<Text className="question-text">
+							{themes[themeId].questionPrefix}
+							{question.scenario}
+						</Text>
+					</View>
 
 					{mode === "quick" && (
 						<View className="quick-badge">

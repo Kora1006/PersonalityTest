@@ -67,6 +67,7 @@ export const themes: Record<ThemeId, ThemeConfig> = {
 	leadership: leadershipTheme,
 };
 
+// biome-ignore lint/style/noExportedImports: also used locally in getPersonalityContent
 import { COMPOSITE_PROFILES } from "./composite-profiles";
 
 export { COMPOSITE_PROFILES };
@@ -152,6 +153,8 @@ export function getPersonalityContent(
 						return { title: "情感包容力", score: defaultScore };
 					case "C":
 						return { title: "理性分析度", score: defaultScore };
+					default:
+						return { title: "关系掌控度", score: defaultScore };
 				}
 			};
 			relationshipMetrics = [getMetric(char1, 92), getMetric(char2, 86)];
@@ -168,8 +171,8 @@ export function getPersonalityContent(
 		}
 
 		return {
-			name: comp.name,
-			tagline: comp.tagline,
+			name: comp[themeId]?.name ?? comp.name,
+			tagline: comp[themeId]?.tagline ?? comp.tagline,
 			strengths: comp.strengths,
 			growthAreas: comp.growthAreas,
 			shareQuotes: comp.shareQuotes,

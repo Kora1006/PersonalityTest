@@ -105,13 +105,19 @@
     font-family: 'JetBrains Mono', monospace;
   }
 
+  .question-text-container {
+    min-height: 120rpx;
+    margin-bottom: 24rpx;
+    display: flex;
+    align-items: flex-start;
+  }
+
   .question-text {
     display: block;
     font-size: 40rpx;
     font-weight: 800;
     color: #151c27;
     line-height: 1.5;
-    margin-bottom: 40rpx;
     font-family: 'Manrope', sans-serif;
   }
 

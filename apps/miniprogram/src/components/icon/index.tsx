@@ -1,7 +1,10 @@
+// biome-ignore-all lint/suspicious/noBitwiseOperators: base64 requires bitwise operations
+
 import { Image } from "@tarojs/components";
 import type { CSSProperties } from "react";
 
 interface IconProps {
+	className?: string;
 	color?: string;
 	name: string;
 	size?: number;
@@ -9,14 +12,17 @@ interface IconProps {
 }
 
 export function toBase64(str: string): string {
+	const utf8Str = unescape(encodeURIComponent(str));
 	const chars =
 		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 	let result = "";
 	let i = 0;
-	while (i < str.length) {
-		const byte1 = str.charCodeAt(i++) & 0xff;
-		const byte2 = i < str.length ? str.charCodeAt(i++) & 0xff : Number.NaN;
-		const byte3 = i < str.length ? str.charCodeAt(i++) & 0xff : Number.NaN;
+	while (i < utf8Str.length) {
+		const byte1 = utf8Str.charCodeAt(i++) & 0xff;
+		const byte2 =
+			i < utf8Str.length ? utf8Str.charCodeAt(i++) & 0xff : Number.NaN;
+		const byte3 =
+			i < utf8Str.length ? utf8Str.charCodeAt(i++) & 0xff : Number.NaN;
 
 		const enc1 = byte1 >> 2;
 		const enc2 = ((byte1 & 3) << 4) | (Number.isNaN(byte2) ? 0 : byte2 >> 4);
@@ -34,11 +40,24 @@ export function toBase64(str: string): string {
 	return result;
 }
 
-export function Icon({ name, size = 24, color = "#151c27", style }: IconProps) {
+export function Icon({
+	name,
+	size = 24,
+	color = "#151c27",
+	style,
+	className,
+}: IconProps) {
 	let path = "";
 	const viewBox = "0 0 24 24";
 
 	switch (name) {
+		case "hub":
+			path =
+				"M17 16l-4-4V8.82C14.16 8.4 15 7.3 15 6c0-1.66-1.34-3-3-3S9 4.34 9 6c0 1.3.84 2.4 2 2.82V12l-4 4H3v5h5v-3.05l4-4 4 4V21h5v-5h-4z";
+			break;
+		case "sync_alt":
+			path = "M22 8l-4-4v3H3v2h15v3l4-4zM2 16l4 4v-3h15v-2H6v-3l-4 4z";
+			break;
 		case "bolt":
 			path = "M19 11h-6V3l-7 10h6v8l7-10z";
 			break;
@@ -197,7 +216,6 @@ export function Icon({ name, size = 24, color = "#151c27", style }: IconProps) {
 			path =
 				"M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z";
 			break;
-		case "event_note":
 		default:
 			break;
 	}
@@ -207,6 +225,7 @@ export function Icon({ name, size = 24, color = "#151c27", style }: IconProps) {
 
 	return (
 		<Image
+			className={className}
 			src={src}
 			style={{
 				width: `${size}rpx`,

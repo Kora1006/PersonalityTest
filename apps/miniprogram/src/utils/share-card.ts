@@ -1,4 +1,5 @@
 import Taro from "@tarojs/taro";
+import qrcodeImg from "../assets/images/qrcode.jpg";
 import {
 	DISC_COLORS,
 	type DiscType,
@@ -6,6 +7,7 @@ import {
 } from "../data/disc-colors";
 import { getRandomQuote } from "../data/type-quotes";
 
+// biome-ignore lint/suspicious/noExplicitAny: wx is WeChat global
 declare const wx: any;
 
 const W = 750;
@@ -28,6 +30,7 @@ export async function fetchMiniQrcode(scene: string): Promise<string | null> {
 		const res = await Taro.request({
 			url: `${BASE_URL}/api/auth/wechat/mini-qrcode?scene=${encodeURIComponent(scene)}&page=pages/index/index`,
 			method: "GET",
+			timeout: 3000,
 			header: token ? { Authorization: `Bearer ${token}` } : {},
 		});
 		if (res.statusCode === 200 && res.data?.base64) {
@@ -139,10 +142,44 @@ function drawMiniRadar(
 function loadImage(canvas: any, src: string): Promise<HTMLImageElement> {
 	return new Promise((resolve, reject) => {
 		const img = canvas.createImage();
-		img.onload = () => resolve(img as unknown as HTMLImageElement);
-		img.onerror = reject;
+		const timer = setTimeout(() => {
+			console.error("loadImage timeout for:", src);
+			reject(new Error(`Load image timeout: ${src}`));
+		}, 6000);
+		img.onload = () => {
+			clearTimeout(timer);
+			resolve(img as unknown as HTMLImageElement);
+		};
+		img.onerror = (err: unknown) => {
+			clearTimeout(timer);
+			console.error("loadImage error for:", src, err);
+			reject(err || new Error(`Load image error: ${src}`));
+		};
 		img.src = src;
 	});
+}
+
+async function drawBackground(
+	ctx: CanvasRenderingContext2D,
+	// biome-ignore lint/suspicious/noExplicitAny: WeChat mini-program OffscreenCanvas has no type definitions
+	canvas: any,
+	backgroundImage?: string
+) {
+	if (backgroundImage) {
+		try {
+			const localBgPath = await getLocalImagePath(backgroundImage);
+			const bgImg = await loadImage(canvas, localBgPath);
+			ctx.drawImage(bgImg as unknown as CanvasImageSource, 0, 0, W, H);
+			return;
+		} catch (err) {
+			console.error("Failed to load background image in share card:", err);
+		}
+	}
+	const gradient = ctx.createLinearGradient(0, 0, 0, H);
+	gradient.addColorStop(0, "#f3f5f9");
+	gradient.addColorStop(1, "#e7ebf4");
+	ctx.fillStyle = gradient;
+	ctx.fillRect(0, 0, W, H);
 }
 
 // Wrap multi-line text within a given width
@@ -174,23 +211,26 @@ function wrapText(
 }
 
 async function getLocalImagePath(src: string): Promise<string> {
-	if (src.startsWith("data:") || !src.startsWith("http")) {
+	if (src.startsWith("data:")) {
 		return src;
 	}
+	let path = src;
+	if (!(path.startsWith("http") || path.startsWith("/"))) {
+		path = `/${path}`;
+	}
 	try {
-		const res = await Taro.getImageInfo({ src });
+		const res = await Taro.getImageInfo({ src: path });
 		return res.path;
 	} catch (err) {
-		console.error("Failed to get local image path:", err);
-		return src;
+		console.error("Failed to get local image path for:", path, err);
+		return path;
 	}
 }
 
 export async function generateShareCard(
 	input: ShareCardInput
 ): Promise<string> {
-	const { dominantType, scores, qrcodeBase64, cardTheme, backgroundImage } =
-		input;
+	const { dominantType, scores, cardTheme, backgroundImage } = input;
 	const primaryType = (dominantType.charAt(0) || "D") as DiscType;
 	const typeColor = cardTheme?.primaryColor ?? DISC_COLORS[primaryType].hex;
 	const quote = getRandomQuote(primaryType);
@@ -206,26 +246,7 @@ export async function generateShareCard(
 	const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
 	// 1. Background (draw theme background image if available, else fallback to gradient)
-	if (backgroundImage) {
-		try {
-			const localBgPath = await getLocalImagePath(backgroundImage);
-			const bgImg = await loadImage(canvas, localBgPath);
-			ctx.drawImage(bgImg as unknown as CanvasImageSource, 0, 0, W, H);
-		} catch (err) {
-			console.error("Failed to load background image in share card:", err);
-			const gradient = ctx.createLinearGradient(0, 0, 0, H);
-			gradient.addColorStop(0, "#f3f5f9");
-			gradient.addColorStop(1, "#e7ebf4");
-			ctx.fillStyle = gradient;
-			ctx.fillRect(0, 0, W, H);
-		}
-	} else {
-		const gradient = ctx.createLinearGradient(0, 0, 0, H);
-		gradient.addColorStop(0, "#f3f5f9");
-		gradient.addColorStop(1, "#e7ebf4");
-		ctx.fillStyle = gradient;
-		ctx.fillRect(0, 0, W, H);
-	}
+	await drawBackground(ctx, canvas, backgroundImage);
 
 	// 2. White Card container in the center (translucent glassmorphic overlay)
 	ctx.fillStyle = "rgba(255, 255, 255, 0.88)";
@@ -315,18 +336,17 @@ export async function generateShareCard(
 	wrapText(ctx, `「${quote}」`, 100, 1010, 550, 48);
 
 	// 8. Mini QR code (bottom right)
-	if (qrcodeBase64) {
-		try {
-			const qrImg = await loadImage(canvas, qrcodeBase64);
-			ctx.drawImage(qrImg as unknown as CanvasImageSource, 540, 1110, 130, 130);
-			ctx.font = "20px sans-serif";
-			ctx.fillStyle = "#64748b";
-			ctx.textAlign = "center";
-			ctx.textBaseline = "top";
-			ctx.fillText("扫码测一测", 605, 1250);
-		} catch (err) {
-			console.error("Failed to load QR code in share card:", err);
-		}
+	try {
+		const localQrPath = await getLocalImagePath(qrcodeImg);
+		const qrImg = await loadImage(canvas, localQrPath);
+		ctx.drawImage(qrImg as unknown as CanvasImageSource, 540, 1110, 130, 130);
+		ctx.font = "20px sans-serif";
+		ctx.fillStyle = "#64748b";
+		ctx.textAlign = "center";
+		ctx.textBaseline = "top";
+		ctx.fillText("扫码测一测", 605, 1250);
+	} catch (err) {
+		console.error("Failed to load QR code in share card:", err);
 	}
 
 	// 9. Brand watermark
@@ -338,12 +358,32 @@ export async function generateShareCard(
 
 	// Export to temp file
 	return new Promise((resolve, reject) => {
-		wx.canvasToTempFilePath({
-			canvas,
-			fileType: "png",
-			success: (res: { tempFilePath: string }) => resolve(res.tempFilePath),
-			fail: reject,
-		});
+		if (canvas && typeof canvas.toTempFilePath === "function") {
+			canvas.toTempFilePath({
+				fileType: "png",
+				success: (res: { tempFilePath: string }) => resolve(res.tempFilePath),
+				fail: (err: unknown) => {
+					console.error(
+						"canvas.toTempFilePath failed, falling back to wx.canvasToTempFilePath",
+						err
+					);
+					wx.canvasToTempFilePath({
+						canvas,
+						fileType: "png",
+						success: (res: { tempFilePath: string }) =>
+							resolve(res.tempFilePath),
+						fail: reject,
+					});
+				},
+			});
+		} else {
+			wx.canvasToTempFilePath({
+				canvas,
+				fileType: "png",
+				success: (res: { tempFilePath: string }) => resolve(res.tempFilePath),
+				fail: reject,
+			});
+		}
 	});
 }
 

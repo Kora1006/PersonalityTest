@@ -70,12 +70,14 @@ export default function Quiz() {
 
 			{/* Question */}
 			<main className="flex-1 overflow-y-auto px-5 pb-32">
-				<p className="mb-3 font-mono font-semibold text-primary text-xs uppercase tracking-widest">
-					{question.category}
-				</p>
-				<h2 className="mb-6 font-bold text-foreground text-xl leading-snug">
-					{question.scenario}
-				</h2>
+				<div className="mb-4 flex min-h-[80px] flex-col justify-start">
+					<p className="mb-3 font-mono font-semibold text-primary text-xs uppercase tracking-widest">
+						{question.category}
+					</p>
+					<h2 className="font-bold text-foreground text-xl leading-snug">
+						{question.scenario}
+					</h2>
+				</div>
 
 				{/* Options */}
 				<div className="flex flex-col gap-3">

@@ -3,7 +3,7 @@ import {
 	themes,
 } from "@PersonalityTest/api/data/themes/index";
 import { Button, Image, ScrollView, Text, View } from "@tarojs/components";
-import Taro, { useLoad, useShareAppMessage } from "@tarojs/taro";
+import Taro, { useLoad, useRouter, useShareAppMessage } from "@tarojs/taro";
 import { useState } from "react";
 import { Icon, toBase64 } from "../../components/icon";
 import { RadarCanvas } from "../../components/radar-canvas";
@@ -59,6 +59,7 @@ const DECISION_STYLES: Record<
 	},
 };
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Result component handles layout rendering which has moderate complexity
 export default function Result() {
 	const [result, setResult] = useState<QuizResult | null>(null);
 	const [shareLoading, setShareLoading] = useState(false);
@@ -69,15 +70,38 @@ export default function Result() {
 		inviterResultId: string;
 	} | null>(null);
 	const mode = quizStore.getMode();
+	const router = useRouter();
 
+	const isBalanced = result
+		? router.params?.debug === "balanced" ||
+			(result.scores.D === result.scores.I &&
+				result.scores.I === result.scores.S &&
+				result.scores.S === result.scores.C)
+		: false;
+
+	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: useLoad handles debug and fallbacks setup
 	useLoad((options: Record<string, string | undefined>) => {
 		// Try quizStore first (set by quiz completion or history page)
 		let r = quizStore.getLastResult();
 
+		// Debug mode: mock a balanced result
+		if (!r && options?.debug === "balanced") {
+			const mockResult: QuizResult = {
+				id: "debug-balanced",
+				dominantType: "D",
+				scores: { D: 25, I: 25, S: 25, C: 25 },
+				theme: (options?.theme as QuizResult["theme"]) ?? "professional",
+				date: new Date().toISOString(),
+				note: "全能适配者调试模式",
+			};
+			r = mockResult;
+			quizStore.setLastResult(mockResult);
+		}
+
 		// Fallback: load from storage via historyId URL param
-		if (!r && options.historyId) {
+		if (!r && options?.historyId) {
 			const records = storage.getHistory();
-			const found = records.find((rec) => rec.id === options.historyId);
+			const found = records.find((rec) => rec.id === options?.historyId);
 			if (found) {
 				r = {
 					...found,
@@ -87,8 +111,31 @@ export default function Result() {
 			}
 		}
 
+		// Fallback 2: load latest history record from storage as a safety net
 		if (!r) {
-			Taro.navigateBack();
+			const records = storage.getHistory();
+			const latest = records[0];
+			if (latest) {
+				const fallbackResult: QuizResult = {
+					id: latest.id,
+					dominantType: latest.dominantType,
+					scores: latest.scores,
+					theme: (latest.theme as QuizResult["theme"]) ?? "professional",
+					date: latest.date,
+					note: latest.note || "",
+				};
+				r = fallbackResult;
+				quizStore.setLastResult(fallbackResult);
+			}
+		}
+
+		if (!r) {
+			const pages = Taro.getCurrentPages();
+			if (pages.length > 1) {
+				Taro.navigateBack();
+			} else {
+				Taro.reLaunch({ url: "/pages/index/index" });
+			}
 			return;
 		}
 		setResult(r);
@@ -127,7 +174,9 @@ export default function Result() {
 		result.theme ?? "professional",
 		result.dominantType
 	);
-	const typeColor = TYPE_COLORS[primaryType];
+	const typeColor = isBalanced
+		? themeConfig.cardTheme.primaryColor || "#0058be"
+		: TYPE_COLORS[primaryType];
 	const otherThemes = Object.values(themes).filter(
 		(t) => t.id !== themeConfig.id
 	);
@@ -191,8 +240,10 @@ export default function Result() {
 				inviterResultId: result.id,
 			});
 			setInviteModal(true);
-		} catch {
-			Taro.showToast({ title: "生成邀请失败", icon: "none" });
+		} catch (err) {
+			console.error("Create invitation error:", err);
+			const errMsg = err instanceof Error ? err.message : String(err);
+			Taro.showToast({ title: `生成邀请失败: ${errMsg}`, icon: "none" });
 		} finally {
 			setInviteLoading(false);
 		}
@@ -273,6 +324,29 @@ export default function Result() {
 								</Text>
 							</View>
 						))}
+					</View>
+				</View>
+
+				{/* Viral Actions */}
+				<View className="viral-section">
+					<View
+						className="viral-btn share-btn"
+						onClick={shareLoading ? undefined : handleShareCard}
+						style={{ borderColor: typeColor }}
+					>
+						<Text className="viral-btn-text" style={{ color: typeColor }}>
+							{shareLoading ? "生成中..." : "生成专属卡片"}
+						</Text>
+						<Text className="viral-btn-sub">保存精美测评海报到相册</Text>
+					</View>
+					<View
+						className="viral-btn invite-btn"
+						onClick={inviteLoading ? undefined : handleInviteFriend}
+					>
+						<Text className="viral-btn-text">
+							{inviteLoading ? "生成中..." : "邀请好友对比"}
+						</Text>
+						<Text className="viral-btn-sub">看看你们的 DISC 有何不同</Text>
 					</View>
 				</View>
 
@@ -360,6 +434,7 @@ export default function Result() {
 		);
 	};
 
+	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: renderLeadership renders leadership specific cards
 	const renderLeadership = () => {
 		const decision = DECISION_STYLES[primaryType] || DECISION_STYLES.D;
 		const isDActive = result.dominantType.includes("D");
@@ -484,6 +559,29 @@ export default function Result() {
 								{typeContent.detailAnalysis.section1Content}
 							</Text>
 						</View>
+					</View>
+				</View>
+
+				{/* Viral Actions */}
+				<View className="viral-section">
+					<View
+						className="viral-btn share-btn"
+						onClick={shareLoading ? undefined : handleShareCard}
+						style={{ borderColor: typeColor }}
+					>
+						<Text className="viral-btn-text" style={{ color: typeColor }}>
+							{shareLoading ? "生成中..." : "生成专属卡片"}
+						</Text>
+						<Text className="viral-btn-sub">保存精美测评海报到相册</Text>
+					</View>
+					<View
+						className="viral-btn invite-btn"
+						onClick={inviteLoading ? undefined : handleInviteFriend}
+					>
+						<Text className="viral-btn-text">
+							{inviteLoading ? "生成中..." : "邀请好友对比"}
+						</Text>
+						<Text className="viral-btn-sub">看看你们的 DISC 有何不同</Text>
 					</View>
 				</View>
 
@@ -650,6 +748,29 @@ export default function Result() {
 					</View>
 				</View>
 
+				{/* Viral Actions */}
+				<View className="viral-section">
+					<View
+						className="viral-btn share-btn"
+						onClick={shareLoading ? undefined : handleShareCard}
+						style={{ borderColor: typeColor }}
+					>
+						<Text className="viral-btn-text" style={{ color: typeColor }}>
+							{shareLoading ? "生成中..." : "生成专属卡片"}
+						</Text>
+						<Text className="viral-btn-sub">保存精美测评海报到相册</Text>
+					</View>
+					<View
+						className="viral-btn invite-btn"
+						onClick={inviteLoading ? undefined : handleInviteFriend}
+					>
+						<Text className="viral-btn-text">
+							{inviteLoading ? "生成中..." : "邀请好友对比"}
+						</Text>
+						<Text className="viral-btn-sub">看看你们的 DISC 有何不同</Text>
+					</View>
+				</View>
+
 				{/* Relationship Insight Double Column Card */}
 				{insight && (
 					<View className="bento-card-container relationship-insight-card">
@@ -721,8 +842,592 @@ export default function Result() {
 		);
 	};
 
+	const renderAllRounder = () => {
+		const theme = result.theme ?? "professional";
+
+		const viralSection = (
+			<View className="viral-section">
+				<View
+					className="viral-btn share-btn"
+					onClick={shareLoading ? undefined : handleShareCard}
+					style={{ borderColor: typeColor }}
+				>
+					<Text className="viral-btn-text" style={{ color: typeColor }}>
+						{shareLoading ? "生成中..." : "生成专属卡片"}
+					</Text>
+					<Text className="viral-btn-sub">保存精美测评海报到相册</Text>
+				</View>
+				<View
+					className="viral-btn invite-btn"
+					onClick={inviteLoading ? undefined : handleInviteFriend}
+				>
+					<Text className="viral-btn-text">
+						{inviteLoading ? "生成中..." : "邀请好友对比"}
+					</Text>
+					<Text className="viral-btn-sub">看看你们的 DISC 有何不同</Text>
+				</View>
+			</View>
+		);
+
+		if (theme === "leadership") {
+			const leadershipRadarSvg = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+				<circle cx="50" cy="50" fill="none" r="40" stroke="rgba(255,255,255,0.2)" stroke-width="0.5" />
+				<circle cx="50" cy="50" fill="none" r="30" stroke="rgba(255,255,255,0.2)" stroke-width="0.5" />
+				<circle cx="50" cy="50" fill="none" r="20" stroke="rgba(255,255,255,0.2)" stroke-width="0.5" />
+				<line x1="50" y1="10" x2="50" y2="90" stroke="rgba(255,255,255,0.2)" stroke-width="0.5" />
+				<line x1="10" y1="50" x2="90" y2="50" stroke="rgba(255,255,255,0.2)" stroke-width="0.5" />
+				<polygon fill="rgba(0, 88, 190, 0.4)" points="50,20 80,50 50,80 20,50" stroke="#0058be" stroke-width="2" />
+				<circle cx="50" cy="20" fill="#0058be" r="3" />
+				<circle cx="80" cy="50" fill="#0058be" r="3" />
+				<circle cx="50" cy="80" fill="#0058be" r="3" />
+				<circle cx="20" cy="50" fill="#0058be" r="3" />
+				<text x="50" y="6" fill="#ffffff" font-family="sans-serif" font-size="5" font-weight="bold" text-anchor="middle">支配 (D)</text>
+				<text x="82" y="52" fill="#ffffff" font-family="sans-serif" font-size="5" font-weight="bold" text-anchor="start">影响 (I)</text>
+				<text x="50" y="96" fill="#ffffff" font-family="sans-serif" font-size="5" font-weight="bold" text-anchor="middle">稳健 (S)</text>
+				<text x="18" y="52" fill="#ffffff" font-family="sans-serif" font-size="5" font-weight="bold" text-anchor="end">谨慎 (C)</text>
+			</svg>`;
+			const leadershipRadarSrc = `data:image/svg+xml;base64,${toBase64(leadershipRadarSvg)}`;
+
+			return (
+				<View className="theme-layout-leadership all-rounder-layout">
+					<View className="leadership-hero relative flex flex-col items-center justify-center overflow-hidden pt-8">
+						<View className="absolute inset-0 z-0">
+							<Image
+								className="h-full w-full object-cover"
+								src={getThemeHeroImage("leadership")}
+							/>
+							<View
+								className="absolute inset-0"
+								style={{ backgroundColor: "rgba(0, 0, 0, 0.85)" }}
+							/>
+						</View>
+						<View className="relative z-10 flex flex-col items-center px-6 text-center">
+							<View className="mb-2">
+								<Icon color="#fef08a" name="workspace_premium" size={96} />
+							</View>
+							<Text className="golden-gradient-text mb-2 block font-extrabold text-48 tracking-tight">
+								全能适配者
+							</Text>
+							<View
+								className="max-w-sm rounded-2xl p-4 backdrop-blur-md"
+								style={{
+									marginTop: "16rpx",
+									backgroundColor: "rgba(255, 255, 255, 0.1)",
+									borderColor: "rgba(255, 255, 255, 0.1)",
+									borderWidth: "1rpx",
+									borderStyle: "solid",
+								}}
+							>
+								<Text className="block text-24 text-white italic leading-relaxed">
+									“您展现出极其罕见的‘矩阵式领航者’特质，四维极度均衡。这使您的领导风格不流于单一的强权或怀柔，能随情境弹性调配决策，是组织中全维战略舵手。”
+								</Text>
+							</View>
+
+							<View className="relative mt-4 flex h-48 w-48 items-center justify-center">
+								<Image className="h-full w-full" src={leadershipRadarSrc} />
+							</View>
+						</View>
+					</View>
+
+					{/* Place the share/invite buttons right under the radar in the top block */}
+					{viralSection}
+
+					<View className="relative z-20 mt-4 flex flex-col gap-4 space-y-4 px-6">
+						<View className="rounded-2xl border border-slate-100 bg-white p-6 shadow-lg">
+							<View className="mb-6 flex items-center gap-2 font-bold text-32 text-slate-800">
+								<Icon
+									className="shrink-0"
+									color="#0058be"
+									name="analytics"
+									size={40}
+								/>
+								<Text>维度细分</Text>
+							</View>
+							<View className="flex flex-col gap-3 space-y-4">
+								{[
+									{
+										label: "掌控型 (D)",
+										val: 25,
+										bgStyle: { backgroundColor: "#0058be" },
+										text: "text-slate-500",
+									},
+									{
+										label: "影响型 (I)",
+										val: 25,
+										bgStyle: { backgroundColor: "#006c49" },
+										text: "text-slate-500",
+									},
+									{
+										label: "稳健型 (S)",
+										val: 25,
+										bgStyle: { backgroundColor: "#765700" },
+										text: "text-slate-500",
+									},
+									{
+										label: "谨慎型 (C)",
+										val: 25,
+										bgStyle: { backgroundColor: "#727785" },
+										text: "text-slate-500",
+									},
+								].map((item) => (
+									<View className="w-full" key={item.label}>
+										<View className="mb-1 flex items-center justify-between font-mono font-semibold text-24">
+											<Text className={item.text}>{item.label}</Text>
+											<Text className="font-bold text-blue-700">
+												{item.val}%
+											</Text>
+										</View>
+										<View className="h-4 w-full overflow-hidden rounded-full bg-slate-100">
+											<View
+												className="h-full rounded-full"
+												style={{ width: "25%", ...item.bgStyle }}
+											/>
+										</View>
+									</View>
+								))}
+							</View>
+						</View>
+
+						<View className="rounded-2xl border border-slate-100 bg-white p-6 shadow-lg">
+							<Text className="mb-5 block font-bold text-32 text-slate-800">
+								战略管理优势
+							</Text>
+							<View className="flex flex-col gap-4">
+								<View className="flex items-start gap-4">
+									<View
+										style={{
+											width: "96rpx",
+											height: "96rpx",
+											borderRadius: "16rpx",
+											backgroundColor: "#eff6ff",
+											display: "flex",
+											alignItems: "center",
+											justifyContent: "center",
+											flexShrink: 0,
+										}}
+									>
+										<Icon color="#0058be" name="diversity_3" size={40} />
+									</View>
+									<View className="flex-1">
+										<Text className="mb-1 block font-bold text-28 text-slate-800">
+											跨角色组织包容度
+										</Text>
+										<Text className="block text-24 text-slate-500 leading-normal">
+											能够精准识别并包容各种极端性格的下属，给予针对性的指导和资源匹配，激发不同特质成员的最大潜力，构建高弹性、无短板的组织架构。
+										</Text>
+									</View>
+								</View>
+								<View className="flex items-start gap-4">
+									<View
+										style={{
+											width: "96rpx",
+											height: "96rpx",
+											borderRadius: "16rpx",
+											backgroundColor: "#ecfdf5",
+											display: "flex",
+											alignItems: "center",
+											justifyContent: "center",
+											flexShrink: 0,
+										}}
+									>
+										<Icon color="#006c49" name="sync_alt" size={40} />
+									</View>
+									<View className="flex-1">
+										<Text className="mb-1 block font-bold text-28 text-slate-800">
+											全情境自适应领导
+										</Text>
+										<Text className="block text-24 text-slate-500 leading-normal">
+											在危机时刻展现雷厉风行的决断力（D），在动员时刻激发无可抵挡的感召力（I），在稳健期展现包容共情的凝聚力（S），在合规期坚守严谨规范的自律力（C）。
+										</Text>
+									</View>
+								</View>
+								<View className="flex items-start gap-4">
+									<View
+										style={{
+											width: "96rpx",
+											height: "96rpx",
+											borderRadius: "16rpx",
+											backgroundColor: "#fffbeb",
+											display: "flex",
+											alignItems: "center",
+											justifyContent: "center",
+											flexShrink: 0,
+										}}
+									>
+										<Icon color="#765700" name="psychology" size={40} />
+									</View>
+									<View className="flex-1">
+										<Text className="mb-1 block font-bold text-28 text-slate-800">
+											全方位风险与增长模型
+										</Text>
+										<Text className="block text-24 text-slate-500 leading-normal">
+											在推动战略扩张时，既有对市场效率与结果的极致追求（D），亦有严密的数据分析与安全边界防范（C），最大程度避免盲目决策与盲区风险。
+										</Text>
+									</View>
+								</View>
+							</View>
+						</View>
+					</View>
+				</View>
+			);
+		}
+
+		if (theme === "relationship") {
+			const relationshipRadarSvg = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+				<circle cx="50" cy="50" fill="none" r="40" stroke="#e2e8f8" stroke-width="0.5" />
+				<circle cx="50" cy="50" fill="none" r="30" stroke="#e2e8f8" stroke-width="0.5" />
+				<circle cx="50" cy="50" fill="none" r="20" stroke="#e2e8f8" stroke-width="0.5" />
+				<circle cx="50" cy="50" fill="none" r="10" stroke="#e2e8f8" stroke-width="0.5" />
+				<line x1="50" y1="10" x2="50" y2="90" stroke="#e2e8f8" stroke-width="0.5" />
+				<line x1="10" y1="50" x2="90" y2="50" stroke="#e2e8f8" stroke-width="0.5" />
+				<polygon fill="rgba(0, 88, 190, 0.1)" points="50,20 80,50 50,80 20,50" stroke="#0058be" stroke-width="2" />
+				<circle cx="50" cy="20" fill="#0058be" r="3" />
+				<circle cx="80" cy="50" fill="#0058be" r="3" />
+				<circle cx="50" cy="80" fill="#0058be" r="3" />
+				<circle cx="20" cy="50" fill="#0058be" r="3" />
+				<text x="50" y="6" fill="#ef4444" font-family="sans-serif" font-size="5" font-weight="bold" text-anchor="middle">D 支配</text>
+				<text x="82" y="52" fill="#f59e0b" font-family="sans-serif" font-size="5" font-weight="bold" text-anchor="start">I 影响</text>
+				<text x="50" y="96" fill="#10b981" font-family="sans-serif" font-size="5" font-weight="bold" text-anchor="middle">S 稳健</text>
+				<text x="18" y="52" fill="#3b82f6" font-family="sans-serif" font-size="5" font-weight="bold" text-anchor="end">C 服从</text>
+			</svg>`;
+			const relationshipRadarSrc = `data:image/svg+xml;base64,${toBase64(relationshipRadarSvg)}`;
+
+			return (
+				<View className="theme-layout-relationship all-rounder-layout px-6">
+					<View className="mb-8 flex flex-col items-center pt-8 text-center">
+						<View className="mb-4 inline-flex h-20 w-20 items-center justify-center rounded-full bg-blue-700 text-white shadow-lg">
+							<Icon color="#ffffff" name="stars" size={48} />
+						</View>
+						<Text className="mb-1 block font-extrabold text-48 text-blue-700">
+							全能适配者
+						</Text>
+						<Text className="block font-mono font-semibold text-20 text-slate-500 uppercase tracking-widest">
+							The All-Rounder
+						</Text>
+					</View>
+
+					<View className="mb-6 rounded-2xl border border-white-50 bg-white-90 p-6 shadow-lg backdrop-blur-md">
+						<View className="flex items-start gap-3">
+							<Text className="mt-0.5 text-32">💡</Text>
+							<Text className="block flex-1 text-24 text-slate-700 leading-relaxed">
+								您是独特的
+								<Text className="font-bold text-blue-700">“全维守护者”</Text>
+								！四维平衡让您拥有一颗极其敏感且包容的“情感共振心”，在人际中提供温暖支持与理性引导。
+							</Text>
+						</View>
+					</View>
+
+					<View className="mb-6 flex flex-col items-center rounded-2xl border border-white-50 bg-white-90 p-6 shadow-lg backdrop-blur-md">
+						<Text className="mb-4 block self-start font-bold text-28 text-slate-800">
+							维度分布
+						</Text>
+						<View className="relative mx-auto flex aspect-square h-48 w-48 items-center justify-center">
+							<Image className="h-full w-full" src={relationshipRadarSrc} />
+						</View>
+					</View>
+
+					{/* Place the share/invite buttons right under the radar in relationship theme */}
+					{viralSection}
+
+					<View className="mb-6 flex flex-col gap-3">
+						{[
+							{
+								label: "支配型",
+								type: "D",
+								val: 25,
+								bgStyle: { backgroundColor: "#EF4444" },
+							},
+							{
+								label: "影响型",
+								type: "I",
+								val: 25,
+								bgStyle: { backgroundColor: "#F59E0B" },
+							},
+							{
+								label: "稳健型",
+								type: "S",
+								val: 25,
+								bgStyle: { backgroundColor: "#10B981" },
+							},
+							{
+								label: "谨慎型",
+								type: "C",
+								val: 25,
+								bgStyle: { backgroundColor: "#3B82F6" },
+							},
+						].map((item) => (
+							<View
+								className="flex items-center gap-3 rounded-xl border border-white-50 bg-white-90 p-4 shadow-lg backdrop-blur-md"
+								key={item.type}
+							>
+								<View
+									className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full font-bold text-24 text-white"
+									style={item.bgStyle}
+								>
+									<Text>{item.type}</Text>
+								</View>
+								<View className="min-w-0 flex-1">
+									<View className="mb-1 flex items-center justify-between font-mono font-semibold text-24">
+										<Text>{item.label}</Text>
+										<Text>{item.val}%</Text>
+									</View>
+									<View className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
+										<View
+											className="h-full rounded-full"
+											style={{ width: "25%", ...item.bgStyle }}
+										/>
+									</View>
+								</View>
+							</View>
+						))}
+					</View>
+
+					<View className="mb-6 rounded-2xl border border-slate-100 bg-white p-6 shadow-lg">
+						<Text className="mb-5 block font-bold text-32 text-slate-800">
+							人际和谐力量
+						</Text>
+						<View className="flex flex-col gap-4">
+							<View className="flex items-start gap-4">
+								<View
+									style={{
+										width: "96rpx",
+										height: "96rpx",
+										borderRadius: "16rpx",
+										backgroundColor: "rgba(239,68,68,0.08)",
+										display: "flex",
+										alignItems: "center",
+										justifyContent: "center",
+										flexShrink: 0,
+									}}
+								>
+									<Icon color="#EF4444" name="favorite" size={48} />
+								</View>
+								<View className="flex-1">
+									<Text className="mb-1 block font-bold text-28 text-slate-800">
+										多频情感共鸣
+									</Text>
+									<Text className="block text-24 text-slate-500 leading-normal">
+										具备高维度的倾听和同理心，能够瞬间换位思考，感知对方在不同情绪状态下的真实诉求，给予最温暖的慰藉与支持。
+									</Text>
+								</View>
+							</View>
+							<View className="flex items-start gap-4">
+								<View
+									style={{
+										width: "96rpx",
+										height: "96rpx",
+										borderRadius: "16rpx",
+										backgroundColor: "rgba(245,158,11,0.08)",
+										display: "flex",
+										alignItems: "center",
+										justifyContent: "center",
+										flexShrink: 0,
+									}}
+								>
+									<Icon color="#F59E0B" name="forum" size={48} />
+								</View>
+								<View className="flex-1">
+									<Text className="mb-1 block font-bold text-28 text-slate-800">
+										双向关系润滑剂
+									</Text>
+									<Text className="block text-24 text-slate-500 leading-normal">
+										在关系摩擦时，既能以温和态度稳定局面，又能用理性解构矛盾，促进双方坦诚沟通，是化解误会与冷战的天然催化剂。
+									</Text>
+								</View>
+							</View>
+							<View className="flex items-start gap-4">
+								<View
+									style={{
+										width: "96rpx",
+										height: "96rpx",
+										borderRadius: "16rpx",
+										backgroundColor: "rgba(16,185,129,0.08)",
+										display: "flex",
+										alignItems: "center",
+										justifyContent: "center",
+										flexShrink: 0,
+									}}
+								>
+									<Icon color="#10B981" name="groups" size={48} />
+								</View>
+								<View className="flex-1">
+									<Text className="mb-1 block font-bold text-28 text-slate-800">
+										多维支柱型伴侣
+									</Text>
+									<Text className="block text-24 text-slate-500 leading-normal">
+										在伴侣面临挑战时提供行动支持，在需要快乐时制造温暖浪漫，在低谷期坚守陪伴，在关键决策时提供理智分析。
+									</Text>
+								</View>
+							</View>
+						</View>
+					</View>
+				</View>
+			);
+		}
+
+		// Fallback to professional
+		const professionalRadarSvg = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+			<polygon points="50,10 90,50 50,90 10,50" fill="none" stroke="#E5E7EB" stroke-width="0.5" />
+			<polygon points="50,25 75,50 50,75 25,50" fill="none" stroke="#E5E7EB" stroke-width="0.5" />
+			<line x1="50" y1="10" x2="50" y2="90" stroke="#E5E7EB" stroke-width="0.5" />
+			<line x1="10" y1="50" x2="90" y2="50" stroke="#E5E7EB" stroke-width="0.5" />
+			<polygon fill="rgba(59, 130, 246, 0.1)" points="50,25 75,50 50,75 25,50" stroke="#3B82F6" stroke-width="1.5" />
+			<text x="50" y="6" fill="#0058be" font-family="sans-serif" font-size="5" font-weight="bold" text-anchor="middle">支配 (D)</text>
+			<text x="80" y="52" fill="#006c49" font-family="sans-serif" font-size="5" font-weight="bold" text-anchor="start">影响 (I)</text>
+			<text x="50" y="96" fill="#765700" font-family="sans-serif" font-size="5" font-weight="bold" text-anchor="middle">稳健 (S)</text>
+			<text x="20" y="52" fill="#727785" font-family="sans-serif" font-size="5" font-weight="bold" text-anchor="end">谨慎 (C)</text>
+		</svg>`;
+		const professionalRadarSrc = `data:image/svg+xml;base64,${toBase64(professionalRadarSvg)}`;
+
+		return (
+			<View className="theme-layout-professional all-rounder-layout">
+				<View className="professional-hero relative flex flex-col items-center justify-center overflow-hidden">
+					<View className="absolute inset-0 z-0">
+						<Image
+							className="h-full w-full object-cover"
+							src={getThemeHeroImage("professional")}
+						/>
+						<View className="absolute inset-0 bg-blue-900-30 backdrop-blur-md" />
+					</View>
+					<View className="relative z-10 flex flex-col items-center px-6 text-center">
+						<View className="inline-flex max-w-md flex-col items-center justify-center rounded-2xl border border-white-50 bg-white-90 p-6 shadow-lg backdrop-blur-md">
+							<Text className="mb-2 text-40">💡</Text>
+							<Text className="mb-2 font-bold text-32 text-blue-700 leading-relaxed">
+								您是一位极其罕见的‘全能适配者’！
+							</Text>
+							<Text className="text-24 text-slate-500 leading-relaxed">
+								您的 DISC
+								四维度非常均衡。这赋予了您跨越职能壁垒的超强自适应弹性，能如水般融入团队角色，是组织中的六边形全能战力。
+							</Text>
+						</View>
+					</View>
+				</View>
+
+				<View className="relative z-20 -mt-12 flex flex-col gap-4 space-y-4 px-6">
+					<View className="rounded-2xl bg-white p-6 shadow-lg">
+						<Text className="mb-4 block font-mono font-semibold text-22 text-slate-400 tracking-wider">
+							维度平衡分布
+						</Text>
+						<View className="relative mx-auto flex aspect-square h-48 w-48 items-center justify-center">
+							<Image className="h-full w-full" src={professionalRadarSrc} />
+						</View>
+					</View>
+
+					{/* Place the share/invite buttons right under the radar in professional theme */}
+					{viralSection}
+
+					<View className="rounded-2xl bg-white p-6 shadow-lg">
+						<Text className="mb-4 block font-mono font-semibold text-22 text-slate-400 tracking-wider">
+							维度细分数据
+						</Text>
+						<View className="flex flex-col gap-3 space-y-4">
+							{[
+								{
+									label: "支配型 (D)",
+									val: 25,
+									bgStyle: { backgroundColor: "#0058be" },
+									text: "text-slate-500",
+								},
+								{
+									label: "影响型 (I)",
+									val: 25,
+									bgStyle: { backgroundColor: "#006c49" },
+									text: "text-slate-500",
+								},
+								{
+									label: "稳健型 (S)",
+									val: 25,
+									bgStyle: { backgroundColor: "#765700" },
+									text: "text-slate-500",
+								},
+								{
+									label: "谨慎型 (C)",
+									val: 25,
+									bgStyle: { backgroundColor: "#727785" },
+									text: "text-slate-500",
+								},
+							].map((item) => (
+								<View className="w-full" key={item.label}>
+									<View className="mb-1 flex items-center justify-between font-mono font-semibold text-24">
+										<Text className={item.text}>{item.label}</Text>
+										<Text className="font-bold text-blue-700">{item.val}%</Text>
+									</View>
+									<View className="h-4 w-full overflow-hidden rounded-full bg-slate-100">
+										<View
+											className="h-full rounded-full"
+											style={{ width: "25%", ...item.bgStyle }}
+										/>
+									</View>
+								</View>
+							))}
+						</View>
+					</View>
+
+					<View className="rounded-2xl bg-white p-6 shadow-lg">
+						<Text className="mb-4 block font-bold text-32 text-slate-800">
+							职场核心优势
+						</Text>
+						<View className="flex flex-col gap-4">
+							<View className="flex items-center gap-3 rounded-xl border border-blue-100 bg-blue-50-50 p-4">
+								<Icon
+									className="shrink-0"
+									color="#0058be"
+									name="hub"
+									size={40}
+								/>
+								<View className="flex-1">
+									<Text className="mb-1 block font-bold text-28 text-slate-800">
+										全景式跨界枢纽
+									</Text>
+									<Text className="block text-24 text-slate-500 leading-normal">
+										无缝连接研发、创意、销售及行政等不同背景 of
+										团队，用他们熟悉的语言化解沟通壁垒，是组织中最强的跨职能协调桥梁。
+									</Text>
+								</View>
+							</View>
+							<View className="flex items-center gap-3 rounded-xl border border-green-100 bg-green-50-50 p-4">
+								<Icon
+									className="shrink-0"
+									color="#006c49"
+									name="sync_alt"
+									size={40}
+								/>
+								<View className="flex-1">
+									<Text className="mb-1 block font-bold text-28 text-slate-800">
+										高自适应情境弹性
+									</Text>
+									<Text className="block text-24 text-slate-500 leading-normal">
+										不拘泥于特定角色，能根据阶段性业务痛点，在“决策引领者”与“坚实执行者”之间自如切换，完美契合复杂多变的业务周期。
+									</Text>
+								</View>
+							</View>
+							<View className="flex items-center gap-3 rounded-xl border border-amber-100 bg-amber-50-50 p-4">
+								<Icon
+									className="shrink-0"
+									color="#765700"
+									name="balance"
+									size={40}
+								/>
+								<View className="flex-1">
+									<Text className="mb-1 block font-bold text-28 text-slate-800">
+										中立解题与冲突中和
+									</Text>
+									<Text className="block text-24 text-slate-500 leading-normal">
+										不偏执于单一立场，能在团队利益冲突中快速抽离，融合多方诉求，以高度客观的系统化视角推导最优的平衡解决方案。
+									</Text>
+								</View>
+							</View>
+						</View>
+					</View>
+				</View>
+			</View>
+		);
+	};
+
 	let themeContent: React.ReactNode = null;
-	if (result.theme === "professional") {
+	if (isBalanced) {
+		themeContent = renderAllRounder();
+	} else if (result.theme === "professional") {
 		themeContent = renderProfessional();
 	} else if (result.theme === "leadership") {
 		themeContent = renderLeadership();
@@ -746,29 +1451,6 @@ export default function Result() {
 				scrollY
 			>
 				{themeContent}
-
-				{/* Viral Actions */}
-				<View className="viral-section">
-					<View
-						className="viral-btn share-btn"
-						onClick={shareLoading ? undefined : handleShareCard}
-						style={{ borderColor: typeColor }}
-					>
-						<Text className="viral-btn-text" style={{ color: typeColor }}>
-							{shareLoading ? "生成中..." : "生成专属卡片"}
-						</Text>
-						<Text className="viral-btn-sub">保存精美测评海报到相册</Text>
-					</View>
-					<View
-						className="viral-btn invite-btn"
-						onClick={inviteLoading ? undefined : handleInviteFriend}
-					>
-						<Text className="viral-btn-text">
-							{inviteLoading ? "生成中..." : "邀请好友对比"}
-						</Text>
-						<Text className="viral-btn-sub">看看你们的 DISC 有何不同</Text>
-					</View>
-				</View>
 
 				{/* Upgrade banner for quick mode */}
 				{mode === "quick" && (
