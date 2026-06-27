@@ -3,7 +3,7 @@ import { auth } from "@PersonalityTest/auth";
 import { createDb } from "@PersonalityTest/db";
 import { user as userTable } from "@PersonalityTest/db/schema/auth";
 import { env } from "@PersonalityTest/env/server";
-import { createHash, randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "crypto";
 import { eq } from "drizzle-orm";
 import { Hono } from "hono";
 import { setCookie } from "hono/cookie";
