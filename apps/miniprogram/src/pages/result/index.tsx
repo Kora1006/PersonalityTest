@@ -79,10 +79,19 @@ export default function Result() {
 				result.scores.S === result.scores.C)
 		: false;
 
+	console.log(
+		"[Result Page] Render, result state:",
+		result,
+		"isBalanced:",
+		isBalanced
+	);
+
 	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: useLoad handles debug and fallbacks setup
 	useLoad((options: Record<string, string | undefined>) => {
+		console.log("[Result Page] useLoad triggered, options:", options);
 		// Try quizStore first (set by quiz completion or history page)
 		let r = quizStore.getLastResult();
+		console.log("[Result Page] useLoad from quizStore:", r);
 
 		// Debug mode: mock a balanced result
 		if (!r && options?.debug === "balanced") {
@@ -129,7 +138,11 @@ export default function Result() {
 			}
 		}
 
+		console.log("[Result Page] useLoad final resolved result r:", r);
 		if (!r) {
+			console.warn(
+				"[Result Page] No result resolved. Redirecting back or home."
+			);
 			const pages = Taro.getCurrentPages();
 			if (pages.length > 1) {
 				Taro.navigateBack();
@@ -138,6 +151,7 @@ export default function Result() {
 			}
 			return;
 		}
+		console.log("[Result Page] Setting result state to:", r);
 		setResult(r);
 		Taro.setNavigationBarTitle({ title: "测评结果" });
 
@@ -161,6 +175,9 @@ export default function Result() {
 	});
 
 	if (!result) {
+		console.log(
+			"[Result Page] Rendering fallback null view (result is null in state)"
+		);
 		return <View className="result-page" />;
 	}
 
