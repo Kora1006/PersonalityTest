@@ -186,7 +186,7 @@ export default function Auth() {
 					Taro.showToast({ title: "微信登录成功", icon: "success" });
 				} catch (err: any) {
 					console.error("[Auth Page] WeChat login API failed:", err);
-					const msg = err?.message || "网络请求失败";
+					const msg = err?.message || err?.errMsg || "网络请求失败";
 					Taro.showToast({ title: `微信登录失败: ${msg}`, icon: "none" });
 				} finally {
 					setLoading(false);
