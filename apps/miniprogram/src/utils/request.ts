@@ -35,7 +35,11 @@ export async function request<T>({
 	});
 
 	if (res.statusCode >= 400) {
-		throw new Error(`Request failed: ${res.statusCode}`);
+		const errMsg =
+			res.data && typeof res.data === "object" && "error" in res.data
+				? String((res.data as any).error)
+				: `Request failed: ${res.statusCode}`;
+		throw new Error(errMsg);
 	}
 
 	return res.data as T;

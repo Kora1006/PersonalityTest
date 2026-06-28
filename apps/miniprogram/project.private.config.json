@@ -5,9 +5,9 @@
     "miniprogram": {
       "list": [
         {
-          "name": "pages/result/index",
-          "pathName": "pages/result/index",
-          "query": "debug=balanced&theme=relationship",
+          "name": "pages/index/index",
+          "pathName": "pages/index/index",
+          "query": "",
           "scene": null,
           "launchMode": "default"
         }
