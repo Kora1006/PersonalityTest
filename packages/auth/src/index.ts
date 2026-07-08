@@ -21,6 +21,9 @@ export function createAuth() {
 			schema: { account, session, user, verification },
 		}),
 		trustedOrigins: [env.CORS_ORIGIN, "https://servicewechat.com"],
+		rateLimit: {
+			enabled: false,
+		},
 		emailAndPassword: {
 			enabled: true,
 			minPasswordLength: 6,
