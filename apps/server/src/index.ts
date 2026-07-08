@@ -27,7 +27,26 @@ app.use(
 );
 
 app.route("/api/auth/wechat", wechatRouter);
-app.on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw));
+app.on(["POST", "GET"], "/api/auth/*", (c) => {
+	const referer = c.req.header("referer") || "";
+	const ua = c.req.header("user-agent") || "";
+
+	const isMiniProgram =
+		ua.includes("MicroMessenger") || referer.includes("servicewechat.com");
+
+	if (isMiniProgram) {
+		const newHeaders = new Headers(c.req.raw.headers);
+		const originUrl = new URL(env.BETTER_AUTH_URL).origin;
+		newHeaders.set("origin", originUrl);
+
+		const clonedReq = new Request(c.req.raw, {
+			headers: newHeaders,
+		});
+		return auth.handler(clonedReq);
+	}
+
+	return auth.handler(c.req.raw);
+});
 app.route("/webhooks", webhooksRouter);
 
 app.use(
