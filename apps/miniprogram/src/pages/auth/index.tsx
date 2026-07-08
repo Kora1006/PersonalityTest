@@ -300,10 +300,10 @@ export default function Auth() {
 				<View className="profile-section">
 					<View className="avatar">
 						<Text className="avatar-text">
-							{user.name.charAt(0).toUpperCase()}
+							{(user.name || "U").charAt(0).toUpperCase()}
 						</Text>
 					</View>
-					<Text className="profile-name">{user.name}</Text>
+					<Text className="profile-name">{user.name || "未命名"}</Text>
 					<Text className="profile-email">{user.email || "微信绑定账户"}</Text>
 				</View>
 
