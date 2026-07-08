@@ -23,6 +23,7 @@ export function createAuth() {
 		trustedOrigins: [env.CORS_ORIGIN, "https://servicewechat.com"],
 		emailAndPassword: {
 			enabled: true,
+			minPasswordLength: 6,
 			sendResetPassword: resend
 				? async ({ user: recipient, url }) => {
 						await resend.emails.send({
