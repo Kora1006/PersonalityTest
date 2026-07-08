@@ -149,6 +149,7 @@ export default function Auth() {
 		}
 	};
 
+	// biome-ignore lint/correctness/noUnusedVariables: temporarily disabled
 	const handleWechatLogin = () => {
 		if (!agreedToTerms) {
 			Taro.showToast({
@@ -413,20 +414,6 @@ export default function Auth() {
 						{loading ? "请稍候..." : tab === "login" ? "登录" : "注册"}
 					</Text>
 				</View>
-			</View>
-
-			{/* WeChat Login */}
-			<View className="divider">
-				<View className="divider-line" />
-				<Text className="divider-text">或</Text>
-				<View className="divider-line" />
-			</View>
-
-			<View
-				className="wechat-btn"
-				onClick={loading ? undefined : handleWechatLogin}
-			>
-				<Text className="wechat-text">微信一键登录</Text>
 			</View>
 
 			<View
