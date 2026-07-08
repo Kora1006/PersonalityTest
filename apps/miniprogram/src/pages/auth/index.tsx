@@ -97,6 +97,11 @@ export default function Auth() {
 			Taro.showToast({ title: "请填写邮箱和密码", icon: "none" });
 			return;
 		}
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		if (!emailRegex.test(email)) {
+			Taro.showToast({ title: "邮箱格式不正确", icon: "none" });
+			return;
+		}
 		setLoading(true);
 		try {
 			const res = await api.post<{
@@ -125,6 +130,11 @@ export default function Auth() {
 		}
 		if (!(email && password && name)) {
 			Taro.showToast({ title: "请填写完整信息", icon: "none" });
+			return;
+		}
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		if (!emailRegex.test(email)) {
+			Taro.showToast({ title: "邮箱格式不正确", icon: "none" });
 			return;
 		}
 		if (password.length < 6) {
