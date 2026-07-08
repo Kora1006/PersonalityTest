@@ -20,7 +20,7 @@ export function createAuth() {
 			provider: "mysql",
 			schema: { account, session, user, verification },
 		}),
-		trustedOrigins: [env.CORS_ORIGIN],
+		trustedOrigins: [env.CORS_ORIGIN, "https://servicewechat.com"],
 		emailAndPassword: {
 			enabled: true,
 			sendResetPassword: resend
@@ -43,7 +43,7 @@ export function createAuth() {
 		advanced: {
 			defaultCookieAttributes: {
 				sameSite: env.COOKIE_SECURE === "false" ? "lax" : "none",
-				secure: env.COOKIE_SECURE === "false" ? false : true,
+				secure: env.COOKIE_SECURE !== "false",
 				httpOnly: true,
 			},
 		},
