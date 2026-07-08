@@ -8,8 +8,10 @@ import z from "zod";
 import { authClient } from "@/lib/auth-client";
 import { syncLocalHistoryToServer } from "@/lib/sync";
 
+// biome-ignore lint/correctness/noUnusedVariables: temporarily disabled (no domain)
 const MICROMESSENGER_RE = /MicroMessenger/i;
 
+// biome-ignore lint/correctness/noUnusedVariables: temporarily disabled (no domain)
 type Tab = "email" | "wechat";
 
 interface WechatQrData {
@@ -130,6 +132,7 @@ function EmailLoginForm({ onSuccess }: { onSuccess: () => void }) {
 	);
 }
 
+// biome-ignore lint/correctness/noUnusedVariables: temporarily disabled (no domain)
 function WechatQrTab({ onSuccess }: { onSuccess: () => void }) {
 	const [qrData, setQrData] = useState<WechatQrData | null>(null);
 	const [status, setStatus] = useState<"loading" | "pending" | "expired">(
@@ -237,14 +240,12 @@ function WechatQrTab({ onSuccess }: { onSuccess: () => void }) {
 }
 
 export default function Login() {
-	const [tab, setTab] = useState<Tab>("email");
 	const [searchParams] = useSearchParams();
 	const navigate = useNavigate();
 	const redirect = searchParams.get("redirect") ?? "/";
 
-	const isWechat =
-		typeof navigator !== "undefined" &&
-		MICROMESSENGER_RE.test(navigator.userAgent);
+	// Temporarily disable WeChat automatic login redirect (no domain name)
+	const isWechat = false;
 
 	const handleSuccess = async () => {
 		await syncLocalHistoryToServer();
@@ -294,36 +295,7 @@ export default function Login() {
 			</div>
 
 			<div className="-mt-5 flex-1 rounded-t-3xl bg-white px-6 pt-8 pb-24">
-				<div className="mb-6 flex rounded-xl bg-gray-100 p-1">
-					<button
-						className={`flex-1 rounded-lg py-2 font-semibold text-sm transition ${
-							tab === "email"
-								? "bg-white text-gray-900 shadow-sm"
-								: "text-gray-500"
-						}`}
-						onClick={() => setTab("email")}
-						type="button"
-					>
-						邮箱登录
-					</button>
-					<button
-						className={`flex-1 rounded-lg py-2 font-semibold text-sm transition ${
-							tab === "wechat"
-								? "bg-white text-gray-900 shadow-sm"
-								: "text-gray-500"
-						}`}
-						onClick={() => setTab("wechat")}
-						type="button"
-					>
-						微信扫码
-					</button>
-				</div>
-
-				{tab === "email" ? (
-					<EmailLoginForm onSuccess={handleSuccess} />
-				) : (
-					<WechatQrTab onSuccess={handleSuccess} />
-				)}
+				<EmailLoginForm onSuccess={handleSuccess} />
 
 				<div className="mt-8 text-center text-gray-500 text-sm">
 					还没有账号？{" "}
